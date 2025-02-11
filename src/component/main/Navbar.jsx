@@ -13,6 +13,7 @@ function Navbar() {
         <a href="#" className="me-3 text-dark">
           로그인
         </a>
+        a
         <a href="#" className="me-3 text-dark">
           회원가입
         </a>
