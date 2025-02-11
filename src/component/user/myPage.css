@@ -1,39 +1,81 @@
 a {
-  text-decoration: none;
+  text-decoration: none !important;
   color: black;
 }
 
-.mypage_img {
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  border-radius: 30px;
+button {
+  color: black;
+  border: none;
+  background-color: transparent;
+  padding: 0;
 }
 
-.profile-img img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
+.sidebar {
+  background-color: #e0e0e0;
+  padding: 20px;
+  width: 200px !important;
+  height: 600px;
+  border-radius: 5px;
 }
 
-.profile-name {
-  margin-left: 0;
+.sidebar-section h5 {
+  font-weight: bold;
+}
+
+.sidebar-section {
+  width: 200px !important;
+  margin-bottom: 40px !important;
+}
+
+.sidebar p {
+  margin: 5px 0;
 }
 
 .profile-section {
   display: flex;
-  align-items: center; /* 세로 중앙 정렬 */
-  justify-content: space-between; /* 좌우 정렬 */
-  width: 100%; /* 전체 너비 설정 */
-  padding: 10px 20px; /* 여백 추가 */
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
-.profile-info {
+.profile-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.email-text {
+  color: gray;
+}
+
+.section-header {
   display: flex;
-  align-items: center; /* 프로필 이미지와 이름을 붙이기 */
-  gap: 10px; /* 간격 조절 */
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.section-header a {
+  text-decoration: none;
+  color: black;
+}
+
+.section-header a:hover {
+  text-decoration: underline;
+}
+
+.wishlist-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.wishlist-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.main-content {
+  margin-left: 30px;
+
 }
