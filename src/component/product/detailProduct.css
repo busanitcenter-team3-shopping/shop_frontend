@@ -1,0 +1,33 @@
+a {
+  text-decoration: none;
+}
+
+.sub-img {
+  width: 60px !important;
+  height: 60px !important;
+  object-fit: cover;
+  border: none;
+  background-color: none;
+  margin-bottom: 0 !important;
+}
+
+.mainImg {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  margin-left: 80px;
+}
+
+.imgbtn {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: none;
+  padding: 0 !important;
+  outline: none;
+  margin: 0 !important;
+}
+
+.over-box {
+  overflow-y: auto !important;
+  height: 100px;
+}
