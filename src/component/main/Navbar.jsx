@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Navbar.css";
 import cart from "../../assets/icon-cart-shopping.svg";
 import user from "../../assets/icon-user.svg";
-// import user from "/assets/icon-user.svg";
+
 
 function Navbar() {
   const [showCategories, setShowCategories] = useState(false);
@@ -31,7 +31,12 @@ function Navbar() {
       </header>
       {/* 네비게이션 */}
 
-      <div className="container d-flex justify-content-between align-items-center">
+
+      <div
+        className="container d-flex justify-content-between align-items-center"
+        id="nav-container"
+      >
+
         <div>
           <button
             className="btn"
