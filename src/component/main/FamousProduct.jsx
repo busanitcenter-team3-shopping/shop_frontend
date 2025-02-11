@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "./famousProduct.css";
+import { Link } from "react-router-dom";
 
 const FamousProduct = () => {
   const [like, setLike] = useState(Array(8).fill(false));
@@ -13,13 +14,15 @@ const FamousProduct = () => {
     <div className="container">
       <h1 className="d-flex justify-content-center fw-bold mt-3">인기상품</h1>
       <div className="d-flex justify-content-end">
-        <button className="btn btn-link btn-about">더보기 &gt;</button>
+        <Link to="/products" className="btn btn-link btn-about">
+          더보기 &gt;
+        </Link>
       </div>
 
       <div className="row">
         {[...Array(8)].map((_, index) => (
           <div key={index} className="col-md-3 mb-4">
-            <a href="#">
+            <Link to="/product">
               <div className="card">
                 <div className="position-relative card-img">
                   <img src="/lion.png" className="card-img-top" alt="..." />
@@ -40,7 +43,7 @@ const FamousProduct = () => {
                   <p className="card-price mb-0">가격 : 25000</p>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </div>

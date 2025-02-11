@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Navbar.css";
 import cart from "../../assets/icon-cart-shopping.svg";
 import user from "../../assets/icon-user.svg";
-
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [showCategories, setShowCategories] = useState(false);
@@ -11,12 +11,12 @@ function Navbar() {
     <div>
       {/* 최상단 바 */}
       <article className="top-bar bg-secondary bg-opacity-25">
-        <a href="#" className="me-3 text-dark">
+        <Link to="/login" className="me-3 text-dark">
           로그인
-        </a>
-        <a href="#" className="me-3 text-dark">
+        </Link>
+        <Link to="signup" className="me-3 text-dark">
           회원가입
-        </a>
+        </Link>
         <a href="#" className="text-dark">
           고객센터
         </a>
@@ -24,19 +24,17 @@ function Navbar() {
       {/* 헤더 */}
       <header className="bg-white pt-5">
         <div className="container text-center">
-          <a href="#" className="fw-bold fs-3 text-dark text-decoration-none">
+          <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
             로 고
-          </a>
+          </Link>
         </div>
       </header>
       {/* 네비게이션 */}
-
 
       <div
         className="container d-flex justify-content-between align-items-center"
         id="nav-container"
       >
-
         <div>
           <button
             className="btn"
@@ -58,10 +56,10 @@ function Navbar() {
               }}
             >
               <li className="list-group-item">
-                <a href="#">상품</a>
+                <Link to="/products">상품</Link>
               </li>
               <li className="list-group-item">
-                <a href="#">브랜드</a>
+                <Link to="/brand">브랜드</Link>
               </li>
             </ul>
           )}
@@ -78,7 +76,7 @@ function Navbar() {
 
         <ul className="nav-item">
           <li>
-            <a href="#" className="me-3 text-dark">
+            <Link to="/mypage" className="me-3 text-dark">
               <img
                 className="mb-2"
                 src={user}
@@ -87,7 +85,7 @@ function Navbar() {
                 width="30"
               />
               <span>마이페이지</span>
-            </a>
+            </Link>
           </li>
           <li>
             <a href="#" className="text-dark">
