@@ -44,7 +44,8 @@ a {
   transform: translate(-50%, 0);
 }
 
-.container {
+/*다른파일 container에도 적용돼서 .container 에서 id명으로 변경 */
+#nav-container {
   height: 70px;
   padding-bottom: 20px;
 }

@@ -1,0 +1,31 @@
+.card-img {
+  border-bottom: 1px solid silver;
+  border-radius: 0 !important;
+}
+
+.card-title {
+  display: inline-block;
+  border: 1px solid brown;
+  background-color: brown;
+  border-radius: 40px;
+  font-size: 10px;
+}
+
+.btn-about {
+  text-decoration: none;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.card {
+  width: 220px;
+  height: 320px;
+}
+
+.card-body {
+  padding-top: 5px;
+}
+
+.heart:hover {
+  border: none;
+}
