@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import img1 from "../../assets/carousel1.jpg";
 import "./ProductsList.css";
+import { Link } from "react-router-dom";
 
 const products = Array(12).fill({
   name: "상품명 (camera)",
@@ -39,7 +40,7 @@ function ProductsList() {
       <div className="row">
         {products.map((product, index) => (
           <div key={index} className="col-md-3 mb-4">
-            <a href="#">
+            <Link to="/product">
               <div className="card">
                 <div className="position-relative card-img">
                   <img src="/lion.png" className="card-img-top" alt="..." />
@@ -60,7 +61,7 @@ function ProductsList() {
                   <p className="card-price mb-0">가격 : {product.price}</p>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         ))}
       </div>

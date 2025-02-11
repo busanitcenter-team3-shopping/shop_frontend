@@ -2,79 +2,73 @@ import React from "react";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./famousBrand.css";
+import { Link } from "react-router-dom";
 
 const FamousBrand = () => {
   return (
-    <div className="container">
+    <div className="container famous-container mt-5">
       {" "}
       <h1 className="d-flex justify-content-center fw-bold brand mt-3">
         인기브랜드
       </h1>
       <div className="d-flex justify-content-end">
-        <button className="btn btn-link btn-about">더보기 &gt;</button>
+        <Link to="/brand" className="btn btn-link btn-about">
+          더보기 &gt;
+        </Link>
       </div>
       <div className="d-flex justify-content-between">
         <a href="#">
-          <div className="card">
-            <div className="card-img">
-              <img src="/lion.png" className="card-img-top" alt="..." />
+          <div>
+            <div className="">
+              <img src="/lion.png" className="brand_img" alt="..." />
             </div>
-            <div className="card-body">
-              <p className="card-title">Card title</p>
-              <p className="card-text mb-0">라이언</p>
-              <p className="card-price mb-0">가격 : 25000</p>
-            </div>
+            <p className="brand_name d-flex justify-content-center mt-2">
+              브랜드
+            </p>
           </div>
         </a>
         <a href="#">
-          <div className="card">
-            <div className="card-img">
-              <img src="/lion.png" className="card-img-top" alt="..." />
+          <div>
+            <div className="">
+              <img src="/lion.png" className="brand_img" alt="..." />
             </div>
-            <div className="card-body">
-              <p className="card-title">Card title</p>
-              <p className="card-text mb-0">라이언</p>
-              <p className="card-price mb-0">가격 : 25000</p>
-            </div>
+            <p className="brand_name d-flex justify-content-center mt-2">
+              브랜드
+            </p>
           </div>
-        </a>
+        </a>{" "}
         <a href="#">
-          <div className="card">
-            <div className="card-img">
-              <img src="/lion.png" className="card-img-top" alt="..." />
+          <div>
+            <div className="">
+              <img src="/lion.png" className="brand_img" alt="..." />
             </div>
-            <div className="card-body">
-              <p className="card-title">Card title</p>
-              <p className="card-text mb-0">라이언</p>
-              <p className="card-price mb-0">가격 : 25000</p>
-            </div>
+            <p className="brand_name d-flex justify-content-center mt-2">
+              브랜드
+            </p>
           </div>
-        </a>
+        </a>{" "}
         <a href="#">
-          <div className="card">
-            <div className="card-img">
-              <img src="/lion.png" className="card-img-top" alt="..." />
+          <div>
+            <div className="">
+              <img src="/lion.png" className="brand_img" alt="..." />
             </div>
-            <div className="card-body">
-              <p className="card-title">Card title</p>
-              <p className="card-text mb-0">라이언</p>
-              <p className="card-price mb-0">가격 : 25000</p>
-            </div>
+            <p className="brand_name d-flex justify-content-center mt-2">
+              브랜드
+            </p>
           </div>
-        </a>
+        </a>{" "}
         <a href="#">
-          <div className="card">
-            <div className="card-img">
-              <img src="/lion.png" className="card-img-top" alt="..." />
+          <div>
+            <div className="">
+              <img src="/lion.png" className="brand_img" alt="..." />
             </div>
-            <div className="card-body">
-              <p className="card-title">Card title</p>
-              <p className="card-text mb-0">라이언</p>
-              <p className="card-price mb-0">가격 : 25000</p>
-            </div>
+            <p className="brand_name d-flex justify-content-center mt-2">
+              브랜드
+            </p>
           </div>
         </a>
       </div>
+      <hr className="mt-5" />
     </div>
   );
 };

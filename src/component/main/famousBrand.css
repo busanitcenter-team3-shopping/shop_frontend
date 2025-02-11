@@ -1,3 +1,30 @@
 a {
   text-decoration-line: none;
 }
+
+.famous-container {
+  min-height: 500px;
+  padding-bottom: 30px;
+  overflow: visible !important;
+}
+
+.row {
+  height: auto !important;
+}
+
+.row::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.brand_img {
+  border: 1px solid silver;
+  border-radius: 40px;
+}
+
+.brand_name {
+  border-bottom: none;
+  margin-top: 5px;
+  font-weight: 700;
+}

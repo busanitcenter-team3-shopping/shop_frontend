@@ -56,7 +56,7 @@ const DetailProduct = () => {
             <button
               className="btn btn-outline-secondary"
               variant="outline-secondary"
-              onClick={() => setQuantity(Math.max(0, quantity - 1))}
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
             >
               &lt;
             </button>
