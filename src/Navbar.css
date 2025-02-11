@@ -1,0 +1,50 @@
+a {
+  text-decoration: none;
+}
+
+/* 최상단 바 스타일 */
+.top-bar {
+  padding: 5px 20px;
+  font-size: 12px;
+  height: 30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.top-bar a {
+  color: #333;
+  text-decoration: none;
+  margin-left: 15px;
+}
+
+.top-bar a:hover {
+  text-decoration: underline;
+}
+
+.nav-item > li {
+  display: inline-block;
+  position: relative;
+  top: 10px;
+  right: 100px;
+}
+.nav-item > li > a {
+  display: block;
+  position: relative;
+  padding-bottom: 19px;
+  margin: 50px;
+}
+.nav-item > li > a > span {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  color: #666;
+  line-height: 1.462em;
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+}
+
+.container {
+  height: 70px;
+  padding-bottom: 20px;
+}
