@@ -1,0 +1,83 @@
+/* AdminPage.css */
+.admin-container {
+  width: 80%;
+  max-width: 1920px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.admin-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.admin-search {
+  padding: 8px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.admin-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: black;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
