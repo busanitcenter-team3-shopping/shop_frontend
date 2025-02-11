@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./Navbar.css";
-import cart from "./assets/icon-cart-shopping.svg";
-import user from "./assets/icon-user.svg";
+import cart from "../../assets/icon-cart-shopping.svg";
+import user from "../../assets/icon-user.svg";
+// import user from "/assets/icon-user.svg";
 
 function Navbar() {
   const [showCategories, setShowCategories] = useState(false);
@@ -13,7 +14,6 @@ function Navbar() {
         <a href="#" className="me-3 text-dark">
           로그인
         </a>
-        a
         <a href="#" className="me-3 text-dark">
           회원가입
         </a>
