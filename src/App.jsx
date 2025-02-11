@@ -1,12 +1,14 @@
 import "./App.css";
-<<<<<<< HEAD
-=======
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle";
->>>>>>> origin/dev
+import Mypage from "./component/user/Mypage";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <Mypage />
+    </>
+  );
 }
 
 export default App;
