@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./FamousProduct.css";
+import "bootstrap/dist/js/bootstrap.min.js";
+import "./famousProduct.css";
 
 const FamousProduct = () => {
   const [like, setLike] = useState(Array(8).fill(false));
@@ -10,7 +11,7 @@ const FamousProduct = () => {
   };
   return (
     <div className="container">
-      <h1 className="d-flex justify-content-center fw-bold">인기상품</h1>
+      <h1 className="d-flex justify-content-center fw-bold mt-3">인기상품</h1>
       <div className="d-flex justify-content-end">
         <button className="btn btn-link btn-about">더보기 &gt;</button>
       </div>
