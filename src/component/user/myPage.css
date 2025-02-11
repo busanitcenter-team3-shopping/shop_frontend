@@ -1,0 +1,39 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.mypage_img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 30px;
+}
+
+.profile-img img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-name {
+  margin-left: 0;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 좌우 정렬 */
+  width: 100%; /* 전체 너비 설정 */
+  padding: 10px 20px; /* 여백 추가 */
+}
+
+.profile-info {
+  display: flex;
+  align-items: center; /* 프로필 이미지와 이름을 붙이기 */
+  gap: 10px; /* 간격 조절 */
+}
