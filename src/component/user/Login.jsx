@@ -1,5 +1,6 @@
 import React from "react";
 import "./Login.css";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -27,7 +28,9 @@ const Login = () => {
         </div>
 
         {/* 회원가입 */}
-        <p className="signup-link">회원가입</p>
+        <Link to="/signup">
+          <p className="signup-link">회원가입</p>
+        </Link>
       </div>
     </div>
   );

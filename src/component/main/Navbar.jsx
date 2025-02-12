@@ -92,7 +92,7 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#" className="text-dark">
+            <a href="/cartpage" className="text-dark">
               <img
                 className="mb-2"
                 src={cart}
