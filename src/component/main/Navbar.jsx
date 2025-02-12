@@ -17,7 +17,7 @@ function Navbar() {
         <Link to="signup" className="me-3 text-dark">
           회원가입
         </Link>
-        <a href="#" className="text-dark">
+        <a href="/CustomerCenter" className="text-dark">
           고객센터
         </a>
       </article>
