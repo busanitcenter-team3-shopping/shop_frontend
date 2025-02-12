@@ -11,6 +11,7 @@ import BrandList from "./component/products/BrandList";
 import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 import CartPage from "./component/user/CartPage";
+import CustomerCenter from "./component/main/CustomerCenter";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/product" element={<DetailProduct />} />
         <Route path="/brand" element={<BrandList />} />
         <Route path="/CartPage" element={<CartPage />} />
+        <Route path="/CustomerCenter" element={<CustomerCenter />} />
       </Routes>
     </Router>
   );
