@@ -5,6 +5,7 @@ import "./detailProduct.css";
 const DetailProduct = () => {
   const [mainImg, setMainImg] = useState("/lion.png");
   const [quantity, setQuantity] = useState(1);
+  const [like, setLike] = useState(false);
   return (
     <div className="container mt-5">
       <div className="row">
@@ -27,7 +28,16 @@ const DetailProduct = () => {
         </div>
 
         <div className="d-flex flex-column justify-content-center col ">
-          <h2 className="fw-bold">상품 제목(카메라)</h2>
+          <div className="d-flex align-items-center justify-content-between">
+            <h2 className="fw-bold">상품 제목(카메라)</h2>
+            {/* 찜 추가 */}
+            <img
+              src={like ? "/colorHeart.png" : "/heart.png"}
+              alt="찜"
+              style={{ width: "30px", height: "30px" }}
+              onClick={() => setLike(!like)}
+            />
+          </div>
           <p>
             판매자: <a href="#">Canon</a>
           </p>

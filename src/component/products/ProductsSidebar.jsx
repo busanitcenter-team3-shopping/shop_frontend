@@ -6,7 +6,7 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
   return (
     <aside
       className="bg-light p-4"
-      style={{ width: "350px", minHeight: "100vh" }}
+      style={{ width: "200px", minHeight: "100vh" }}
     >
       <h4 className="fw-bold">카테고리</h4>
       <ul className="list-unstyled">
