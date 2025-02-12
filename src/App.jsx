@@ -14,6 +14,7 @@ import CartPage from "./component/user/CartPage";
 import CustomerCenter from "./component/main/CustomerCenter";
 
 function App() {
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <Router>
       <Navbar />
