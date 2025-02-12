@@ -1,27 +1,39 @@
 import React, { useState } from "react";
 import "./Navbar.css";
 import cart from "../../assets/icon-cart-shopping.svg";
-import user from "../../assets/icon-user.svg";
-import { Link } from "react-router-dom";
+import myuser from "../../assets/icon-user.svg";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
   const [showCategories, setShowCategories] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handellogout = () => {
+    localStorage.removeItem("user");
+    alert("로그아웃 되었습니다.");
+    navigate("/");
+  };
 
   return (
     <div>
-      {/* 최상단 바 */}
       <article className="top-bar bg-secondary bg-opacity-25">
-        <Link to="/login" className="me-3 text-dark">
-          로그인
-        </Link>
-        <Link to="signup" className="me-3 text-dark">
-          회원가입
-        </Link>
+        {user ? (
+          <button onClick={handellogout}>로그아웃</button>
+        ) : (
+          <>
+            <Link to="/login" className="me-3 text-dark">
+              로그인
+            </Link>
+            <Link to="signup" className="me-3 text-dark">
+              회원가입
+            </Link>
+          </>
+        )}
         <a href="#" className="text-dark">
           고객센터
         </a>
       </article>
-      {/* 헤더 */}
       <header className="bg-white pt-5">
         <div className="container text-center">
           <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
@@ -29,7 +41,6 @@ function Navbar() {
           </Link>
         </div>
       </header>
-      {/* 네비게이션 */}
 
       <div
         className="container d-flex justify-content-between align-items-center"
@@ -79,7 +90,7 @@ function Navbar() {
             <Link to="/mypage" className="me-3 text-dark">
               <img
                 className="mb-2"
-                src={user}
+                src={myuser}
                 alt="myPage"
                 height="30"
                 width="30"

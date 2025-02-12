@@ -12,6 +12,7 @@ import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 
 function App() {
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
     <Router>
       <Navbar />
