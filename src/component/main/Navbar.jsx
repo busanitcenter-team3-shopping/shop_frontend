@@ -18,6 +18,7 @@ function Navbar() {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
+
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
         ) : (
@@ -31,6 +32,8 @@ function Navbar() {
           </>
         )}
         <a href="#" className="text-dark">
+
+      
           고객센터
         </a>
       </article>
@@ -67,10 +70,14 @@ function Navbar() {
               }}
             >
               <li className="list-group-item">
-                <Link to="/products">상품</Link>
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  상품
+                </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/brand">브랜드</Link>
+                <Link to="/brand" onClick={() => setShowCategories(false)}>
+                  브랜드
+                </Link>
               </li>
             </ul>
           )}
@@ -99,7 +106,7 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="#" className="text-dark">
+            <a href="/cartpage" className="text-dark">
               <img
                 className="mb-2"
                 src={cart}

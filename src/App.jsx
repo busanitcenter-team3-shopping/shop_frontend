@@ -10,6 +10,8 @@ import ProductsPage from "./component/products/ProductsPage";
 import BrandList from "./component/products/BrandList";
 import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
+import CartPage from "./component/user/CartPage";
+import CustomerCenter from "./component/main/CustomerCenter";
 
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -25,6 +27,8 @@ function App() {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product" element={<DetailProduct />} />
         <Route path="/brand" element={<BrandList />} />
+        <Route path="/CartPage" element={<CartPage />} />
+        <Route path="/CustomerCenter" element={<CustomerCenter />} />
       </Routes>
     </Router>
   );
