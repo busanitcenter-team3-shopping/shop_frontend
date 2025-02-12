@@ -12,23 +12,41 @@ import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 import CartPage from "./component/user/CartPage";
 import CustomerCenter from "./component/main/CustomerCenter";
+import { useEffect, useState } from "react";
+import PrivateRoute from "./component/user/PrivateRoute";
 
 function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(null);
+
   return (
     <Router>
-      <Navbar />
+      <Navbar user={user} setUser={setUser} />
 
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/mypage" element={<Mypage />} />
+        <Route
+          path="/mypage"
+          element={
+            <PrivateRoute user={user}>
+              <Mypage user={user} setUser={setUser} />
+            </PrivateRoute>
+          }
+        />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product" element={<DetailProduct />} />
         <Route path="/brand" element={<BrandList />} />
-        <Route path="/CartPage" element={<CartPage />} />
-        <Route path="/CustomerCenter" element={<CustomerCenter />} />
+        <Route path="/edit-user" element={<Signup />} />
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute user={user}>
+              <CartPage user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/service" element={<CustomerCenter />} />
       </Routes>
     </Router>
   );

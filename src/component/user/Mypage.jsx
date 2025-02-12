@@ -1,8 +1,26 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./myPage.css";
+import { Link, useNavigate } from "react-router-dom";
 
-const Mypage = () => {
+const Mypage = ({ user, setUser }) => {
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
+
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const updatedUsers = existingUsers.filter(
+      (existingUsers) => existingUsers.email !== user.email
+    );
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+    localStorage.removeItem("loggedInUser");
+    setUser(null);
+
+    alert("탈퇴가 완료되었습니다.");
+    navigate("/");
+  };
   return (
     <div className="container mt-5">
       <div className="row align-items-center">
@@ -20,9 +38,9 @@ const Mypage = () => {
             <a href="#">
               <p>찜 리스트</p>
             </a>
-            <a href="#">
+            <Link to="/cart">
               <p>장바구니</p>
-            </a>
+            </Link>
           </div>
           <hr />
           <div className="sidebar-section">
@@ -41,10 +59,10 @@ const Mypage = () => {
             <h5>
               <strong>나의 정보</strong>
             </h5>
-            <a href="#">
+            <Link to="/edit-user" state={{ user }}>
               <p>회원정보 수정</p>
-            </a>
-            <button>회원 탈퇴</button>
+            </Link>
+            <button onClick={handleDelete}>회원 탈퇴</button>
           </div>
         </div>
 
@@ -54,8 +72,8 @@ const Mypage = () => {
               <img src="/basicUser.png" className="profile-img" />
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h3 className="profile-name">이름</h3>
-              <p className="email-text">abc@naver.com</p>
+              <h3 className="profile-name">{user.name}</h3>
+              <p className="email-text">{user.email}</p>
             </div>
           </div>
 

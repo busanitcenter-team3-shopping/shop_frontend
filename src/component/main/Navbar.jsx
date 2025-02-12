@@ -1,16 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import cart from "../../assets/icon-cart-shopping.svg";
 import myuser from "../../assets/icon-user.svg";
 import { Link, useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ user, setUser }) {
   const navigate = useNavigate();
   const [showCategories, setShowCategories] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("loggedInUser");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("JSON 파싱 오류:", error);
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  //   if (loggedInUser) {
+  //     setUser(loggedInUser);
+  //   }
+  // }, []);
 
   const handellogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("loggedInUser");
+    setUser(null);
     alert("로그아웃 되었습니다.");
     navigate("/");
   };
@@ -18,7 +39,6 @@ function Navbar() {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
-
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
         ) : (
@@ -31,11 +51,9 @@ function Navbar() {
             </Link>
           </>
         )}
-        <a href="#" className="text-dark">
-
-      
+        <Link to="/service" className="text-dark">
           고객센터
-        </a>
+        </Link>
       </article>
       <header className="bg-white pt-5">
         <div className="container text-center">
@@ -106,7 +124,7 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <a href="/cartpage" className="text-dark">
+            <Link to="/cart" className="text-dark">
               <img
                 className="mb-2"
                 src={cart}
@@ -115,7 +133,7 @@ function Navbar() {
                 width="30"
               />
               <span>장바구니</span>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
