@@ -56,10 +56,14 @@ function Navbar() {
               }}
             >
               <li className="list-group-item">
-                <Link to="/products">상품</Link>
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  상품
+                </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/brand">브랜드</Link>
+                <Link to="/brand" onClick={() => setShowCategories(false)}>
+                  브랜드
+                </Link>
               </li>
             </ul>
           )}
