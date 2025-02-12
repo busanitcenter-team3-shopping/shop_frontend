@@ -1,23 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Signup.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const location = useLocation();
+  const existingUser = location.state?.user; // 기존 회원 정보
+
+  const [email, setEmail] = useState(existingUser?.email || "");
+  const [password, setPassword] = useState(existingUser?.password || "");
+  const [confirmPassword, setConfirmPassword] = useState(
+    existingUser?.password || ""
+  );
+  const [name, setName] = useState(existingUser?.name || "");
+  const [phone, setPhone] = useState(existingUser?.phone || "");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (existingUser) {
+      setEmail(existingUser.email);
+      setPassword(existingUser.password);
+      setConfirmPassword(existingUser.password);
+      setName(existingUser.name);
+      setPhone(existingUser.phone);
+    }
+  }, [existingUser]);
 
   const handleSignup = (e) => {
     e.preventDefault();
-
     setError("");
 
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    const isEmailTaken = existingUsers.some((user) => user.email === email);
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (existingUser) {
+      //수정 코드인데 좀 손 봐야함
+      const updatedUsers = users.map((user) =>
+        user.email === existingUser.email
+          ? { ...user, password, name, phone }
+          : user
+      );
+
+      console.log(updatedUsers);
+
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({ ...existingUser, password, name, phone })
+      );
+
+      alert("회원정보가 수정되었습니다.");
+      navigate("/");
+      return;
+    }
+
+    // 새 회원 추가
+    const isEmailTaken = users.some((user) => user.email === email);
 
     if (isEmailTaken) {
       setError("이미 존재하는 이메일입니다.");
@@ -29,18 +66,29 @@ const Signup = () => {
       return;
     }
 
-    const newUser = { email, password, name, phone };
-    const updatedUsers = [...existingUsers, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    let currentId = localStorage.getItem("currentId");
+    if (!currentId) {
+      currentId = 1;
+    } else {
+      currentId = parseInt(currentId, 10);
+    }
 
+    const newUser = { user_id: currentId, email, password, name, phone };
+    const updatedUsers = [...users, newUser];
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem("currentId", currentId + 1);
     alert("회원가입이 성공적으로 완료되었습니다!");
+
     navigate("/");
+
+    //console.log(updatedUsers);
   };
 
   return (
     <div className="signup-container">
       <div className="signup-box">
-        <h2>회원가입</h2>
+        <h2>{existingUser ? "회원수정" : "회원가입"}</h2>
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleSignup}>
@@ -100,7 +148,7 @@ const Signup = () => {
           </div>
 
           <button type="submit" className="signup-btn">
-            회원가입
+            {existingUser ? "회원정보 수정" : "회원가입"}
           </button>
         </form>
       </div>

@@ -2,27 +2,30 @@ import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-  const user = existingUsers.find(
-    (user) => user.email === email && user.password === password
-  );
-
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-      navigate("/");
-    } else {
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = existingUsers.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (!user) {
       setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      return;
     }
+    console.log(user);
+
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
+    setUser(user);
+    navigate("/");
   };
 
   return (
