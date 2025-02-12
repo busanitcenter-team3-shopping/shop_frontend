@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import img1 from "../../assets/carousel1.jpg";
 import "./ProductsList.css";
+import Pagination from "./Pagination";
 
 const products = Array(50).fill({
   name: "상품명 (camera)",
@@ -13,6 +14,8 @@ function BrandList() {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // 현재 페이지의 상품 계산
+  const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = products.slice(startIndex, endIndex);
@@ -61,31 +64,12 @@ function BrandList() {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="d-flex justify-content-center mt-4">
-          <nav>
-            <ul className="pagination">
-              <li className="page-item">
-                <button className="page-link">&lt;</button>
-              </li>
-              {[1, 2, 3, 4, 5].map((num) => (
-                <li
-                  key={num}
-                  className={`page-item ${num === currentPage ? "active" : ""}`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(num)}
-                  >
-                    {num}
-                  </button>
-                </li>
-              ))}
-              <li className="page-item">
-                <button className="page-link">&gt;</button>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <Pagination
+          totalItems={products.length}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );
