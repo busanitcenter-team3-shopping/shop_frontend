@@ -14,22 +14,20 @@ import CartPage from "./component/user/CartPage";
 
 function App() {
   return (
-    // <Router>
-    //   <Navbar />
+    <Router>
+      <Navbar />
 
-    //   <Routes>
-    //     <Route path="/" element={<MainPage />} />
-    //     <Route path="/login" element={<Login />} />
-    //     <Route path="/signup" element={<Signup />} />
-    //     <Route path="/mypage" element={<Mypage />} />
-    //     <Route path="/products" element={<ProductsPage />} />
-    //     <Route path="/product" element={<DetailProduct />} />
-    //     <Route path="/brand" element={<BrandList />} />
-    //     <Route path="/CartPage" element={<CartPage />} />
-    //   </Routes>
-    // </Router>
-
-    <CartPage />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/product" element={<DetailProduct />} />
+        <Route path="/brand" element={<BrandList />} />
+        <Route path="/CartPage" element={<CartPage />} />
+      </Routes>
+    </Router>
   );
 }
 
