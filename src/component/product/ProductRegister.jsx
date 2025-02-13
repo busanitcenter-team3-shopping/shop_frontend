@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import "./productRegister.css";
+import { useLocation } from "react-router-dom";
 
 const ProductRegister = () => {
+  const location = useLocation();
+  const user_id = location.state?.user_id;
+
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [images, setImages] = useState([]);
   return (
     <div className="container mt-5">
       <h3 className="text-center mb-4">상품 등록</h3>
@@ -15,6 +24,7 @@ const ProductRegister = () => {
                 type="text"
                 placeholder="상품 이름을 입력해주세요"
                 className="form-control"
+                value={title}
                 id="title"
                 name="title"
                 required
@@ -29,20 +39,8 @@ const ProductRegister = () => {
                 placeholder="최소금액이 1000원 입니다."
                 className="form-control"
                 id="price"
+                value={price}
                 name="price"
-                required
-              />
-            </div>
-
-            <div className="form-group mt-3">
-              <label htmlFor="stock">상품 재고</label>
-              <input
-                type="number"
-                placeholder="최소 1개 이상 입력해주세요."
-                min="1"
-                className="form-control"
-                id="stock"
-                name="stock"
                 required
               />
             </div>
@@ -54,38 +52,36 @@ const ProductRegister = () => {
                 placeholder="상품 내용을 입력해주세요"
                 className="form-control"
                 rows="4"
+                value={description}
                 name="description"
                 required
               />
             </div>
 
             <div className="form-group mt-3">
-              <label htmlFor="image">상품 이미지</label>
-              <input
-                id="image"
-                type="file"
-                accept="image/*" //이미지만 업로드 되도록 설정
-                className="form-control-file"
+              <label htmlFor="category">카테고리</label>
+              <select
+                name="category"
+                id="category"
+                value={category}
+                className="select-box"
                 required
-              />
+              >
+                <option value="가전제품">가전제품</option>
+                <option value="음식">음식</option>
+                <option value="여자친구">여자친구</option>
+                <option value="기타">기타</option>
+              </select>
             </div>
+
             <div className="form-group mt-3">
-              <label htmlFor="image">상품 이미지</label>
+              <label htmlFor="image">상품 이미지 (최대 3개)</label>
               <input
                 id="image"
                 type="file"
-                accept="image/*" //이미지만 업로드 되도록 설정
+                accept="image/*"
                 className="form-control-file"
-                required
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label htmlFor="image">상품 이미지</label>
-              <input
-                id="image"
-                type="file"
-                accept="image/*" //이미지만 업로드 되도록 설정
-                className="form-control-file"
+                multiple
                 required
               />
             </div>
