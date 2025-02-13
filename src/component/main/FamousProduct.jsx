@@ -5,11 +5,6 @@ import "./famousProduct.css";
 import { Link } from "react-router-dom";
 
 const FamousProduct = () => {
-  const [like, setLike] = useState(Array(8).fill(false));
-
-  const toggleHeart = (index) => {
-    setLike((prev) => prev.map((item, i) => (i === index ? !item : item)));
-  };
   return (
     <div className="container">
       <h1 className="d-flex justify-content-center fw-bold mt-3">인기상품</h1>
@@ -26,16 +21,6 @@ const FamousProduct = () => {
               <div className="card">
                 <div className="position-relative card-img">
                   <img src="/lion.png" className="card-img-top" alt="..." />
-                  <img
-                    src={like[index] ? "/colorHeart.png" : "/heart.png"}
-                    style={{ width: "30px", height: "30px" }}
-                    className="position-absolute bottom-0 end-0 p-1 btn heart"
-                    alt="heart"
-                    onClick={(e) => {
-                      e.preventDefault(); // a 태그의 기본 동작 방지
-                      toggleHeart(index);
-                    }}
-                  />
                 </div>
                 <div className="card-body">
                   <p className="card-title">Card title</p>
