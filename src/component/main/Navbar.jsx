@@ -93,7 +93,7 @@ function Navbar({ user, setUser }) {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/brand" onClick={() => setShowCategories(false)}>
+                <Link to="/brand-list" onClick={() => setShowCategories(false)}>
                   브랜드
                 </Link>
               </li>

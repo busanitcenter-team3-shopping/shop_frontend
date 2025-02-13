@@ -12,12 +12,12 @@ const FamousBrand = () => {
         인기브랜드
       </h1>
       <div className="d-flex justify-content-end">
-        <Link to="/brand" className="btn btn-link btn-about">
+        <Link to="/brand-list" className="btn btn-link btn-about">
           더보기 &gt;
         </Link>
       </div>
       <div className="d-flex justify-content-between">
-        <a href="#">
+        <Link to="/brand">
           <div>
             <div className="">
               <img src="/lion.png" className="brand_img" alt="..." />
@@ -26,8 +26,8 @@ const FamousBrand = () => {
               브랜드
             </p>
           </div>
-        </a>
-        <a href="#">
+        </Link>
+        <Link to="/brand">
           <div>
             <div className="">
               <img src="/lion.png" className="brand_img" alt="..." />
@@ -36,8 +36,8 @@ const FamousBrand = () => {
               브랜드
             </p>
           </div>
-        </a>{" "}
-        <a href="#">
+        </Link>
+        <Link to="/brand">
           <div>
             <div className="">
               <img src="/lion.png" className="brand_img" alt="..." />
@@ -46,8 +46,8 @@ const FamousBrand = () => {
               브랜드
             </p>
           </div>
-        </a>{" "}
-        <a href="#">
+        </Link>
+        <Link to="/brand">
           <div>
             <div className="">
               <img src="/lion.png" className="brand_img" alt="..." />
@@ -56,8 +56,8 @@ const FamousBrand = () => {
               브랜드
             </p>
           </div>
-        </a>{" "}
-        <a href="#">
+        </Link>
+        <Link to="/brand">
           <div>
             <div className="">
               <img src="/lion.png" className="brand_img" alt="..." />
@@ -66,7 +66,7 @@ const FamousBrand = () => {
               브랜드
             </p>
           </div>
-        </a>
+        </Link>
       </div>
       <hr className="mt-5" />
     </div>
