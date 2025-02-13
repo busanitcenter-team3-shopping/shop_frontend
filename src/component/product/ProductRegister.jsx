@@ -11,6 +11,19 @@ const ProductRegister = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
+  const maxImg = 3;
+
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+
+    if (images >= maxImg) {
+      alert("3개의 이미지까지 업로드 가능합니다.");
+      return;
+    }
+
+    setImages((prevImages) => [...prevImages, ...selectedFiles]);
+  };
+
   return (
     <div className="container mt-5">
       <h3 className="text-center mb-4">상품 등록</h3>
@@ -25,6 +38,7 @@ const ProductRegister = () => {
                 placeholder="상품 이름을 입력해주세요"
                 className="form-control"
                 value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 id="title"
                 name="title"
                 required
@@ -40,6 +54,7 @@ const ProductRegister = () => {
                 className="form-control"
                 id="price"
                 value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 name="price"
                 required
               />
@@ -53,6 +68,7 @@ const ProductRegister = () => {
                 className="form-control"
                 rows="4"
                 value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 name="description"
                 required
               />
@@ -64,6 +80,7 @@ const ProductRegister = () => {
                 name="category"
                 id="category"
                 value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="select-box"
                 required
               >
@@ -79,6 +96,8 @@ const ProductRegister = () => {
               <input
                 id="image"
                 type="file"
+                value={images}
+                onChange={handleImageChange}
                 accept="image/*"
                 className="form-control-file"
                 multiple
