@@ -3,7 +3,7 @@ import ProductsSidebar from "./ProductsSidebar";
 import ProductsList from "./ProductsList";
 
 const ProductsPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("IT");
+  const [selectedCategory, setSelectedCategory] = useState("");
   return (
     <div className="container d-flex">
       {/* 사이드바 (카테고리 선택) */}
@@ -13,7 +13,7 @@ const ProductsPage = () => {
       />
 
       {/* 상품 리스트 */}
-      <ProductsList />
+      <ProductsList selectedCategory={selectedCategory} />
     </div>
   );
 };

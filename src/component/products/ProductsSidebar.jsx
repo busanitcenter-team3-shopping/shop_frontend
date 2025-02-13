@@ -1,6 +1,12 @@
 import React from "react";
 
-const categories = ["IT", "카메라", "렌즈", "액세서리"];
+const categories = [
+  { id: 1, name: "전체", icon: "로 고" },
+  { id: 2, name: "IT", icon: "⚙️" },
+  { id: 3, name: "의류", icon: "👕" },
+  { id: 4, name: "문구", icon: "📜" },
+  { id: 5, name: "악기", icon: "🎻" },
+];
 
 function ProductsSidebar({ selectedCategory, onSelectCategory }) {
   return (
@@ -10,16 +16,16 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
     >
       <h4 className="fw-bold">카테고리</h4>
       <ul className="list-unstyled">
-        {categories.map((cat) => (
+        {categories.map((category) => (
           <li
-            key={cat}
+            key={category.id}
             className={`py-2 ${
-              selectedCategory === cat ? "fw-bold text-primary" : ""
+              selectedCategory === category.id ? "fw-bold text-primary" : ""
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => onSelectCategory(cat)}
+            onClick={() => onSelectCategory(category.id)}
           >
-            {cat}
+            {category.name}
           </li>
         ))}
       </ul>

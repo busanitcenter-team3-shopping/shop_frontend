@@ -6,24 +6,34 @@ import Pagination from "./Pagination";
 
 const products = Array(50).fill({
   name: "상품명 (camera)",
-  brand: "브랜드",
   price: 25000,
+  category: 3,
+  status: "판매중",
   image: { img1 }, // 더미 이미지
 });
 
-function ProductsList() {
-  const [like, setLike] = useState(Array(50).fill(false));
-  const toggleHeart = (index) => {
-    setLike((prev) => prev.map((item, i) => (i === index ? !item : item)));
-  };
+console.log(products);
+
+function ProductsList({ selectedCategory }) {
+  let filteredProducts = []; // const → let 변경
+
+  if (!selectedCategory || selectedCategory === 1) {
+    // 카테고리가 없거나 1이면 전체 상품 출력
+    filteredProducts = products;
+  } else {
+    filteredProducts = products.filter(
+      (product) => product.category === selectedCategory
+    );
+  }
+
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
 
   // 현재 페이지에 맞는 상품 필터링
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   return (
     <div className="container">
@@ -55,23 +65,9 @@ function ProductsList() {
                 <div className="card">
                   <div className="position-relative card-img">
                     <img src="/lion.png" className="card-img-top" alt="..." />
-                    <img
-                      src={
-                        like[startIndex + index]
-                          ? "/colorHeart.png"
-                          : "/heart.png"
-                      }
-                      style={{ width: "30px", height: "30px" }}
-                      className="position-absolute bottom-0 end-0 p-1 heart"
-                      alt="heart"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleHeart(startIndex + index); // 전체 제품 배열의 인덱스 사용
-                      }}
-                    />
                   </div>
                   <div className="card-body">
-                    <p className="card-title">{product.brand}</p>
+                    <p className="card-title">{product.status}</p>
                     <p className="card-text mb-0">{product.name}</p>
                     <p className="card-price mb-0">가격 : {product.price}</p>
                   </div>
@@ -82,7 +78,7 @@ function ProductsList() {
         </div>
         {/* 페이지네이션 적용 */}
         <Pagination
-          totalItems={products.length}
+          totalItems={filteredProducts.length}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
