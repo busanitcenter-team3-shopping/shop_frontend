@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import img1 from "../../assets/carousel1.jpg";
-import { Link } from "react-router-dom";
 
 const products = Array(50).fill({
   name: "상품명 (camera)",
@@ -10,7 +9,7 @@ const products = Array(50).fill({
   image: img1, // 이미지 경로 수정
 });
 
-const BrandPage = () => {
+const BrandPage = ({ user }) => {
   const [like, setLike] = useState(Array(50).fill(false));
   const toggleHeart = (index) => {
     setLike((prev) => prev.map((item, i) => (i === index ? !item : item)));
@@ -19,10 +18,15 @@ const BrandPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // 현재 페이지의 상품 계산
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  // const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = products.slice(startIndex, endIndex);
+
+  useEffect(() => {}, [user]);
+
+  console.log(products);
+  console.log(user);
   return (
     <div className="container">
       <div md={9} className="main-content col mt-3">
@@ -31,7 +35,7 @@ const BrandPage = () => {
             <img src="/basicUser.png" className="profile-img" />
           </div>
           <div className="d-flex flex-column align-items-center">
-            <h2 className="profile-name">브 랜 드</h2>
+            <h2 className="profile-name">{user ? user.name : "비회원"}</h2>
           </div>
         </div>
 
