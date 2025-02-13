@@ -63,33 +63,12 @@ const DetailProduct = () => {
           </p>
           <h3 className="fw-bold">180,000원</h3>
 
-          <div className="d-flex align-items-center my-3">
-            <button
-              className="btn btn-outline-secondary"
-              variant="outline-secondary"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            >
-              &lt;
-            </button>
-            <span className="mx-2">{quantity}</span>
-            <button
-              className="btn btn-outline-secondary"
-              variant="outline-secondary"
-              onClick={() => setQuantity(quantity + 1)}
-            >
-              &gt;
-            </button>
-          </div>
-
           <div className="d-flex gap-3">
             <button
               variant="outline-primary"
-              className="btn btn-outline-warning w-10"
+              className="btn btn-outline-warning w-10 mt-3"
             >
-              장바구니 담기
-            </button>
-            <button variant="primary" className="btn btn-outline-primary w-10">
-              바로 구매
+              메시지 보내기
             </button>
           </div>
         </div>

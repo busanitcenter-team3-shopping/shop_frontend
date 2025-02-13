@@ -21,8 +21,16 @@ const Mypage = ({ user, setUser }) => {
     alert("탈퇴가 완료되었습니다.");
     navigate("/");
   };
+
+  const handleAddProduct = () => {
+    navigate("/add-product", { state: { user_id: user.user_id } });
+  };
+
   return (
     <div className="container mt-5">
+      <button className="btn btn-outline-danger" onClick={handleAddProduct}>
+        추가
+      </button>
       <div className="row align-items-center">
         <div
           md={3}

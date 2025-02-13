@@ -15,6 +15,7 @@ import CustomerCenter from "./component/main/CustomerCenter";
 import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
 import BrandPage from "./component/products/BrandPage";
+import ProductRegister from "./component/product/ProductRegister";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,6 +28,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/add-product" element={<ProductRegister />} />
         <Route
           path="/mypage"
           element={
@@ -48,7 +50,7 @@ function App() {
           }
         />
         <Route path="/service" element={<CustomerCenter />} />
-        <Route path="/brand" element={<BrandPage />} />
+        <Route path="/brand" element={<BrandPage user={user} />} />
       </Routes>
     </Router>
   );
