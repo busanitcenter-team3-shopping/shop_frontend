@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Signup.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Signup = ({ setUser }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const existingUser = location.state?.user; // 기존 회원 정보
@@ -16,16 +16,6 @@ const Signup = () => {
   const [phone, setPhone] = useState(existingUser?.phone || "");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (existingUser) {
-      setEmail(existingUser.email);
-      setPassword(existingUser.password);
-      setConfirmPassword(existingUser.password);
-      setName(existingUser.name);
-      setPhone(existingUser.phone);
-    }
-  }, [existingUser]);
-
   const handleSignup = (e) => {
     e.preventDefault();
     setError("");
@@ -33,20 +23,17 @@ const Signup = () => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
     if (existingUser) {
-      //수정 코드인데 좀 손 봐야함
       const updatedUsers = users.map((user) =>
         user.email === existingUser.email
           ? { ...user, password, name, phone }
           : user
       );
 
-      console.log(updatedUsers);
-
       localStorage.setItem("users", JSON.stringify(updatedUsers));
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify({ ...existingUser, password, name, phone })
-      );
+      const updateUser = { ...existingUser, password, name, phone };
+      localStorage.setItem("loggedInUser", JSON.stringify(updateUser));
+
+      setUser(updateUser);
 
       alert("회원정보가 수정되었습니다.");
       navigate("/");
@@ -77,12 +64,13 @@ const Signup = () => {
     const updatedUsers = [...users, newUser];
 
     localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem("loggedInUser", JSON.stringify(newUser));
     localStorage.setItem("currentId", currentId + 1);
+
+    setUser(newUser);
     alert("회원가입이 성공적으로 완료되었습니다!");
 
     navigate("/");
-
-    //console.log(updatedUsers);
   };
 
   return (
@@ -92,16 +80,20 @@ const Signup = () => {
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleSignup}>
-          <div className="input-group">
-            <label>이메일</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일 입력"
-              required
-            />
-          </div>
+          {existingUser ? (
+            <div></div>
+          ) : (
+            <div className="input-group">
+              <label>이메일</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="이메일 입력"
+                required
+              />
+            </div>
+          )}
 
           <div className="input-group">
             <label>비밀번호</label>

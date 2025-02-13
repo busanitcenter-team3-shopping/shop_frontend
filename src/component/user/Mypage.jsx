@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./myPage.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,8 +6,19 @@ import { Link, useNavigate } from "react-router-dom";
 const Mypage = ({ user, setUser }) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const updatedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (updatedUser) {
+      setUser(updatedUser);
+    }
+  }, []);
+
   const handleDelete = () => {
     const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
+
+    if (!isConfirmed) {
+      return;
+    }
 
     const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
     const updatedUsers = existingUsers.filter(
@@ -80,8 +91,8 @@ const Mypage = ({ user, setUser }) => {
               <img src="/basicUser.png" className="profile-img" />
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h3 className="profile-name">{user.name}</h3>
-              <p className="email-text">{user.email}</p>
+              <h3 className="profile-name">{user?.name}</h3>
+              <p className="email-text">{user?.email}</p>
             </div>
           </div>
 
