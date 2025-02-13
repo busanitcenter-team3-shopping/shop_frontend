@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./detailProduct.css";
+import { Link } from "react-router-dom";
 
 const DetailProduct = () => {
   const [mainImg, setMainImg] = useState("/lion.png");
@@ -24,7 +25,7 @@ const DetailProduct = () => {
               <img src="/icecream.jpg" className="mb-2 sub-img" />
             </button>
           </div>
-          <img className="mainImg" src={mainImg} fluid />
+          <img className="mainImg" src={mainImg} />
         </div>
 
         <div className="d-flex flex-column justify-content-center col ">
@@ -39,7 +40,7 @@ const DetailProduct = () => {
             />
           </div>
           <p>
-            판매자: <a href="#">Canon</a>
+            판매자: <Link to="/brand">Canon</Link>
           </p>
           <p className="over-box">
             만연체는 문체의 이름에 걸맞게 서술의 호흡이 긴 문체로서, 상황을

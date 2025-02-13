@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import img1 from "../../assets/carousel1.jpg";
 import "./ProductsList.css";
 import Pagination from "./Pagination";
+import { Link } from "react-router-dom";
 
 const products = Array(50).fill({
   name: "상품명 (camera)",
@@ -50,7 +51,7 @@ function BrandList() {
               key={index}
               className="col-md-3 col-sm-4 col-6 mb-4 text-center"
             >
-              <a href="#">
+              <Link to="/brand">
                 <img
                   src={product.image}
                   className="img-fluid rounded border border-dark"
@@ -58,7 +59,7 @@ function BrandList() {
                   alt="상품 이미지"
                 />
                 <h6 className="fw-bold">{product.brand}</h6>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
