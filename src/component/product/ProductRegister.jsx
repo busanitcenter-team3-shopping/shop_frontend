@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./productRegister.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const ProductRegister = () => {
+const ProductRegister = ({ addProduct }) => {
   const location = useLocation();
   const user_id = location.state?.user_id;
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -16,12 +17,41 @@ const ProductRegister = () => {
   const handleImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
 
-    if (images >= maxImg) {
+    if (images.length + selectedFiles.length > maxImg) {
       alert("3개의 이미지까지 업로드 가능합니다.");
       return;
     }
 
     setImages((prevImages) => [...prevImages, ...selectedFiles]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // 상품 추가
+    const newProduct = {
+      user_id,
+      title,
+      price,
+      description,
+      category,
+      status: "판매중",
+      images: images.map((image) => URL.createObjectURL(image)),
+    };
+
+    // 원래 있던 상품
+    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
+
+    // 상품 추가
+    const updateProducts = [...existingProducts, newProduct];
+
+    // 로컬에 일단 저장
+    localStorage.setItem("products", JSON.stringify(updateProducts));
+
+    alert("상품 등록이 완료되었습니다.");
+
+    addProduct(newProduct);
+    navigate("/");
+    console.log(newProduct);
   };
 
   return (
@@ -30,7 +60,7 @@ const ProductRegister = () => {
 
       <div className="d-flex justify-content-center">
         <div className="product-card shadow-sm">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="title">상품 제목</label>
               <input
@@ -84,10 +114,11 @@ const ProductRegister = () => {
                 className="select-box"
                 required
               >
-                <option value="가전제품">가전제품</option>
-                <option value="음식">음식</option>
-                <option value="여자친구">여자친구</option>
-                <option value="기타">기타</option>
+                <option value="">카테고리를 선택하세요</option>
+                <option value="IT">IT</option>
+                <option value="의류">의류</option>
+                <option value="문구">문구</option>
+                <option value="악기">악기</option>
               </select>
             </div>
 
@@ -96,7 +127,6 @@ const ProductRegister = () => {
               <input
                 id="image"
                 type="file"
-                value={images}
                 onChange={handleImageChange}
                 accept="image/*"
                 className="form-control-file"

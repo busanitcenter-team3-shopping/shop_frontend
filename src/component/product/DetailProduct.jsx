@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 const DetailProduct = () => {
   const [mainImg, setMainImg] = useState("/lion.png");
-  const [quantity, setQuantity] = useState(1);
   const [like, setLike] = useState(false);
   return (
     <div className="container mt-5">

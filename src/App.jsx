@@ -17,18 +17,41 @@ import PrivateRoute from "./component/user/PrivateRoute";
 import BrandPage from "./component/products/BrandPage";
 import ProductRegister from "./component/product/ProductRegister";
 
+// 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
+// useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
+
+// 2. 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 function App() {
   const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
+
+  // 로컬에 있는 상품들을 전역으로 쓰려고
+  useEffect(() => {
+    const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+    setProducts(storedProducts);
+  }, []);
+
+  const addProduct = (newProduct) => {
+    const updatedProducts = [...products, newProduct];
+    setProducts(updatedProducts);
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+  };
 
   return (
     <Router>
       <Navbar user={user} setUser={setUser} />
 
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route
+          path="/"
+          element={<MainPage user={user} products={products} />}
+        />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/add-product" element={<ProductRegister />} />
+        <Route
+          path="/add-product"
+          element={<ProductRegister addProduct={addProduct} />}
+        />
         <Route
           path="/mypage"
           element={
@@ -39,7 +62,7 @@ function App() {
         />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product" element={<DetailProduct />} />
-        <Route path="/brand-list" element={<BrandList />} />
+        <Route path="/brand-list" element={<BrandList products={products} />} />
         <Route path="/edit-user" element={<Signup setUser={setUser} />} />
         <Route
           path="/cart"

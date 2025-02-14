@@ -4,7 +4,7 @@ import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 
-const products = Array(50).fill({
+const defaultProducts = Array(50).fill({
   name: "상품명 (camera)",
   price: 25000,
   category: 3,
@@ -12,16 +12,16 @@ const products = Array(50).fill({
   image: { img1 }, // 더미 이미지
 });
 
-console.log(products);
+console.log(defaultProducts);
 
 function ProductsList({ selectedCategory }) {
-  let filteredProducts = []; // const → let 변경
+  let filteredProducts = [];
 
   if (!selectedCategory || selectedCategory === 1) {
     // 카테고리가 없거나 1이면 전체 상품 출력
-    filteredProducts = products;
+    filteredProducts = defaultProducts;
   } else {
-    filteredProducts = products.filter(
+    filteredProducts = defaultProducts.filter(
       (product) => product.category === selectedCategory
     );
   }
