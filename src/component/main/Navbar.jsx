@@ -22,13 +22,6 @@ function Navbar({ user, setUser }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  //   if (loggedInUser) {
-  //     setUser(loggedInUser);
-  //   }
-  // }, []);
-
   const handellogout = () => {
     localStorage.removeItem("loggedInUser");
     setUser(null);
