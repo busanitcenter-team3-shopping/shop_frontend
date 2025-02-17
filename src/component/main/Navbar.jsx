@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css";
-import cart from "../../assets/icon-cart-shopping.svg";
+import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
+import heart from "../../assets/heart_1.svg";
 import { Link, useNavigate } from "react-router-dom";
 
 function Navbar({ user, setUser }) {
@@ -117,15 +118,27 @@ function Navbar({ user, setUser }) {
             </Link>
           </li>
           <li>
-            <Link to="/cart" className="text-dark">
+            <Link to="/heart" className="text-dark">
               <img
                 className="mb-2"
-                src={cart}
-                alt="cart"
+                src={heart}
+                alt="heart"
                 height="30"
                 width="30"
               />
-              <span>장바구니</span>
+              <span>찜목록</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/note" className="text-dark">
+              <img
+                className="mb-2"
+                src={note}
+                alt="note"
+                height="30"
+                width="30"
+              />
+              <span>메세지</span>
             </Link>
           </li>
         </ul>
