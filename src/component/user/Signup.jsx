@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Signup.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -67,6 +67,8 @@ const Signup = ({ setUser }) => {
     localStorage.setItem("loggedInUser", JSON.stringify(newUser));
     localStorage.setItem("currentId", currentId + 1);
 
+    console.log(users);
+    console.log(newUser);
     setUser(newUser);
     alert("회원가입이 성공적으로 완료되었습니다!");
 
@@ -102,20 +104,22 @@ const Signup = ({ setUser }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호 입력"
-              required
+              required={!existingUser} // 수정할땐 바꿔도 되고 안바꿔도 되고의 선택택
             />
           </div>
 
-          <div className="input-group">
-            <label>비밀번호 확인</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="비밀번호 확인"
-              required
-            />
-          </div>
+          {!existingUser && ( // 회원 수정시 비밀번호 확인은 필요가 없음
+            <div className="input-group">
+              <label>비밀번호 확인</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="비밀번호 확인"
+                required
+              />
+            </div>
+          )}
 
           <div className="input-group">
             <label>이름</label>

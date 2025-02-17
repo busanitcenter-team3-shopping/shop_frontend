@@ -4,14 +4,14 @@ import "./ProductsList.css";
 import Pagination from "./Pagination";
 import { Link } from "react-router-dom";
 
-const products = Array(50).fill({
-  name: "상품명 (camera)",
-  brand: "브랜드",
-  price: 25000,
-  image: img1, // 이미지 경로 수정
-});
+// const products = Array(50).fill({
+//   name: "상품명 (camera)",
+//   brand: "브랜드",
+//   price: 25000,
+//   image: img1, // 이미지 경로 수정
+// });
 
-function BrandList() {
+function BrandList({ products }) {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,6 +44,10 @@ function BrandList() {
           </select>
         </div>
 
+        {products.length === 0 && (
+          <p className="text-center mt-4">등록된 상품이 없습니다.</p>
+        )}
+
         {/* 상품 그리드 */}
         <div className="row">
           {currentProducts.map((product, index) => (
@@ -51,9 +55,9 @@ function BrandList() {
               key={index}
               className="col-md-3 col-sm-4 col-6 mb-4 text-center"
             >
-              <Link to="/brand">
+              <Link to={`/product/${product.id}`}>
                 <img
-                  src={product.image}
+                  src={product.image?.[0]}
                   className="img-fluid rounded border border-dark"
                   style={{ maxWidth: "200px", marginBottom: "10px" }}
                   alt="상품 이미지"

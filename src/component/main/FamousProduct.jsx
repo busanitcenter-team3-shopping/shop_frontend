@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "./famousProduct.css";
 import { Link } from "react-router-dom";
 
-const FamousProduct = () => {
+const FamousProduct = ({ products }) => {
   return (
     <div className="container">
       <h1 className="d-flex justify-content-center fw-bold mt-3">인기상품</h1>
