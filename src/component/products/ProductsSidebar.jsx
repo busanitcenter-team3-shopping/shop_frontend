@@ -15,15 +15,17 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
       style={{ width: "200px", minHeight: "100vh" }}
     >
       <h4 className="fw-bold">카테고리</h4>
-      <ul className="list-unstyled">
+      <ul className="list-unstyled sidebar-list">
         {categories.map((category) => (
           <li
             key={category.id}
             className={`py-2 ${
-              selectedCategory === category.id ? "fw-bold text-primary" : ""
+              selectedCategory === category.name
+                ? "fw-bold text-primary active"
+                : ""
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => onSelectCategory(category.id)}
+            onClick={() => onSelectCategory(category.name)}
           >
             {category.name}
           </li>

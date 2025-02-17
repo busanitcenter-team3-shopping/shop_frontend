@@ -21,6 +21,8 @@ import ProductRegister from "./component/product/ProductRegister";
 // useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
 
 // 2. 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
+
+// 상품을 추가하면 출력이 되도록 수정은 했는데 이미지의 크기나 수정을 봐야함(ProductsList)
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -30,6 +32,9 @@ function App() {
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     setProducts(storedProducts);
   }, []);
+
+  // 로컬 데이터 지우기
+  // localStorage.clear()
 
   const addProduct = (newProduct) => {
     const updatedProducts = [...products, newProduct];
@@ -47,7 +52,7 @@ function App() {
           element={<MainPage user={user} products={products} />}
         />
         <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route
           path="/add-product"
           element={<ProductRegister addProduct={addProduct} />}
@@ -60,9 +65,17 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/product" element={<DetailProduct />} />
-        <Route path="/brand-list" element={<BrandList products={products} />} />
+        <Route
+          path="/products"
+          element={<ProductsPage products={products} />}
+        />{" "}
+        {/**상품 전체 항목 */}
+        <Route
+          path="/product/:product_id"
+          element={<DetailProduct user={user} products={products} />}
+        />
+        <Route path="/brand-list" element={<BrandList products={products} />} />{" "}
+        {/** 여기는 무슨 페이지로 할건지?????*/}
         <Route path="/edit-user" element={<Signup setUser={setUser} />} />
         <Route
           path="/cart"

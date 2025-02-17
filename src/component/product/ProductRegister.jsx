@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const ProductRegister = ({ addProduct }) => {
   const location = useLocation();
-  const user_id = location.state?.user_id;
+  const user_id = location.state?.user_id; // 유저의 id 값을 받아와 어떠한 유저가 상품을 등록했는지 저장하기 위해
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -14,7 +14,18 @@ const ProductRegister = ({ addProduct }) => {
   const [images, setImages] = useState([]);
   const maxImg = 3;
 
-  const handleImageChange = (e) => {
+  // 새로 고침을 하고 나면 URL은 사라지므로 등록을 하고 새로고침을 하면 이미지가 꺠진 상태로 보인다.
+  // 방지 차원으로 일단 Base64로 저장 상태
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleImageChange = async (e) => {
     const selectedFiles = Array.from(e.target.files);
 
     if (images.length + selectedFiles.length > maxImg) {
@@ -22,27 +33,36 @@ const ProductRegister = ({ addProduct }) => {
       return;
     }
 
-    setImages((prevImages) => [...prevImages, ...selectedFiles]);
+    const base64Images = await Promise.all(
+      selectedFiles.map((file) => convertToBase64(file))
+    );
+
+    setImages((prevImages) => [...base64Images, ...prevImages]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 원래 있던 상품
+    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
+    const newProductId =
+      existingProducts.length > 0
+        ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
+        : 1;
     // 상품 추가
     const newProduct = {
+      product_id: newProductId, // 상품 고유값
       user_id,
       title,
       price,
       description,
       category,
       status: "판매중",
-      images: images.map((image) => URL.createObjectURL(image)),
+      images,
     };
 
-    // 원래 있던 상품
-    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
-
     // 상품 추가
-    const updateProducts = [...existingProducts, newProduct];
+    const updateProducts = [newProduct, ...existingProducts];
 
     // 로컬에 일단 저장
     localStorage.setItem("products", JSON.stringify(updateProducts));
@@ -50,8 +70,8 @@ const ProductRegister = ({ addProduct }) => {
     alert("상품 등록이 완료되었습니다.");
 
     addProduct(newProduct);
+    console.log(updateProducts);
     navigate("/");
-    console.log(newProduct);
   };
 
   return (
@@ -84,7 +104,7 @@ const ProductRegister = ({ addProduct }) => {
                 className="form-control"
                 id="price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => setPrice(Number(e.target.value))}
                 name="price"
                 required
               />
@@ -139,7 +159,13 @@ const ProductRegister = ({ addProduct }) => {
               <button className="btn btn-outline-success" type="submit">
                 등록하기
               </button>
-              <button className="btn btn-outline-danger" type="reset">
+              <button
+                className="btn btn-outline-danger"
+                type="button"
+                onClick={() => {
+                  navigate("/mypage");
+                }}
+              >
                 취소하기
               </button>
             </div>

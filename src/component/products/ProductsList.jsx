@@ -1,29 +1,18 @@
 import React, { useState } from "react";
-import img1 from "../../assets/carousel1.jpg";
 import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 
-const defaultProducts = Array(50).fill({
-  name: "상품명 (camera)",
-  price: 25000,
-  category: 3,
-  status: "판매중",
-  image: { img1 }, // 더미 이미지
-});
-
-console.log(defaultProducts);
-
-function ProductsList({ selectedCategory }) {
+function ProductsList({ selectedCategory, products }) {
   let filteredProducts = [];
 
-  if (!selectedCategory || selectedCategory === 1) {
-    // 카테고리가 없거나 1이면 전체 상품 출력
-    filteredProducts = defaultProducts;
+  if (!selectedCategory || selectedCategory === "전체") {
+    // 카테고리가 없거나 전체이면 전체 상품 출력
+    filteredProducts = [...products].reverse();
   } else {
-    filteredProducts = defaultProducts.filter(
-      (product) => product.category === selectedCategory
-    );
+    filteredProducts = [...products]
+      .filter((product) => product.category === selectedCategory)
+      .reverse();
   }
 
   const [itemsPerPage, setItemsPerPage] = useState(12);
@@ -61,14 +50,17 @@ function ProductsList({ selectedCategory }) {
         <div className="row">
           {currentProducts.map((product, index) => (
             <div key={index} className="col-md-3 mb-4">
-              <Link to="/product">
+              <Link to={`/product/${product.product_id}`}>
                 <div className="card">
                   <div className="position-relative card-img">
-                    <img src="/lion.png" className="card-img-top" alt="..." />
+                    <img
+                      src={product.images?.[0]}
+                      className="card-img-top"
+                      alt="..."
+                    />
                   </div>
                   <div className="card-body">
-                    <p className="card-title">{product.status}</p>
-                    <p className="card-text mb-0">{product.name}</p>
+                    <p className="card-title">{product.title}</p>
                     <p className="card-price mb-0">가격 : {product.price}</p>
                   </div>
                 </div>

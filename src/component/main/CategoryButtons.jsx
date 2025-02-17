@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./CategoryButtons.css";
 
 const categories = [
@@ -11,14 +11,22 @@ const categories = [
 ];
 
 function CategoryButtons() {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryName) => {
+    navigate("/products", { state: { selectedCategory: categoryName } });
+  };
   return (
     <div className="category-container">
       {categories.map((category) => (
         <div key={category.id} className="category-wrapper">
-          <Link to={`/products?${category.id}`} className="category-button">
+          <button
+            className="category-button"
+            onClick={() => handleCategoryClick(category.name)}
+          >
             <div className="icon">{category.icon}</div>
             <div className="category-name">{category.name}</div>
-          </Link>
+          </button>
         </div>
       ))}
     </div>
