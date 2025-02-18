@@ -53,6 +53,7 @@ const ProductRegister = ({ addProduct }) => {
     const newProduct = {
       product_id: newProductId, // 상품 고유값
       user_id,
+      seller_id: user_id,
       title,
       price,
       description,
