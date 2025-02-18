@@ -10,6 +10,11 @@ const DetailProduct = ({ user, products }) => {
   const [like, setLike] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      alert("로그인을 해주세요.");
+      return;
+    }
+
     const foundProduct = products.find(
       (item) => String(item.product_id) === product_id
     );
@@ -17,12 +22,36 @@ const DetailProduct = ({ user, products }) => {
     if (foundProduct) {
       setProduct(foundProduct);
       setMainImg(foundProduct.images?.[0]);
+
+      const likedProducts =
+        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
+      setLike(likedProducts.includes(foundProduct.product_id));
     }
   }, [product_id, products]);
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
+
+  // 찜
+  const toggleLike = () => {
+    let likedProducts = localStorage.getItem(`likeProducts_${user.user_id}`);
+    likedProducts = likedProducts ? JSON.parse(likedProducts) : [];
+
+    if (like) {
+      // 지금 like가 되어 있으면
+      likedProducts = likedProducts.filter((id) => id !== product.product_id); //like 해제
+    } else {
+      //like 추가
+      likedProducts.push(product.product_id);
+    }
+
+    localStorage.setItem(
+      `likeProducts_${user.user_id}`,
+      JSON.stringify(likedProducts)
+    ); // 로컬에 저장
+    setLike(!like);
+  };
 
   return (
     <div className="container mt-5">
@@ -54,7 +83,7 @@ const DetailProduct = ({ user, products }) => {
               src={like ? "/colorHeart.png" : "/heart.png"}
               alt="찜"
               style={{ width: "30px", height: "30px", cursor: "pointer" }}
-              onClick={() => setLike(!like)}
+              onClick={toggleLike}
             />
           </div>
           <p>
