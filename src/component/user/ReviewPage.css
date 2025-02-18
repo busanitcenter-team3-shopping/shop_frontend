@@ -8,7 +8,7 @@ h2 {
   font-weight: bold;
 }
 
-.order-list {
+.review-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2개씩 정렬 */
   gap: 20px;
@@ -16,31 +16,31 @@ h2 {
   justify-self: center;
 }
 
-.order-card {
+.review-card {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   background-color: white;
   border: 1px solid #ddd;
-  padding: 15px;
+  padding: 15px 35px 15px 35px;
   border-radius: 8px;
   align-items: center;
   width: 500px;
 }
 
-.order-info {
+.review-info {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-.order-image {
+.review-image {
   width: 130px;
   height: 130px;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.order-details {
+.review-details {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -52,7 +52,7 @@ h2 {
   gap: 8px; /* 판매완료 표시와 상품명 사이 간격 */
 }
 
-.order-status {
+.review-status {
   background-color: #e0e0e0; /* 연한 회색 */
   color: black;
   font-size: 12px;
@@ -62,38 +62,7 @@ h2 {
   display: inline-block;
 }
 
-.order-name {
+.review-name {
   font-size: 18px;
   font-weight: bold;
-}
-
-.review-button {
-  background-color: #f4a300;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.review-button:hover {
-  background-color: #f27f00;
-}
-
-.view-more {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.view-more button {
-  background-color: #f4a300;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.view-more button:hover {
-  background-color: #f27f00;
 }
