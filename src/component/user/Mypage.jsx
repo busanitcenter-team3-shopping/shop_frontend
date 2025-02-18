@@ -3,6 +3,31 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./myPage.css";
 import { Link, useNavigate } from "react-router-dom";
 
+const orders = [
+  {
+    id: 1,
+    image: "/car.jpg", // 상품 이미지
+    name: "상품명",
+    price: 100000,
+    status: "판매중",
+  },
+  {
+    id: 2,
+    image: "/car.jpg",
+    name: "상품명2",
+    price: 100000,
+    status: "판매완료",
+  },
+  {
+    id: 3,
+    image: "/car.jpg",
+    name: "상품명2",
+    price: 100000,
+    status: "판매완료",
+  },
+  // 더 많은 주문을 추가할 수 있습니다.
+];
+
 const Mypage = ({ user, setUser }) => {
   const navigate = useNavigate();
 
@@ -37,6 +62,8 @@ const Mypage = ({ user, setUser }) => {
     navigate("/add-product", { state: { user_id: user.user_id } });
   };
 
+  const recentOrders = orders.slice(0, 2);
+
   return (
     <div className="container mt-5">
       <button className="btn btn-outline-danger" onClick={handleAddProduct}>
@@ -66,9 +93,9 @@ const Mypage = ({ user, setUser }) => {
             <a href="#">
               <p>판매물품</p>
             </a>
-            <a href="#">
+            <Link to="/review">
               <p>리뷰</p>
-            </a>
+            </Link>
           </div>
           <hr />
           <div className="sidebar-section">
@@ -100,19 +127,32 @@ const Mypage = ({ user, setUser }) => {
             <Link to="/orderhistory">더보기 &gt;</Link>
           </div>
           <div className="d-flex justify-content-around mb-5">
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
+            {recentOrders.map((order) => (
+              <div key={order.id} className="order-card">
+                <div className="order-info">
+                  <img
+                    src={order.image}
+                    alt={order.name}
+                    className="order-image"
+                  />
+                  <div className="order-details">
+                    <div className="status-container">
+                      <p className="order-name mt-3">{order.name}</p>
+                    </div>
+                    <p className="order-price">
+                      가격 : {order.price.toLocaleString()}원
+                    </p>
+                  </div>
+                </div>
+                <Link to="/add-review">
+                  <button className="review-button">리뷰쓰기</button>
+                </Link>
+              </div>
+            ))}
           </div>
 
           <div className="section-header mt-4 mb-5">
-            <h2 className="fw-bold">찜 목록</h2>
+            <h2 className="fw-bold">찜 리스트</h2>
             <a href="#">더보기 &gt;</a>
           </div>
           <div className="d-flex justify-content-around">
