@@ -17,6 +17,7 @@ import PrivateRoute from "./component/user/PrivateRoute";
 import BrandPage from "./component/products/BrandPage";
 import ProductRegister from "./component/product/ProductRegister";
 import NoticeWrite from "./component/main/NoticeWrite";
+import OrderHistory from "./component/user/OrderHistory";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
 // useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
@@ -35,7 +36,7 @@ function App() {
   }, []);
 
   // 로컬 데이터 지우기
-  // localStorage.clear()
+  // localStorage.clear();
 
   const addProduct = (newProduct) => {
     const updatedProducts = [...products, newProduct];
@@ -56,7 +57,11 @@ function App() {
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route
           path="/add-product"
-          element={<ProductRegister addProduct={addProduct} />}
+          element={
+            <PrivateRoute user={user}>
+              <ProductRegister addProduct={addProduct} />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/mypage"
@@ -89,6 +94,7 @@ function App() {
         <Route path="/service" element={<CustomerCenter />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/brand" element={<BrandPage user={user} />} />
+        <Route path="/orderhistory" element={<OrderHistory />} />
       </Routes>
     </Router>
   );
