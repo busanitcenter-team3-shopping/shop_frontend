@@ -7,19 +7,18 @@ import MainPage from "./component/main/MainPage";
 import Login from "./component/user/Login";
 import Signup from "./component/user/Signup";
 import ProductsPage from "./component/products/ProductsPage";
-import BrandList from "./component/products/BrandList";
 import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 import CartPage from "./component/user/CartPage";
 import CustomerCenter from "./component/main/CustomerCenter";
 import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
-import BrandPage from "./component/products/BrandPage";
 import ProductRegister from "./component/product/ProductRegister";
 import NoticeWrite from "./component/main/NoticeWrite";
 import OrderHistory from "./component/user/OrderHistory";
 import ReviewRegister from "./component/user/ReviewRegister";
 import ReviewPage from "./component/user/ReviewPage";
+import UserPage from "./component/user/UserPage";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
 // useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
@@ -82,8 +81,7 @@ function App() {
           path="/product/:product_id"
           element={<DetailProduct user={user} products={products} />}
         />
-        <Route path="/brand-list" element={<BrandList products={products} />} />{" "}
-        {/** 여기는 무슨 페이지로 할건지?????*/}
+        <Route path="/user-page" element={<UserPage products={products} />} />
         <Route path="/edit-user" element={<Signup setUser={setUser} />} />
         <Route
           path="/cart"
@@ -95,7 +93,6 @@ function App() {
         />
         <Route path="/service" element={<CustomerCenter />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
-        <Route path="/brand" element={<BrandPage user={user} />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />
         <Route path="/review" element={<ReviewPage />} />

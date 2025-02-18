@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import img1 from "../../assets/carousel1.jpg";
-import "./ProductsList.css";
-import Pagination from "./Pagination";
+import "../products/ProductsList.css";
+import "./userPage.css";
+import Pagination from "../products/Pagination";
 import { Link } from "react-router-dom";
 
-// const products = Array(50).fill({
-//   name: "상품명 (camera)",
-//   brand: "브랜드",
-//   price: 25000,
-//   image: img1, // 이미지 경로 수정
-// });
-
-function BrandList({ products }) {
+const UserPage = ({ products }) => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -22,7 +15,7 @@ function BrandList({ products }) {
   const currentProducts = products.slice(startIndex, endIndex);
 
   return (
-    <div className="container">
+    <div className="container container1">
       <main className="flex-grow-1 p-4">
         <h2 className="text-center mb-3 mt-3">브랜드</h2>
 
@@ -49,7 +42,7 @@ function BrandList({ products }) {
         )}
 
         {/* 상품 그리드 */}
-        <div className="row">
+        <div className="row row1">
           {currentProducts.map((product, index) => (
             <div
               key={index}
@@ -78,6 +71,6 @@ function BrandList({ products }) {
       </main>
     </div>
   );
-}
+};
 
-export default BrandList;
+export default UserPage;

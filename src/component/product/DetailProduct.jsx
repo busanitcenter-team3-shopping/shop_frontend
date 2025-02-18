@@ -111,7 +111,7 @@ const DetailProduct = ({ user, products }) => {
           </div>
           <p>
             판매자:{" "}
-            <Link to="/brand" className="fw-bold">
+            <Link to="/user-page" className="fw-bold">
               {user.name}
             </Link>
           </p>

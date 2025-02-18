@@ -107,7 +107,3 @@
 .heart:hover {
   transform: scale(1.1);
 }
-
-/* .heart.active {
-  content: url("/colorHeart.png");
-} */

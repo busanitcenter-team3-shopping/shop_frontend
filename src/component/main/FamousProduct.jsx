@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const FamousProduct = ({ products }) => {
   return (
-    <div className="container">
+    <div className="container container1">
       <h1 className="d-flex justify-content-center fw-bold mt-3">인기상품</h1>
       <div className="d-flex justify-content-end">
         <Link to="/products" className="btn btn-link btn-about">
@@ -14,7 +14,7 @@ const FamousProduct = ({ products }) => {
         </Link>
       </div>
 
-      <div className="row">
+      <div className="row row1">
         {[...Array(8)].map((_, index) => (
           <div key={index} className="col-md-3 mb-4">
             <Link to="/product">
