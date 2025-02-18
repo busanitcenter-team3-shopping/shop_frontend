@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
-import heart from "../../assets/heart_1.svg";
+import plus from "../../assets/icon-plus.svg";
 import { Link, useNavigate } from "react-router-dom";
 
 function Navbar({ user, setUser }) {
@@ -106,7 +106,19 @@ function Navbar({ user, setUser }) {
 
         <ul className="nav-item">
           <li>
-            <Link to="/mypage" className="me-3 text-dark">
+            <Link to="/add-product" className="text-dark">
+              <img
+                className="mb-2"
+                src={plus}
+                alt="heart"
+                height="30"
+                width="30"
+              />
+              <span>상품등록</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/mypage" className="text-dark">
               <img
                 className="mb-2"
                 src={myuser}
@@ -115,18 +127,6 @@ function Navbar({ user, setUser }) {
                 width="30"
               />
               <span>마이페이지</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/heart" className="text-dark">
-              <img
-                className="mb-2"
-                src={heart}
-                alt="heart"
-                height="30"
-                width="30"
-              />
-              <span>찜목록</span>
             </Link>
           </li>
           <li>
