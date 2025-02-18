@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
 import BrandPage from "./component/products/BrandPage";
 import ProductRegister from "./component/product/ProductRegister";
+import NoticeWrite from "./component/main/NoticeWrite";
 import OrderHistory from "./component/user/OrderHistory";
 import ReviewRegister from "./component/user/ReviewRegister";
 import ReviewPage from "./component/user/ReviewPage";
@@ -58,7 +59,11 @@ function App() {
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route
           path="/add-product"
-          element={<ProductRegister addProduct={addProduct} />}
+          element={
+            <PrivateRoute user={user}>
+              <ProductRegister addProduct={addProduct} />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/mypage"
@@ -89,6 +94,7 @@ function App() {
           }
         />
         <Route path="/service" element={<CustomerCenter />} />
+        <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/brand" element={<BrandPage user={user} />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />
