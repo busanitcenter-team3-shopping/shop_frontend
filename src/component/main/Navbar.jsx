@@ -50,7 +50,7 @@ function Navbar({ user, setUser }) {
           </>
         )}
         <Link to="/service" className="text-dark">
-          고객센터
+          공지사항
         </Link>
       </article>
       <header className="bg-white pt-5">

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
 import BrandPage from "./component/products/BrandPage";
 import ProductRegister from "./component/product/ProductRegister";
+import NoticeWrite from "./component/main/NoticeWrite";
 import OrderHistory from "./component/user/OrderHistory";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
@@ -91,6 +92,7 @@ function App() {
           }
         />
         <Route path="/service" element={<CustomerCenter />} />
+        <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/brand" element={<BrandPage user={user} />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
       </Routes>
