@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./myPage.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,15 +28,32 @@ const orders = [
   // 더 많은 주문을 추가할 수 있습니다.
 ];
 
-const Mypage = ({ user, setUser }) => {
+const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
+  const [likedProducts, setLikedProducts] = useState([]);
 
   useEffect(() => {
-    const updatedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const updatedUser = JSON.parse(localStorage.getItem("loggedInUser")); // 현재 로그인된 유저의 정보
     if (updatedUser) {
       setUser(updatedUser);
     }
-  }, []);
+
+    if (updatedUser) {
+      const storedLikes =
+        JSON.parse(
+          localStorage.getItem(`likeProducts_${updatedUser.user_id}`)
+        ) || [];
+
+      const likedProductList = Object.keys(storedLikes)
+        .map((product_id) =>
+          products.find((product) => String(product.product_id) === product_id)
+        )
+        .filter(Boolean)
+        .reverse();
+
+      setLikedProducts(likedProductList.slice(0, 4));
+    }
+  }, [setUser, products]);
 
   const handleDelete = () => {
     const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
@@ -58,17 +75,10 @@ const Mypage = ({ user, setUser }) => {
     navigate("/");
   };
 
-  const handleAddProduct = () => {
-    navigate("/add-product", { state: { user_id: user.user_id } });
-  };
-
   const recentOrders = orders.slice(0, 2);
 
   return (
-    <div className="container mt-5">
-      <button className="btn btn-outline-danger" onClick={handleAddProduct}>
-        추가
-      </button>
+    <div className="container container1 mt-5">
       <div className="row align-items-center">
         <div
           md={3}
@@ -155,16 +165,30 @@ const Mypage = ({ user, setUser }) => {
             <h2 className="fw-bold">찜 리스트</h2>
             <a href="#">더보기 &gt;</a>
           </div>
-          <div className="d-flex justify-content-around">
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
-            <a href="#">
-              <img src="/lion.png" />
-            </a>
+          <div className="product-container row1">
+            {likedProducts.length > 0 ? (
+              likedProducts.map((product) => (
+                <div key={product.product_id} className="card">
+                  <Link to={`/product/${product.product_id}`}>
+                    <div className="position-relative card-img">
+                      <img
+                        src={product.images?.[0]}
+                        className="card-img-top"
+                        alt={product.title}
+                      />
+                    </div>
+                    <div className="card-body">
+                      <p className="card-title">{product.title}</p>
+                      <p className="card-price mb-0">
+                        {product.price.toLocaleString()}원
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <p className="text-center fw-bold mt-3">찜한 상품이 없습니다.</p>
+            )}
           </div>
         </div>
       </div>

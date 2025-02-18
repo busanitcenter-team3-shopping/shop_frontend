@@ -25,7 +25,8 @@ import UserPage from "./component/user/UserPage";
 
 // 2. 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 
-// 상품을 추가하면 출력이 되도록 수정은 했는데 이미지의 크기나 수정을 봐야함(ProductsList)
+// 마이페이지 찜 목록을 나오게 설정은 하였으나 순서가 지정이 안됨
+// 해야할 일 : 공지사항, 검색, 메세지, 헤더 카테고리, 주문내역, 찜리스트, 판매물품, 리뷰, 상품수정, 상품삭제
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -68,13 +69,13 @@ function App() {
           path="/mypage"
           element={
             <PrivateRoute user={user}>
-              <Mypage user={user} setUser={setUser} />
+              <Mypage user={user} setUser={setUser} products={products} />
             </PrivateRoute>
           }
         />
         <Route
           path="/products"
-          element={<ProductsPage products={products} />}
+          element={<ProductsPage products={products} user={user} />}
         />{" "}
         {/**상품 전체 항목 */}
         <Route

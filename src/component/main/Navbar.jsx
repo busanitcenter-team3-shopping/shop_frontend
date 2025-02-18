@@ -30,10 +30,6 @@ function Navbar({ user, setUser }) {
     navigate("/");
   };
 
-  // const handleAddProduct = () => {
-  //   navigate("/add-product", { state: { user_id: user.user_id } });
-  // };
-
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
@@ -87,12 +83,27 @@ function Navbar({ user, setUser }) {
             >
               <li className="list-group-item">
                 <Link to="/products" onClick={() => setShowCategories(false)}>
-                  상품
+                  전체
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/brand-list" onClick={() => setShowCategories(false)}>
-                  브랜드
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  IT
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  의류
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  문구
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/products" onClick={() => setShowCategories(false)}>
+                  악기
                 </Link>
               </li>
             </ul>

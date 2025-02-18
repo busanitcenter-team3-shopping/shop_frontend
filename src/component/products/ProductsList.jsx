@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 
-function ProductsList({ selectedCategory, products }) {
+function ProductsList({ selectedCategory, products, user }) {
   let filteredProducts = [];
 
   if (!selectedCategory || selectedCategory === "전체") {
@@ -18,11 +18,42 @@ function ProductsList({ selectedCategory, products }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [likedItems, setLikedItems] = useState({});
 
+  // 좋아요 불러오기
+  useEffect(() => {
+    if (user && user.user_id) {
+      const storedLikes =
+        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
+      setLikedItems(storedLikes);
+    }
+  }, [user]);
+
+  // 변경될때마다 저장
+  useEffect(() => {
+    if (user && user.user_id) {
+      localStorage.setItem(
+        `likeProducts_${user.user_id}`,
+        JSON.stringify(likedItems)
+      );
+    }
+  }, [likedItems, user]);
+
+  // 로컬에 좋아요 저장
   const toggleLike = (id) => {
-    setLikedItems((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setLikedItems((prev) => {
+      const updatedLikes = { ...prev };
+      if (updatedLikes[id]) {
+        delete updatedLikes[id]; // 찜 해제
+      } else {
+        updatedLikes[id] = true; // 찜 추가
+      }
+
+      localStorage.setItem(
+        `likeProducts_${user.user_id}`,
+        JSON.stringify(updatedLikes)
+      );
+
+      return updatedLikes;
+    });
   };
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);

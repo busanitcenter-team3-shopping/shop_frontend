@@ -3,7 +3,7 @@ import ProductsSidebar from "./ProductsSidebar";
 import ProductsList from "./ProductsList";
 import { useLocation } from "react-router-dom";
 
-const ProductsPage = ({ products }) => {
+const ProductsPage = ({ products, user }) => {
   const location = useLocation();
 
   // 전체를 기본값으로로
@@ -19,7 +19,11 @@ const ProductsPage = ({ products }) => {
       />
 
       {/* 상품 리스트 */}
-      <ProductsList selectedCategory={selectedCategory} products={products} />
+      <ProductsList
+        selectedCategory={selectedCategory}
+        products={products}
+        user={user}
+      />
     </div>
   );
 };

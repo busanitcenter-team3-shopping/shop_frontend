@@ -15,7 +15,6 @@ const DetailProduct = ({ user, products }) => {
       alert("로그인을 해주세요.");
       return;
     }
-
     const foundProduct = products.find(
       (item) => String(item.product_id) === product_id
     );
@@ -32,9 +31,9 @@ const DetailProduct = ({ user, products }) => {
       // 로컬에 있는 찜 상품
       const likedProducts =
         JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
-      setLike(likedProducts.includes(foundProduct.product_id));
+      setLike(!!likedProducts[foundProduct.product_id]);
     }
-  }, [product_id, products]);
+  }, [product_id, products, user]);
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
@@ -58,21 +57,19 @@ const DetailProduct = ({ user, products }) => {
 
   // 찜
   const toggleLike = () => {
-    let likedProducts = localStorage.getItem(`likeProducts_${user.user_id}`);
-    likedProducts = likedProducts ? JSON.parse(likedProducts) : [];
+    let likedProducts =
+      JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
 
     if (like) {
-      // 지금 like가 되어 있으면
-      likedProducts = likedProducts.filter((id) => id !== product.product_id); //like 해제
+      delete likedProducts[product.product_id]; // 찜 해제
     } else {
-      //like 추가
-      likedProducts.push(product.product_id);
+      likedProducts[product.product_id] = true; // 찜 추가
     }
 
     localStorage.setItem(
       `likeProducts_${user.user_id}`,
       JSON.stringify(likedProducts)
-    ); // 로컬에 저장
+    );
     setLike(!like);
   };
   console.log(product);

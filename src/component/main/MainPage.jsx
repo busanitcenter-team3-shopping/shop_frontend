@@ -3,12 +3,12 @@ import Banner from "./Banner";
 import FamousProduct from "./FamousProduct";
 import CategoryButtons from "./CategoryButtons";
 
-const MainPage = () => {
+const MainPage = ({ user, products }) => {
   return (
     <div>
       <Banner />
       <CategoryButtons />
-      <FamousProduct />
+      <FamousProduct user={user} products={products} />
     </div>
   );
 };

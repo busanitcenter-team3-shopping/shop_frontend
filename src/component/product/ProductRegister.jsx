@@ -63,7 +63,7 @@ const ProductRegister = ({ addProduct }) => {
     };
 
     // 상품 추가
-    const updateProducts = [newProduct, ...existingProducts];
+    const updateProducts = [...existingProducts, newProduct];
 
     // 로컬에 일단 저장
     localStorage.setItem("products", JSON.stringify(updateProducts));
