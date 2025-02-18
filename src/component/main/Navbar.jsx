@@ -30,6 +30,10 @@ function Navbar({ user, setUser }) {
     navigate("/");
   };
 
+  // const handleAddProduct = () => {
+  //   navigate("/add-product", { state: { user_id: user.user_id } });
+  // };
+
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
@@ -106,7 +110,11 @@ function Navbar({ user, setUser }) {
 
         <ul className="nav-item">
           <li>
-            <Link to="/add-product" className="text-dark">
+            <Link
+              to="/add-product"
+              className="text-dark"
+              state={{ user_id: user?.user_id }}
+            >
               <img
                 className="mb-2"
                 src={plus}

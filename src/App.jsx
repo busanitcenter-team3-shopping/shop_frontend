@@ -56,7 +56,11 @@ function App() {
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route
           path="/add-product"
-          element={<ProductRegister addProduct={addProduct} />}
+          element={
+            <PrivateRoute user={user}>
+              <ProductRegister addProduct={addProduct} />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/mypage"
