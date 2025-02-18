@@ -1,84 +1,86 @@
 import React, { useState } from "react";
 import "./CustomerCenter.css";
+import { useNavigate } from "react-router-dom";
 
-const CustomerCenter = () => {
-  const [openIndex, setOpenIndex] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("회원");
+function NoticeBoard() {
+  const [notices, setNotices] = useState([
+    {
+      id: 1,
+      title: "공지 1",
+      content: "공지 1의 내용입니다.",
+      expanded: false,
+    },
+    {
+      id: 2,
+      title: "공지 2",
+      content: "공지 2의 내용입니다.",
+      expanded: false,
+    },
+    {
+      id: 3,
+      title: "공지 3",
+      content: "공지 3의 내용입니다.",
+      expanded: false,
+    },
+    {
+      id: 4,
+      title: "공지 4",
+      content: "공지 4의 내용입니다.",
+      expanded: false,
+    },
+  ]);
+  const navigate = useNavigate();
 
-  const categories = ["회원", "배송", "상품", "기타"];
-
-  const faqs = {
-    회원: [
-      {
-        question: "회원가입은 어떻게 하나요?",
-        answer:
-          "회원가입은 홈페이지 상단의 회원가입 버튼을 눌러 진행할 수 있습니다.",
-      },
-      {
-        question: "비밀번호를 잊어버렸어요.",
-        answer: "로그인 페이지에서 비밀번호 찾기 기능을 이용해주세요.",
-      },
-    ],
-    배송: [
-      {
-        question: "배송 기간은 얼마나 걸리나요?",
-        answer: "일반적으로 2~3일 소요됩니다.",
-      },
-    ],
-    상품: [
-      {
-        question: "상품 교환 및 환불이 가능한가요?",
-        answer: "구매 후 7일 이내에는 교환 및 환불이 가능합니다.",
-      },
-    ],
-    기타: [
-      {
-        question: "기타 문의는 어디서 하나요?",
-        answer: "고객센터 전화 또는 1:1 문의 게시판을 이용해주세요.",
-      },
-    ],
+  const toggleExpand = (id) => {
+    setNotices((prev) =>
+      prev.map((notice) =>
+        notice.id === id ? { ...notice, expanded: !notice.expanded } : notice
+      )
+    );
   };
 
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const deleteNotice = (id) => {
+    setNotices((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const startEdit = (notice) => {
+    navigate("/notice-write", { state: { notice } });
   };
 
   return (
-    <div className="customer-center-container">
-      <h2 className="title">고객센터</h2>
-      <div className="category-tabs">
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`category-btn ${
-              selectedCategory === category ? "active" : ""
-            }`}
-            onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-      <div className="faq-list">
-        {faqs[selectedCategory].map((faq, index) => (
-          <div key={index} className="faq-item">
+    <div className="notice-container">
+      <h2 className="title">공지사항</h2>
+      <div className="notice-list">
+        {notices.map((notice) => (
+          <div key={notice.id} className="notice-item">
             <div
-              className={`faq-question ${openIndex === index ? "open" : ""}`}
-              onClick={() => toggleFAQ(index)}
+              className="notice-header"
+              onClick={() => toggleExpand(notice.id)}
             >
-              {faq.question}
-              <span className="toggle-icon">
-                {openIndex === index ? "▼" : "▲"}
+              <div />
+              {notice.title}
+              <span className={`arrow ${notice.expanded ? "up" : "down"}`}>
+                ▼
               </span>
             </div>
-            {openIndex === index && (
-              <div className="faq-answer">{faq.answer}</div>
+            {notice.expanded && (
+              <div className="notice-content">{notice.content}</div>
             )}
+            <button onClick={() => startEdit(notice)}>수정</button>
+            <button onClick={() => deleteNotice(notice.id)}>삭제</button>
           </div>
         ))}
       </div>
+      <div className="notice-buttons">
+        <button
+          className="notice-button"
+          onClick={() => navigate("/notice-write")}
+        >
+          글쓰기
+        </button>
+      </div>
     </div>
   );
-};
+}
 
-export default CustomerCenter;
+export default NoticeBoard;
