@@ -1,0 +1,86 @@
+.order-history-container {
+  padding: 20px;
+}
+
+h2 {
+  text-align: left;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.order-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.order-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.order-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.order-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.order-price,
+.order-status {
+  font-size: 14px;
+  color: gray;
+}
+
+.review-button {
+  background-color: #f4a300;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.review-button:hover {
+  background-color: #f27f00;
+}
+
+.view-more {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.view-more button {
+  background-color: #f4a300;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-more button:hover {
+  background-color: #f27f00;
+}

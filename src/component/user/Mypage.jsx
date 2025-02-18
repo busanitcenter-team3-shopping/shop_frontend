@@ -51,26 +51,23 @@ const Mypage = ({ user, setUser }) => {
             <h5>
               <strong>나의 쇼핑정보</strong>
             </h5>
-            <a href="#">
+            <Link to="/orderhistory">
               <p>주문내역</p>
-            </a>
+            </Link>
             <a href="#">
               <p>찜 리스트</p>
             </a>
-            <Link to="/cart">
-              <p>장바구니</p>
-            </Link>
           </div>
           <hr />
           <div className="sidebar-section">
             <h5>
-              <strong>나의 활동</strong>
+              <strong>나의 판매정보</strong>
             </h5>
             <a href="#">
-              <p>나의 상품후기</p>
+              <p>판매물품</p>
             </a>
             <a href="#">
-              <p>나의 상품문의</p>
+              <p>리뷰</p>
             </a>
           </div>
           <hr />
@@ -100,7 +97,7 @@ const Mypage = ({ user, setUser }) => {
 
           <div className="section-header">
             <h2 className="fw-bold">최근 주문 내역</h2>
-            <a href="#">더보기 &gt;</a>
+            <Link to="/orderhistory">더보기 &gt;</Link>
           </div>
           <div className="d-flex justify-content-around mb-5">
             <a href="#">
