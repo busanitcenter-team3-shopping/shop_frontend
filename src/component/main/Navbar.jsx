@@ -46,7 +46,7 @@ function Navbar({ user, setUser }) {
       navigate(
         `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
       );
-      setSearchQuery(""); // ✅ 검색 후 검색창 비우기
+      setSearchQuery(""); // 검색 후 검색창 비우기
     }
   };
 
