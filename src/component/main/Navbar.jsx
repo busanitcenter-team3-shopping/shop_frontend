@@ -3,10 +3,19 @@ import "./Navbar.css";
 import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const categories = [
+  { id: 1, name: "전체" },
+  { id: 2, name: "IT" },
+  { id: 3, name: "의류" },
+  { id: 4, name: "문구" },
+  { id: 5, name: "악기" },
+];
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 경로 가져오기
   const [showCategories, setShowCategories] = useState(false);
 
   useEffect(() => {
@@ -62,54 +71,34 @@ function Navbar({ user, setUser }) {
         id="nav-container"
         style={{ marginTop: "40px" }}
       >
-        <div>
-          <button
-            className="btn"
-            onClick={() => setShowCategories(!showCategories)}
-          >
-            ☰ 전체 카테고리
-          </button>
-
-          {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
-          {showCategories && (
-            <ul
-              className="list-group mt-2"
-              style={{
-                position: "absolute",
-                background: "#fff",
-                width: "200px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                zIndex: 100,
-              }}
+        {/* ✅ 현재 페이지가 "/products"가 아닐 때만 카테고리 버튼 표시 */}
+        {location.pathname !== "/products" && (
+          <div>
+            <button
+              className="btn"
+              onClick={() => setShowCategories(!showCategories)}
             >
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  전체
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  IT
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  의류
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  문구
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  악기
-                </Link>
-              </li>
-            </ul>
-          )}
-        </div>
+              ☰ 전체 카테고리
+            </button>
+
+            {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
+            {showCategories && (
+              <ul className="list-group">
+                {categories.map((category) => (
+                  <li key={category.id} className="list-group-item">
+                    <Link
+                      to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
+                      onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                      className="category-link"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <form className="d-flex w-50" style={{ maxWidth: "500px" }}>
           <input
