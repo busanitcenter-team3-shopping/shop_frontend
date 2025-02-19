@@ -91,9 +91,9 @@ const Mypage = ({ user, setUser, products }) => {
             <Link to="/orderhistory">
               <p>주문내역</p>
             </Link>
-            <a href="#">
+            <Link to="/wishlist">
               <p>찜 리스트</p>
-            </a>
+            </Link>
           </div>
           <hr />
           <div className="sidebar-section">

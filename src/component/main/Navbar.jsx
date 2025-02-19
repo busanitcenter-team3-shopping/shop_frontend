@@ -70,7 +70,7 @@ function Navbar({ user, setUser }) {
         </Link>
       </article>
       <header className="bg-white pt-5">
-        <div className="container text-center">
+        <div className="container text-center nav-container">
           <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
             <img src="../src/assets/logo.png" style={{ width: "100px" }} />
           </Link>
@@ -82,34 +82,31 @@ function Navbar({ user, setUser }) {
         id="nav-container"
         style={{ marginTop: "40px" }}
       >
-        {/* ✅ 현재 페이지가 "/products"가 아닐 때만 카테고리 버튼 표시 */}
-        {location.pathname !== "/products" && (
-          <div>
-            <button
-              className="btn"
-              onClick={() => setShowCategories(!showCategories)}
-            >
-              ☰ 전체 카테고리
-            </button>
+        <div>
+          <button
+            className="btn"
+            onClick={() => setShowCategories(!showCategories)}
+          >
+            ☰ 전체 카테고리
+          </button>
 
-            {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
-            {showCategories && (
-              <ul className="list-group">
-                {categories.map((category) => (
-                  <li key={category.id} className="list-group-item">
-                    <Link
-                      to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
-                      onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
-                      className="category-link"
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+          {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
+          {showCategories && (
+            <ul className="list-group">
+              {categories.map((category) => (
+                <li key={category.id} className="list-group-item">
+                  <Link
+                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
+                    onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                    className="category-link"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <form
           className="d-flex w-50"

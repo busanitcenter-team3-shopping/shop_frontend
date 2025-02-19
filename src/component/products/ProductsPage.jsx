@@ -50,14 +50,12 @@ const ProductsPage = ({ products, user }) => {
         }}
       />
 
-      <div className="products-content">
-        {/* ✅ 필터링된 상품 리스트 */}
-        <ProductsList
-          selectedCategory={selectedCategory}
-          products={filteredProducts}
-          user={user}
-        />
-      </div>
+      {/* ✅ 필터링된 상품 리스트 */}
+      <ProductsList
+        selectedCategory={selectedCategory}
+        products={filteredProducts}
+        user={user}
+      />
     </div>
   );
 };
