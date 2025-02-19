@@ -5,9 +5,8 @@ import { useLocation } from "react-router-dom";
 
 const ProductsPage = ({ products, user }) => {
   const location = useLocation();
-
-  // 전체를 기본값으로로
-  const initialCategory = location.state?.selectedCategory || "전체";
+  const params = new URLSearchParams(location.search);
+  const initialCategory = params.get("category") || "전체"; // ✅ 쿼리에서 카테고리 가져오기
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   return (
