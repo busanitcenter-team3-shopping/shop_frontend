@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./detailProduct.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-const DetailProduct = ({ user, products }) => {
+const DetailProduct = ({ user, products, setProducts }) => {
   const { product_id } = useParams();
   const [product, setProduct] = useState(null);
   const [mainImg, setMainImg] = useState("");
   const [like, setLike] = useState(false);
   const [purchased, setPurchased] = useState(false);
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const DetailProduct = ({ user, products }) => {
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
     setUsers(storedUsers);
     const foundUser = storedUsers.find(
-      (u) => String(u.user_id) === String(foundProduct.user_id)
+      (u) => String(u.user_id) === String(foundProduct?.user_id)
     );
     setUsers(foundUser);
 
@@ -42,16 +43,25 @@ const DetailProduct = ({ user, products }) => {
           JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) ||
           [];
         setLike(!!likedProducts[foundProduct.product_id]);
+      } else {
+        setProduct(null);
       }
     }
   }, [product_id, products, user]);
+
+  useEffect(() => {
+    const updatedProduct = products.find(
+      (item) => String(item.product_id) === product_id
+    );
+    setProduct(updatedProduct || null);
+  }, [products, product_id]);
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
 
   // 등록자가 구매완료를 눌렀을 시 메시지 보내기가 블락 처리되도록 하는 메서드
-  const handleChange = () => {
+  const handlePurchase = () => {
     const purchasedProducts =
       JSON.parse(localStorage.getItem("purchasedProducts")) || [];
 
@@ -82,6 +92,29 @@ const DetailProduct = ({ user, products }) => {
       JSON.stringify(likedProducts)
     );
     setLike(!like);
+  };
+
+  // 수정
+  const handleEdit = () => {
+    navigate("/edit-product", {
+      state: { product: product, user_id: user.user_id },
+    });
+  };
+  // 삭제
+  const handleDelete = () => {
+    if (!window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
+      return;
+    }
+    // 상품 삭제 후 업데이트
+    const updatedProducts = products.filter(
+      (item) => item.product_id !== product.product_id
+    );
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+    if (typeof setProducts === "function") {
+      setProducts(updatedProducts); // 업데이트
+    }
+    alert("상품이 삭제되었습니다.");
+    navigate("/products");
   };
 
   console.log(product);
@@ -171,17 +204,39 @@ const DetailProduct = ({ user, products }) => {
           {product.user_id === user?.user_id ? (
             <div className="d-flex gap-3">
               <button
-                className={
-                  purchased === false
-                    ? "btn btn-warning w-10 mt-3"
-                    : "btn w-10 mt-3"
-                }
-                onClick={handleChange}
+                className={`btn w-10 mt-3 ${
+                  purchased ? "btn-secondary" : "btn-warning"
+                }`}
+                onClick={handlePurchase}
                 disabled={purchased}
               >
                 구매완료
               </button>
-              <button
+              {!purchased && (
+                <>
+                  <button
+                    className="btn btn-success w-10 mt-3"
+                    onClick={handleEdit}
+                  >
+                    수정하기
+                  </button>
+                  <button
+                    className="btn btn-danger w-10 mt-3"
+                    onClick={handleDelete}
+                  >
+                    삭제하기
+                  </button>
+                </>
+              )}
+            </div>
+          ) : (
+            // 구매자
+            <div className="d-flex gap-3">
+              <button className="btn btn-danger w-10 mt-3" disabled={purchased}>
+                메시지 보내기
+              </button>
+
+              {/* <button
                 className={
                   purchased === false
                     ? "btn btn-danger w-10 mt-3"
@@ -190,20 +245,7 @@ const DetailProduct = ({ user, products }) => {
                 disabled={purchased}
               >
                 수정하기
-              </button>
-            </div>
-          ) : (
-            <div className="d-flex gap-3">
-              <button
-                className={
-                  purchased === false
-                    ? "btn btn-danger w-10 mt-3"
-                    : "btn w-10 mt-3"
-                }
-                disabled={purchased}
-              >
-                메시지 보내기
-              </button>
+              </button> */}
             </div>
           )}
         </div>
