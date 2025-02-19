@@ -19,6 +19,7 @@ import OrderHistory from "./component/user/OrderHistory";
 import ReviewRegister from "./component/user/ReviewRegister";
 import ReviewPage from "./component/user/ReviewPage";
 import UserPage from "./component/user/UserPage";
+import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
@@ -83,7 +84,14 @@ function App() {
           path="/product/:product_id"
           element={<DetailProduct user={user} products={products} />}
         />
-        <Route path="/user-page" element={<UserPage products={products} />} />
+        <Route
+          path="/user-board/:user_id"
+          element={<UserBoard user={user} products={products} />}
+        />
+        <Route
+          path="/user-page/:user_id"
+          element={<UserPage user={user} products={products} />}
+        />
         <Route path="/edit-user" element={<Signup setUser={setUser} />} />
         <Route
           path="/cart"

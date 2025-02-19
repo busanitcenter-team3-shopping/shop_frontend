@@ -100,9 +100,9 @@ const Mypage = ({ user, setUser, products }) => {
             <h5>
               <strong>나의 판매정보</strong>
             </h5>
-            <a href="#">
+            <Link to={`/user-page/${user.user_id}`}>
               <p>판매물품</p>
-            </a>
+            </Link>
             <Link to="/review">
               <p>리뷰</p>
             </Link>
