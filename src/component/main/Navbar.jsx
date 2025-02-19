@@ -52,7 +52,7 @@ function Navbar({ user, setUser }) {
       <header className="bg-white pt-5">
         <div className="container text-center">
           <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
-            로 고
+            <img src="../src/assets/logo.png" style={{ width: "100px" }} />
           </Link>
         </div>
       </header>
@@ -60,6 +60,7 @@ function Navbar({ user, setUser }) {
       <div
         className="container d-flex justify-content-between align-items-center"
         id="nav-container"
+        style={{ marginTop: "40px" }}
       >
         <div>
           <button
