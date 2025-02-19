@@ -46,7 +46,7 @@ function Navbar({ user, setUser }) {
       navigate(
         `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
       );
-      setSearchQuery(""); // ✅ 검색 후 검색창 비우기
+      setSearchQuery(""); // 검색 후 검색창 비우기
     }
   };
 
@@ -82,7 +82,7 @@ function Navbar({ user, setUser }) {
         id="nav-container"
         style={{ marginTop: "40px" }}
       >
-        {/* ✅ 현재 페이지가 "/products"가 아닐 때만 카테고리 버튼 표시 */}
+        {/* 현재 페이지가 "/products"가 아닐 때만 카테고리 버튼 표시 */}
         {location.pathname !== "/products" && (
           <div>
             <button
@@ -98,8 +98,8 @@ function Navbar({ user, setUser }) {
                 {categories.map((category) => (
                   <li key={category.id} className="list-group-item">
                     <Link
-                      to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
-                      onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                      to={`/products?category=${category.name}`} // URL에 카테고리 쿼리 추가
+                      onClick={() => setShowCategories(false)} // 클릭 후 목록 숨기기
                       className="category-link"
                     >
                       {category.name}

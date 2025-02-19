@@ -8,8 +8,8 @@ const ProductsPage = ({ products, user }) => {
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
 
-  const initialCategory = params.get("category") || "전체"; // ✅ 카테고리 가져오기
-  const initialSearch = params.get("search") || ""; // ✅ 검색어 가져오기
+  const initialCategory = params.get("category") || "전체"; // 카테고리 가져오기
+  const initialSearch = params.get("search") || ""; // 검색어 가져오기
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -28,7 +28,7 @@ const ProductsPage = ({ products, user }) => {
     );
   };
 
-  // ✅ 검색 및 카테고리에 맞는 상품 필터링
+  // 검색 및 카테고리에 맞는 상품 필터링
   const filteredProducts = products.filter(
     (product) =>
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -37,7 +37,7 @@ const ProductsPage = ({ products, user }) => {
 
   return (
     <div className="container d-flex">
-      {/* ✅ 사이드바 */}
+      {/* 사이드바 */}
       <ProductsSidebar
         selectedCategory={selectedCategory}
         onSelectCategory={(category) => {
@@ -50,14 +50,12 @@ const ProductsPage = ({ products, user }) => {
         }}
       />
 
-      <div className="products-content">
-        {/* ✅ 필터링된 상품 리스트 */}
-        <ProductsList
-          selectedCategory={selectedCategory}
-          products={filteredProducts}
-          user={user}
-        />
-      </div>
+      {/* 필터링된 상품 리스트 */}
+      <ProductsList
+        selectedCategory={selectedCategory}
+        products={filteredProducts}
+        user={user}
+      />
     </div>
   );
 };
