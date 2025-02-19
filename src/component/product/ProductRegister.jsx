@@ -1,21 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./productRegister.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ProductRegister = ({ addProduct }) => {
+const ProductRegister = ({ addProduct, updateProduct }) => {
   const location = useLocation();
-  const user_id = location.state?.user_id; // 유저의 id 값을 받아와 어떠한 유저가 상품을 등록했는지 저장하기 위해
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [images, setImages] = useState([]);
+  const existingProduct = location.state?.product || null;
+  const user_id = location.state?.user_id;
+
+  // 상태 변수 설정
+  const [title, setTitle] = useState(existingProduct?.title || "");
+  const [price, setPrice] = useState(existingProduct?.price || "");
+  const [description, setDescription] = useState(
+    existingProduct?.description || ""
+  );
+  const [category, setCategory] = useState(existingProduct?.category || "");
+  const [images, setImages] = useState(existingProduct?.images || []);
   const maxImg = 3;
 
-  // 새로 고침을 하고 나면 URL은 사라지므로 등록을 하고 새로고침을 하면 이미지가 꺠진 상태로 보인다.
-  // 방지 차원으로 일단 Base64로 저장 상태
+  useEffect(() => {
+    if (existingProduct) {
+      setTitle(existingProduct.title);
+      setPrice(existingProduct.price);
+      setDescription(existingProduct.description);
+      setCategory(existingProduct.category);
+      setImages(existingProduct.images || []);
+    }
+  }, [existingProduct]);
+
+  // 파일을 Base64로 변환하는 함수
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -25,59 +39,88 @@ const ProductRegister = ({ addProduct }) => {
     });
   };
 
+  // 이미지 변경 핸들러
   const handleImageChange = async (e) => {
     const selectedFiles = Array.from(e.target.files);
 
     if (images.length + selectedFiles.length > maxImg) {
-      alert("3개의 이미지까지 업로드 가능합니다.");
+      alert("최대 3개의 이미지만 업로드할 수 있습니다");
       return;
     }
 
+    // 새로운 이미지
     const base64Images = await Promise.all(
       selectedFiles.map((file) => convertToBase64(file))
     );
 
-    setImages((prevImages) => [...base64Images, ...prevImages]);
+    setImages(base64Images); // 기존 이미지 삭제 후 새로운 이미지만 추가
   };
 
-  const handleSubmit = async (e) => {
+  // 등록 및 삭제
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 원래 있던 상품
     const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
-    const newProductId =
-      existingProducts.length > 0
-        ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
-        : 1;
-    // 상품 추가
-    const newProduct = {
-      product_id: newProductId, // 상품 고유값
-      user_id,
-      seller_id: user_id,
-      title,
-      price,
-      description,
-      category,
-      status: "판매중",
-      images,
-    };
 
-    // 상품 추가
-    const updateProducts = [...existingProducts, newProduct];
+    if (existingProduct) {
+      // 상품 수정
+      const updatedProduct = {
+        ...existingProduct,
+        title,
+        price,
+        description,
+        category,
+        images,
+      };
 
-    // 로컬에 일단 저장
-    localStorage.setItem("products", JSON.stringify(updateProducts));
+      const updatedProducts = existingProducts.map((product) =>
+        product.product_id === existingProduct.product_id
+          ? updatedProduct
+          : product
+      );
 
-    alert("상품 등록이 완료되었습니다.");
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-    addProduct(newProduct);
-    console.log(updateProducts);
+      // 상품 업데이트
+      if (updateProduct) updateProduct(updatedProduct);
+
+      alert("상품이 성공적으로 수정되었습니다.");
+    } else {
+      // 🔹 상품 등록
+      const newProductId =
+        existingProducts.length > 0
+          ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
+          : 1;
+
+      const newProduct = {
+        product_id: newProductId,
+        user_id,
+        seller_id: user_id,
+        title,
+        price,
+        description,
+        category,
+        status: "판매중",
+        images,
+      };
+
+      // 상품 추가 후 저장
+      const updatedProducts = [...existingProducts, newProduct];
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+      alert("상품 등록이 완료되었습니다.");
+
+      if (addProduct) addProduct(newProduct);
+    }
+
     navigate("/");
   };
 
   return (
     <div className="container mt-5">
-      <h3 className="text-center mb-4">상품 등록</h3>
+      <h3 className="text-center mb-4">
+        {existingProduct ? "상품 수정" : "상품 등록"}
+      </h3>
 
       <div className="d-flex justify-content-center">
         <div className="product-card shadow-sm">
@@ -158,14 +201,12 @@ const ProductRegister = ({ addProduct }) => {
 
             <div className="d-flex justify-content-around mt-4">
               <button className="btn btn-outline-success" type="submit">
-                등록하기
+                {existingProduct ? "수정하기" : "등록하기"}
               </button>
               <button
                 className="btn btn-outline-danger"
                 type="button"
-                onClick={() => {
-                  navigate("/mypage");
-                }}
+                onClick={() => navigate("/mypage")}
               >
                 취소하기
               </button>

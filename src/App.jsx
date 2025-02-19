@@ -26,7 +26,7 @@ import UserPage from "./component/user/UserPage";
 // 2. 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 
 // 마이페이지 찜 목록을 나오게 설정은 하였으나 순서가 지정이 안됨
-// 해야할 일 : 공지사항, 검색, 메세지, 헤더 카테고리, 주문내역, 찜리스트, 판매물품, 리뷰, 상품수정, 상품삭제
+// 해야할 일 : 공지사항, 메세지, 주문내역, 판매물품, 리뷰, 이미지3개 초과시 이상해짐
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -45,6 +45,19 @@ function App() {
     setProducts(updatedProducts);
     localStorage.setItem("products", JSON.stringify(updatedProducts));
   };
+
+  // 수정상품
+  const updateProduct = (updatedProduct) => {
+    const updatedProducts = products.map((product) =>
+      product.product_id === updatedProduct.product_id
+        ? updatedProduct
+        : product
+    );
+
+    setProducts(updatedProducts);
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
+  };
+  console.log(products);
 
   return (
     <Router>
@@ -66,6 +79,18 @@ function App() {
           }
         />
         <Route
+          path="/edit-product"
+          element={
+            <PrivateRoute user={user}>
+              <ProductRegister
+                addProduct={addProduct}
+                updateProduct={updateProduct}
+                products={products}
+              />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/mypage"
           element={
             <PrivateRoute user={user}>
@@ -80,7 +105,14 @@ function App() {
         {/**상품 전체 항목 */}
         <Route
           path="/product/:product_id"
-          element={<DetailProduct user={user} products={products} />}
+          element={
+            <DetailProduct
+              user={user}
+              products={products}
+              setProducts={setProducts}
+              updateProduct={updateProduct}
+            />
+          }
         />
         <Route path="/user-page" element={<UserPage products={products} />} />
         <Route path="/edit-user" element={<Signup setUser={setUser} />} />
