@@ -163,7 +163,7 @@ const Mypage = ({ user, setUser, products }) => {
 
           <div className="section-header mt-4 mb-5">
             <h2 className="fw-bold">찜 리스트</h2>
-            <a href="#">더보기 &gt;</a>
+            <Link to="/wishlist">더보기 &gt;</Link>
           </div>
           <div className="product-container row1">
             {likedProducts.length > 0 ? (

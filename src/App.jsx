@@ -19,6 +19,7 @@ import OrderHistory from "./component/user/OrderHistory";
 import ReviewRegister from "./component/user/ReviewRegister";
 import ReviewPage from "./component/user/ReviewPage";
 import UserPage from "./component/user/UserPage";
+import Wishlist from "./component/products/Wishlist";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
 // useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
@@ -97,6 +98,10 @@ function App() {
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />
         <Route path="/review" element={<ReviewPage />} />
+        <Route
+          path="/wishlist"
+          element={<Wishlist user={user} products={products} />}
+        />
       </Routes>
     </Router>
   );
