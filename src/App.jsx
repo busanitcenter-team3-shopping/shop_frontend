@@ -59,7 +59,6 @@ function App() {
     setProducts(updatedProducts);
     localStorage.setItem("products", JSON.stringify(updatedProducts));
   };
-  console.log(products);
 
   return (
     <Router>
