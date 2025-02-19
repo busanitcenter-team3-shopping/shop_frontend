@@ -39,26 +39,28 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
     });
   };
 
-  // 이미지 변경 핸들러
+  // 이미지 변경 핸들러 (새로운 이미지만 저장)
   const handleImageChange = async (e) => {
     const selectedFiles = Array.from(e.target.files);
 
-    if (images.length + selectedFiles.length > maxImg) {
-      alert("최대 3개의 이미지만 업로드할 수 있습니다");
+    if (selectedFiles.length > maxImg) {
+      alert(`최대 ${maxImg}의 이미지만 업로드할 수 있습니다.`);
       return;
     }
 
-    // 새로운 이미지
-    const base64Images = await Promise.all(
-      selectedFiles.map((file) => convertToBase64(file))
-    );
-
-    setImages(base64Images); // 기존 이미지 삭제 후 새로운 이미지만 추가
+    // 새로운 이미지만 Base64로 변환하여 저장
+    const base64Images = await Promise.all(selectedFiles.map(convertToBase64));
+    setImages(base64Images); // 기존 이미지 삭제후 이미지 추가
   };
 
-  // 등록 및 삭제
+  // 상품 등록 및 수정 핸들러
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (images.length > maxImg) {
+      alert("최대 3개의 이미지만 등록할 수 있습니다.");
+      return;
+    }
 
     const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
 
@@ -70,7 +72,7 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
         price,
         description,
         category,
-        images,
+        images, // 기존 이미지 삭제 후 새로운 이미지 저장
       };
 
       const updatedProducts = existingProducts.map((product) =>
@@ -81,12 +83,10 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
 
       localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-      // 상품 업데이트
       if (updateProduct) updateProduct(updatedProduct);
-
       alert("상품이 성공적으로 수정되었습니다.");
     } else {
-      // 🔹 상품 등록
+      // 상품 등록
       const newProductId =
         existingProducts.length > 0
           ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
@@ -104,13 +104,11 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
         images,
       };
 
-      // 상품 추가 후 저장
       const updatedProducts = [...existingProducts, newProduct];
       localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-      alert("상품 등록이 완료되었습니다.");
-
       if (addProduct) addProduct(newProduct);
+      alert("상품 등록이 완료되었습니다.");
     }
 
     navigate("/");
