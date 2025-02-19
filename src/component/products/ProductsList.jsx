@@ -82,40 +82,44 @@ function ProductsList({ selectedCategory, products, user }) {
           </select>
         </div>
 
-        <div className="product-container">
-          {currentProducts.map((product, index) => (
-            <div key={index} className="card">
-              <Link to={`/product/${product.product_id}`}>
-                <div className="position-relative card-img">
-                  <img
-                    src={product.images?.[0]}
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <img
-                    src={
-                      likedItems[product.product_id]
-                        ? "/colorHeart.png"
-                        : "/heart.png"
-                    }
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleLike(product.product_id);
-                    }}
-                    alt="찜"
-                    className="heart"
-                  />
-                </div>
-                <div className="card-body">
-                  <p className="card-title">{product.title}</p>
-                  <p className="card-price mb-0">
-                    {product.price.toLocaleString()}원
-                  </p>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <p className="text-center">검색 결과가 없습니다.</p>
+        ) : (
+          <div className="product-container">
+            {currentProducts.map((product, index) => (
+              <div key={index} className="card">
+                <Link to={`/product/${product.product_id}`}>
+                  <div className="position-relative card-img">
+                    <img
+                      src={product.images?.[0]}
+                      className="card-img-top"
+                      alt="..."
+                    />
+                    <img
+                      src={
+                        likedItems[product.product_id]
+                          ? "/colorHeart.png"
+                          : "/heart.png"
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleLike(product.product_id);
+                      }}
+                      alt="찜"
+                      className="heart"
+                    />
+                  </div>
+                  <div className="card-body">
+                    <p className="card-title">{product.title}</p>
+                    <p className="card-price mb-0">
+                      {product.price.toLocaleString()}원
+                    </p>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
 
         <Pagination
           totalItems={filteredProducts.length}

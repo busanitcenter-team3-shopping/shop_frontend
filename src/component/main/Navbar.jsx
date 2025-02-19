@@ -17,6 +17,7 @@ function Navbar({ user, setUser }) {
   const navigate = useNavigate();
   const location = useLocation(); // 현재 경로 가져오기
   const [showCategories, setShowCategories] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
@@ -37,6 +38,16 @@ function Navbar({ user, setUser }) {
     setUser(null);
     alert("로그아웃 되었습니다.");
     navigate("/");
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      navigate(
+        `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
+      );
+      setSearchQuery(""); // ✅ 검색 후 검색창 비우기
+    }
   };
 
   return (
@@ -100,13 +111,21 @@ function Navbar({ user, setUser }) {
           </div>
         )}
 
-        <form className="d-flex w-50" style={{ maxWidth: "500px" }}>
+        <form
+          className="d-flex w-50"
+          style={{ maxWidth: "500px" }}
+          onSubmit={handleSearch}
+        >
           <input
             className="form-control me-2"
             type="search"
             placeholder="검색"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="btn btn-outline-secondary">🔍</button>
+          <button className="btn btn-outline-secondary" type="submit">
+            🔍
+          </button>
         </form>
 
         <ul className="nav-item">
