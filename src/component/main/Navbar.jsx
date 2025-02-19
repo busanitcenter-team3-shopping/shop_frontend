@@ -3,11 +3,21 @@ import "./Navbar.css";
 import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const categories = [
+  { id: 1, name: "전체" },
+  { id: 2, name: "IT" },
+  { id: 3, name: "의류" },
+  { id: 4, name: "문구" },
+  { id: 5, name: "악기" },
+];
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const location = useLocation(); // 현재 경로 가져오기
   const [showCategories, setShowCategories] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
@@ -30,6 +40,16 @@ function Navbar({ user, setUser }) {
     navigate("/");
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      navigate(
+        `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
+      );
+      setSearchQuery(""); // 검색 후 검색창 비우기
+    }
+  };
+
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
@@ -50,7 +70,7 @@ function Navbar({ user, setUser }) {
         </Link>
       </article>
       <header className="bg-white pt-5">
-        <div className="container text-center">
+        <div className="container text-center nav-container">
           <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
             <img src="../src/assets/logo.png" style={{ width: "100px" }} />
           </Link>
@@ -72,52 +92,37 @@ function Navbar({ user, setUser }) {
 
           {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
           {showCategories && (
-            <ul
-              className="list-group mt-2"
-              style={{
-                position: "absolute",
-                background: "#fff",
-                width: "200px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                zIndex: 100,
-              }}
-            >
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  전체
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  IT
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  의류
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  문구
-                </Link>
-              </li>
-              <li className="list-group-item">
-                <Link to="/products" onClick={() => setShowCategories(false)}>
-                  악기
-                </Link>
-              </li>
+            <ul className="list-group">
+              {categories.map((category) => (
+                <li key={category.id} className="list-group-item">
+                  <Link
+                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
+                    onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                    className="category-link"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           )}
         </div>
 
-        <form className="d-flex w-50" style={{ maxWidth: "500px" }}>
+        <form
+          className="d-flex w-50"
+          style={{ maxWidth: "500px" }}
+          onSubmit={handleSearch}
+        >
           <input
             className="form-control me-2"
             type="search"
             placeholder="검색"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="btn btn-outline-secondary">🔍</button>
+          <button className="btn btn-outline-secondary" type="submit">
+            🔍
+          </button>
         </form>
 
         <ul className="nav-item">
