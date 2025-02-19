@@ -1,76 +1,46 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./detailProduct.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-const DetailProduct = ({ user, products, setProducts }) => {
+const DetailProduct = ({ user, products }) => {
   const { product_id } = useParams();
   const [product, setProduct] = useState(null);
   const [mainImg, setMainImg] = useState("");
   const [like, setLike] = useState(false);
   const [purchased, setPurchased] = useState(false);
-<<<<<<< HEAD
-  const navigate = useNavigate();
-=======
-  const [users, setUsers] = useState([]);
->>>>>>> origin/dev
 
   useEffect(() => {
     if (!user) {
       alert("로그인을 해주세요.");
       return;
     }
-
     const foundProduct = products.find(
       (item) => String(item.product_id) === product_id
     );
 
-    //판매자 정보 찾기
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(storedUsers);
-
-    const foundUser = storedUsers.find(
-      (u) => String(u.user_id) === String(foundProduct.user_id)
-    );
-    console.log(foundProduct.user_id);
-    console.log(foundUser);
-    setUsers(foundUser);
-
     if (foundProduct) {
       setProduct(foundProduct);
-      setMainImg(foundProduct.images?.[0] || "");
+      setMainImg(foundProduct.images?.[0]);
 
-      // 로컬스토리지에서 구매 완료 여부 확인
+      // 로컬에 구매 완료 여부
       const purchasedProducts =
         JSON.parse(localStorage.getItem("purchasedProducts")) || [];
       setPurchased(purchasedProducts.includes(foundProduct.product_id));
 
-      // 로컬스토리지에서 찜 여부 확인
+      // 로컬에 있는 찜 상품
       const likedProducts =
         JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
       setLike(!!likedProducts[foundProduct.product_id]);
-    } else {
-      setProduct(null);
     }
   }, [product_id, products, user]);
 
-  useEffect(() => {
-    const updatedProduct = products.find(
-      (item) => String(item.product_id) === product_id
-    );
-    setProduct(updatedProduct || null);
-  }, [products, product_id]);
-
   if (!product) {
-    return (
-      <div className="container mt-5 text-center">
-        상품이 존재하지 않습니다.
-      </div>
-    );
+    return <div className="container mt-5 text-center"></div>;
   }
 
-  // 구매 완료
-  const handlePurchase = () => {
+  // 등록자가 구매완료를 눌렀을 시 메시지 보내기가 블락 처리되도록 하는 메서드
+  const handleChange = () => {
     const purchasedProducts =
       JSON.parse(localStorage.getItem("purchasedProducts")) || [];
 
@@ -80,7 +50,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
         "purchasedProducts",
         JSON.stringify(purchasedProducts)
       );
-
       setPurchased(true);
       setProduct((prev) => ({ ...prev, status: "판매완료" }));
     }
@@ -89,7 +58,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
   // 찜
   const toggleLike = () => {
     let likedProducts =
-      JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || {};
+      JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
 
     if (like) {
       delete likedProducts[product.product_id]; // 찜 해제
@@ -104,37 +73,11 @@ const DetailProduct = ({ user, products, setProducts }) => {
     setLike(!like);
   };
 
-  // 수정
-  const handleEdit = () => {
-    navigate("/edit-product", {
-      state: { product: product, user_id: user.user_id },
-    });
-  };
-
-  // 삭제
-  const handleDelete = () => {
-    if (!window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
-      return;
-    }
-
-    // 상품 삭제 후 업데이트
-    const updatedProducts = products.filter(
-      (item) => item.product_id !== product.product_id
-    );
-
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-    if (typeof setProducts === "function") {
-      setProducts(updatedProducts); // 업데이트
-    }
-
-    alert("상품이 삭제되었습니다.");
-    navigate("/products");
-  };
-
+  console.log(product);
   return (
     <div className="container mt-5">
       <div className="row">
+        {/* 좌측 이미지 목록 */}
         <div className="d-flex col">
           <div className="d-flex flex-column me-3 gap-1">
             {product.images?.map((img, index) => (
@@ -154,9 +97,27 @@ const DetailProduct = ({ user, products, setProducts }) => {
           <img className="mainImg" src={mainImg} alt="메인 상품 이미지" />
         </div>
 
+        {/* 우측 상세 정보 */}
         <div className="d-flex flex-column justify-content-center col">
           <div className="d-flex align-items-center justify-content-between">
-            <h2 className="fw-bold">{product.title}</h2>
+            {/* 
+              [제목] 2줄까지만 표시 + 말줄임표 
+              (원하면 -webkit-line-clamp 값을 늘려도 됨)
+            */}
+            <h2
+              className="fw-bold"
+              style={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 2,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                wordBreak: "break-word",
+              }}
+            >
+              {product.title}
+            </h2>
+            {/* 찜 아이콘 */}
             <img
               src={like ? "/colorHeart.png" : "/heart.png"}
               alt="찜"
@@ -164,47 +125,84 @@ const DetailProduct = ({ user, products, setProducts }) => {
               onClick={toggleLike}
             />
           </div>
+
           <p>
             판매자:{" "}
-            <Link to={`/user-board/${product.user_id}`} className="fw-bold">
-              {users.name}
+            <Link to="/user-page" className="fw-bold">
+              {user.name}
             </Link>
           </p>
-          <p className="over-box">{product.description}</p>
-          <h3 className="fw-bold">{product.price.toLocaleString()}원</h3>
 
-          {product.seller_id === user.user_id ? ( // 판매자
+          {/* 
+            [내용] 3줄까지만 표시 + 말줄임표 
+            기존에 over-box 클래스가 있지만, 추가로 line clamp 적용
+          */}
+          <p
+            className="over-box"
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 3,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              wordBreak: "break-word",
+            }}
+          >
+            {product.description}
+          </p>
+
+          {/* 
+            [가격] 1줄로 표시 + 말줄임표
+            긴 숫자를 여러 줄에 걸쳐 표시하고 싶으면 WebkitLineClamp 값을 2 이상으로
+          */}
+          <h3
+            className="fw-bold"
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 1,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              wordBreak: "break-word",
+            }}
+          >
+            {product.price.toLocaleString()}원
+          </h3>
+
+          {product.seller_id === user.user_id ? (
             <div className="d-flex gap-3">
               <button
-                className={`btn w-10 mt-3 ${
-                  purchased ? "btn-secondary" : "btn-warning"
-                }`}
-                onClick={handlePurchase}
+                className={
+                  purchased === false
+                    ? "btn btn-warning w-10 mt-3"
+                    : "btn w-10 mt-3"
+                }
+                onClick={handleChange}
                 disabled={purchased}
               >
                 구매완료
               </button>
-              {!purchased && (
-                <>
-                  <button
-                    className="btn btn-success w-10 mt-3"
-                    onClick={handleEdit}
-                  >
-                    수정하기
-                  </button>
-                  <button
-                    className="btn btn-danger w-10 mt-3"
-                    onClick={handleDelete}
-                  >
-                    삭제하기
-                  </button>
-                </>
-              )}
+              <button
+                className={
+                  purchased === false
+                    ? "btn btn-danger w-10 mt-3"
+                    : "btn w-10 mt-3"
+                }
+                disabled={purchased}
+              >
+                수정하기
+              </button>
             </div>
           ) : (
-            // 구매자
             <div className="d-flex gap-3">
-              <button className="btn btn-danger w-10 mt-3" disabled={purchased}>
+              <button
+                className={
+                  purchased === false
+                    ? "btn btn-danger w-10 mt-3"
+                    : "btn w-10 mt-3"
+                }
+                disabled={purchased}
+              >
                 메시지 보내기
               </button>
             </div>

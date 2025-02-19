@@ -76,8 +76,30 @@ const Wishlist = ({ user, products }) => {
                     <img src={product.images?.[0]} alt={product.title} />
                   </div>
                   <div className="wishlist-info">
-                    <p className="wishlist-title">{product.title}</p>
-                    <p className="wishlist-price">
+                    <p
+                      className="wishlist-title"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {product.title}
+                    </p>
+                    <p
+                      className="wishlist-price"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        wordBreak: "break-word",
+                      }}
+                    >
                       {product.price.toLocaleString()}원
                     </p>
                   </div>
