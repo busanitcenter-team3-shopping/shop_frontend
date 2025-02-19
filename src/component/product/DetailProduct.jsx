@@ -9,6 +9,7 @@ const DetailProduct = ({ user, products }) => {
   const [mainImg, setMainImg] = useState("");
   const [like, setLike] = useState(false);
   const [purchased, setPurchased] = useState(false);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     if (!user) {
@@ -18,6 +19,17 @@ const DetailProduct = ({ user, products }) => {
     const foundProduct = products.find(
       (item) => String(item.product_id) === product_id
     );
+
+    //판매자 정보 찾기
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    setUsers(storedUsers);
+
+    const foundUser = storedUsers.find(
+      (u) => String(u.user_id) === String(foundProduct.user_id)
+    );
+    console.log(foundProduct.user_id);
+    console.log(foundUser);
+    setUsers(foundUser);
 
     if (foundProduct) {
       setProduct(foundProduct);
@@ -108,8 +120,8 @@ const DetailProduct = ({ user, products }) => {
           </div>
           <p>
             판매자:{" "}
-            <Link to="/user-page" className="fw-bold">
-              {user.name}
+            <Link to={`/user-board/${product.user_id}`} className="fw-bold">
+              {users.name}
             </Link>
           </p>
           <p className="over-box">{product.description}</p>

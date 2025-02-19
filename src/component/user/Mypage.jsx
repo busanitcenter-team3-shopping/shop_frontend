@@ -100,9 +100,9 @@ const Mypage = ({ user, setUser, products }) => {
             <h5>
               <strong>나의 판매정보</strong>
             </h5>
-            <a href="#">
+            <Link to={`/user-page/${user.user_id}`}>
               <p>판매물품</p>
-            </a>
+            </Link>
             <Link to="/review">
               <p>리뷰</p>
             </Link>
@@ -163,7 +163,7 @@ const Mypage = ({ user, setUser, products }) => {
 
           <div className="section-header mt-4 mb-5">
             <h2 className="fw-bold">찜 리스트</h2>
-            <a href="#">더보기 &gt;</a>
+            <Link to="/wishlist">더보기 &gt;</Link>
           </div>
           <div className="product-container row1">
             {likedProducts.length > 0 ? (
