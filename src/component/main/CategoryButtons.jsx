@@ -14,7 +14,7 @@ function CategoryButtons() {
   const navigate = useNavigate();
 
   const handleCategoryClick = (categoryName) => {
-    navigate("/products", { state: { selectedCategory: categoryName } });
+    navigate(`/products?category=${categoryName}`);
   };
   return (
     <div className="category-container">
