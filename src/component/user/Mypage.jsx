@@ -165,9 +165,11 @@ const Mypage = ({ user, setUser, products }) => {
             <h2 className="fw-bold">찜 리스트</h2>
             <Link to="/wishlist">더보기 &gt;</Link>
           </div>
-          <div className="product-container row1">
-            {likedProducts.length > 0 ? (
-              likedProducts.map((product) => (
+          {likedProducts.length === 0 ? (
+            <p className="text-center fw-bold mt-3">찜한 상품이 없습니다.</p>
+          ) : (
+            <div className="product-container row1">
+              {likedProducts.map((product) => (
                 <div key={product.product_id} className="card">
                   <Link to={`/product/${product.product_id}`}>
                     <div className="position-relative card-img">
@@ -185,11 +187,9 @@ const Mypage = ({ user, setUser, products }) => {
                     </div>
                   </Link>
                 </div>
-              ))
-            ) : (
-              <p className="text-center fw-bold mt-3">찜한 상품이 없습니다.</p>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
