@@ -14,6 +14,11 @@
   text-align: center;
   font-size: 24px;
   margin-bottom: 20px;
+
+  display: inline-block; /* 또는 block */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cart-table {
@@ -89,6 +94,11 @@
 .shipping-fee,
 .final-price {
   font-weight: bold;
+
+  display: inline-block; /* 또는 block */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cart-actions {

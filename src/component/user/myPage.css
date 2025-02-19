@@ -147,6 +147,11 @@ button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  display: inline-block; /* 또는 block */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-price {
@@ -155,4 +160,9 @@ button {
   color: #333;
   text-align: left;
   width: 120px;
+
+  display: inline-block; /* 또는 block */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
