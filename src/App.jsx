@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle";
 import Navbar from "./component/main/Navbar";
@@ -10,7 +15,6 @@ import ProductsPage from "./component/products/ProductsPage";
 import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 import CartPage from "./component/user/CartPage";
-import CustomerCenter from "./component/main/CustomerCenter";
 import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
 import ProductRegister from "./component/product/ProductRegister";
@@ -21,6 +25,7 @@ import ReviewPage from "./component/user/ReviewPage";
 import UserPage from "./component/user/UserPage";
 import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
+import NoticeBoard from "./component/main/NoticeBoard";
 
 // 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
 // useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
@@ -132,7 +137,9 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/service" element={<CustomerCenter />} />
+        <Route path="/notice-board" element={<NoticeBoard />} />
+        <Route path="/notice-write" element={<NoticeWrite />} />
+        <Route path="*" element={<Navigate to="/notice-board" replace />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />
