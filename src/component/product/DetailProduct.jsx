@@ -26,7 +26,13 @@ const DetailProduct = ({ user, products, setProducts }) => {
     const foundUser = storedUsers.find(
       (u) => String(u.user_id) === String(foundProduct?.user_id)
     );
+    console.log(foundUser);
     setUsers(foundUser);
+
+    // if (foundUser === undefined) {
+    //   foundUser.name = "알수없음";
+    //   setUsers(foundUser);
+    // }
 
     if (foundProduct) {
       setProduct(foundProduct);
@@ -180,7 +186,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
               {product.title}
             </h2>
             {/* 찜 아이콘 */}
-            {!user ? (
+            {!user || users === undefined ? (
               <div></div>
             ) : (
               <img
@@ -194,9 +200,13 @@ const DetailProduct = ({ user, products, setProducts }) => {
 
           <p>
             판매자:{" "}
-            <Link to={`/user-board/${product.user_id}`} className="fw-bold">
-              {users.name}
-            </Link>
+            {users === undefined ? (
+              <span className=" fw-bold">탈퇴한 계정입니다.</span>
+            ) : (
+              <Link to={`/user-board/${product.user_id}`} className="fw-bold">
+                {users.name}
+              </Link>
+            )}
           </p>
 
           <p
@@ -236,7 +246,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
                 onClick={handlePurchase}
                 disabled={purchased}
               >
-                구매완료
+                판매완료
               </button>
               {!purchased && (
                 <>

@@ -4,6 +4,7 @@ a {
 .card-img {
   border-bottom: 1px solid silver;
   border-radius: 0 !important;
+  display: block;
 }
 .card-title {
   display: inline-block;
@@ -26,4 +27,19 @@ a {
 }
 .heart:hover {
   border: none;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.soldout-main {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70% !important;
+  height: 80% !important;
+  max-width: 200px;
 }

@@ -25,11 +25,26 @@ const FamousProduct = ({ products }) => {
               <Link to={`/product/${product.product_id}`}>
                 <div className="card">
                   <div className="position-relative card-img">
-                    <img
-                      src={product.images?.[0]}
-                      className="card-img-top"
-                      alt={product.title}
-                    />
+                    {product.status === "판매중" ? (
+                      <img
+                        src={product.images?.[0]}
+                        className="card-img-top"
+                        alt={product.title}
+                      />
+                    ) : (
+                      <>
+                        <img
+                          src={product.images?.[0]}
+                          className="card-img-top opacity-50"
+                          alt={product.title}
+                        />
+                        <img
+                          className="soldout-main"
+                          src="/soldout1.png"
+                          alt="판매완료"
+                        />
+                      </>
+                    )}
                   </div>
                   <div className="card-body">
                     <p className="card-title">{product.title}</p>
