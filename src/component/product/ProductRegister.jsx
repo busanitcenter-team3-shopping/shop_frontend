@@ -44,13 +44,14 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
     const selectedFiles = Array.from(e.target.files);
 
     if (selectedFiles.length > maxImg) {
-      alert(`최대 ${maxImg}의 이미지만 업로드할 수 있습니다.`);
-      return;
+      alert(`이미지 변경`);
+    } else {
+      // 새로운 이미지만 Base64로 변환하여 저장
+      const base64Images = await Promise.all(
+        selectedFiles.map(convertToBase64)
+      );
+      setImages(base64Images); // 기존 이미지 삭제후 이미지 추가
     }
-
-    // 새로운 이미지만 Base64로 변환하여 저장
-    const base64Images = await Promise.all(selectedFiles.map(convertToBase64));
-    setImages(base64Images); // 기존 이미지 삭제후 이미지 추가
   };
 
   // 상품 등록 및 수정 핸들러
@@ -59,59 +60,60 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
 
     if (images.length > maxImg) {
       alert("최대 3개의 이미지만 등록할 수 있습니다.");
-      return;
-    }
-
-    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
-
-    if (existingProduct) {
-      // 상품 수정
-      const updatedProduct = {
-        ...existingProduct,
-        title,
-        price,
-        description,
-        category,
-        images, // 기존 이미지 삭제 후 새로운 이미지 저장
-      };
-
-      const updatedProducts = existingProducts.map((product) =>
-        product.product_id === existingProduct.product_id
-          ? updatedProduct
-          : product
-      );
-
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-      if (updateProduct) updateProduct(updatedProduct);
-      alert("상품이 성공적으로 수정되었습니다.");
+      //return;
     } else {
-      // 상품 등록
-      const newProductId =
-        existingProducts.length > 0
-          ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
-          : 1;
+      const existingProducts =
+        JSON.parse(localStorage.getItem("products")) || [];
 
-      const newProduct = {
-        product_id: newProductId,
-        user_id,
-        seller_id: user_id,
-        title,
-        price,
-        description,
-        category,
-        status: "판매중",
-        images,
-      };
+      if (existingProduct) {
+        // 상품 수정
+        const updatedProduct = {
+          ...existingProduct,
+          title,
+          price,
+          description,
+          category,
+          images, // 기존 이미지 삭제 후 새로운 이미지 저장
+        };
 
-      const updatedProducts = [...existingProducts, newProduct];
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
+        const updatedProducts = existingProducts.map((product) =>
+          product.product_id === existingProduct.product_id
+            ? updatedProduct
+            : product
+        );
 
-      if (addProduct) addProduct(newProduct);
-      alert("상품 등록이 완료되었습니다.");
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+        if (updateProduct) updateProduct(updatedProduct);
+        alert("상품이 성공적으로 수정되었습니다.");
+      } else {
+        // 상품 등록
+        const newProductId =
+          existingProducts.length > 0
+            ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
+            : 1;
+
+        const newProduct = {
+          product_id: newProductId,
+          user_id,
+          seller_id: user_id,
+          title,
+          price,
+          description,
+          category,
+          status: "판매중",
+          images,
+        };
+
+        const updatedProducts = [...existingProducts, newProduct];
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+        if (addProduct) addProduct(newProduct);
+        alert("상품 등록이 완료되었습니다.");
+      }
+
+      navigate("/");
     }
-
-    navigate("/");
   };
 
   return (

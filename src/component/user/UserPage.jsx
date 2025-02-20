@@ -13,14 +13,13 @@ const UserPage = ({ user, products }) => {
   const userProducts = products.filter(
     (product) => String(product.user_id) === user_id
   );
-  console.log(userProducts);
 
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
     setUsers(storedUsers);
 
     const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
-    console.log(foundUser);
+
     setUsers(foundUser);
   }, [user_id]);
 
