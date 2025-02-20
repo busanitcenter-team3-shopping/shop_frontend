@@ -11,11 +11,26 @@ a {
   margin-bottom: 0 !important;
 }
 
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
 .mainImg {
   width: 350px;
   height: 350px;
   object-fit: cover;
   margin-left: 80px;
+  display: block;
+}
+
+.soldout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -50%);
+  width: 80%;
+  max-width: 200px;
 }
 
 .imgbtn {
