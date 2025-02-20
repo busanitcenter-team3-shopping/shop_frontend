@@ -158,12 +158,16 @@ const DetailProduct = ({ user, products, setProducts }) => {
               {product.title}
             </h2>
             {/* 찜 아이콘 */}
-            <img
-              src={like ? "/colorHeart.png" : "/heart.png"}
-              alt="찜"
-              style={{ width: "30px", height: "30px", cursor: "pointer" }}
-              onClick={toggleLike}
-            />
+            {!user ? (
+              <div></div>
+            ) : (
+              <img
+                src={like ? "/colorHeart.png" : "/heart.png"}
+                alt="찜"
+                style={{ width: "30px", height: "30px", cursor: "pointer" }}
+                onClick={toggleLike}
+              />
+            )}
           </div>
 
           <p>
@@ -235,17 +239,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
               <button className="btn btn-danger w-10 mt-3" disabled={purchased}>
                 메시지 보내기
               </button>
-
-              {/* <button
-                className={
-                  purchased === false
-                    ? "btn btn-danger w-10 mt-3"
-                    : "btn w-10 mt-3"
-                }
-                disabled={purchased}
-              >
-                수정하기
-              </button> */}
             </div>
           )}
         </div>
