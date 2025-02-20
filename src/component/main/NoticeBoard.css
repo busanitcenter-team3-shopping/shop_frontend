@@ -27,11 +27,21 @@
   cursor: pointer;
 }
 
+/* 수정: 제목 텍스트를 감싸는 요소에 ellipsis 처리 */
 .notice-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-size: 18px;
   font-weight: bold;
+}
+
+.notice-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
 }
 
 .arrow {

@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle";
 import Navbar from "./component/main/Navbar";
@@ -10,7 +15,6 @@ import ProductsPage from "./component/products/ProductsPage";
 import DetailProduct from "./component/product/DetailProduct";
 import Mypage from "./component/user/Mypage";
 import CartPage from "./component/user/CartPage";
-import CustomerCenter from "./component/main/CustomerCenter";
 import { useEffect, useState } from "react";
 import PrivateRoute from "./component/user/PrivateRoute";
 import ProductRegister from "./component/product/ProductRegister";
@@ -21,6 +25,7 @@ import ReviewPage from "./component/user/ReviewPage";
 import UserPage from "./component/user/UserPage";
 import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
+import NoticeBoard from "./component/main/NoticeBoard";
 
 // 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 
@@ -128,7 +133,9 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/service" element={<CustomerCenter />} />
+        <Route path="/notice-board" element={<NoticeBoard />} />
+        <Route path="/notice-write" element={<NoticeWrite />} />
+        <Route path="*" element={<Navigate to="/notice-board" replace />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />

@@ -65,7 +65,7 @@ function Navbar({ user, setUser }) {
             </Link>
           </>
         )}
-        <Link to="/service" className="text-dark">
+        <Link to="/notice-board" className="text-dark">
           공지사항
         </Link>
       </article>
