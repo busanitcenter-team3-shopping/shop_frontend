@@ -66,7 +66,7 @@ function NoticeWrite() {
             required
           ></textarea>
         </div>
-        <div className="button-group">
+        <div className="button-group notice-btn">
           <button type="submit">저장</button>
           <button type="button" onClick={() => navigate(-1)}>
             취소

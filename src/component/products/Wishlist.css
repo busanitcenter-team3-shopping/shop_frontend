@@ -97,3 +97,13 @@
 .pagination button:hover {
   background-color: #ccc;
 }
+
+.soldout-wish {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65% !important;
+  height: 42% !important;
+  max-width: 200px;
+}

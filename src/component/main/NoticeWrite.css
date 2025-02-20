@@ -45,8 +45,7 @@
 
 .button-group {
   display: flex;
-  flex-direction: row;
-  justify-content: center !important;
+  justify-content: center;
   gap: 5px;
   margin-top: 20px;
 }
@@ -80,4 +79,10 @@
 
 .notice-text {
   resize: none !important;
+}
+
+.notice-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center !important;
 }

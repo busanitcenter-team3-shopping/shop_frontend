@@ -73,7 +73,22 @@ const Wishlist = ({ user, products }) => {
               <div key={product.product_id} className="wishlist-item">
                 <Link to={`/product/${product.product_id}`}>
                   <div className="wishlist-img">
-                    <img src={product.images?.[0]} alt={product.title} />
+                    {product.status === "판매중" ? (
+                      <img src={product.images?.[0]} alt={product.title} />
+                    ) : (
+                      <>
+                        <img
+                          src={product.images?.[0]}
+                          className="card-img-top opacity-50"
+                          alt={product.title}
+                        />
+                        <img
+                          className="soldout-wish"
+                          src="/soldout1.png"
+                          alt="판매완료"
+                        />
+                      </>
+                    )}
                   </div>
                   <div className="wishlist-info">
                     <p

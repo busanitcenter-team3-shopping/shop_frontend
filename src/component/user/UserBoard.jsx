@@ -116,27 +116,44 @@ const UserBoard = ({ user, products }) => {
           <div key={index} className="card">
             <Link to={`/product/${product.product_id}`}>
               <div className="position-relative card-img">
-                <img
-                  src={product.images?.[0]}
-                  className="card-img-top"
-                  alt="..."
-                />
-                {!user ? (
-                  <div></div>
+                {product.status === "판매중" ? (
+                  <>
+                    <img
+                      src={product.images?.[0]}
+                      className="card-img-top"
+                      alt="..."
+                    />
+                    {!user ? (
+                      <div></div>
+                    ) : (
+                      <img
+                        src={
+                          likedItems[product.product_id]
+                            ? "/colorHeart.png"
+                            : "/heart.png"
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleLike(product.product_id);
+                        }}
+                        alt="찜"
+                        className="heart"
+                      />
+                    )}
+                  </>
                 ) : (
-                  <img
-                    src={
-                      likedItems[product.product_id]
-                        ? "/colorHeart.png"
-                        : "/heart.png"
-                    }
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleLike(product.product_id);
-                    }}
-                    alt="찜"
-                    className="heart"
-                  />
+                  <>
+                    <img
+                      src={product.images?.[0]}
+                      className="card-img-top opacity-50"
+                      alt={product.title}
+                    />
+                    <img
+                      className="soldout-user"
+                      src="/soldout1.png"
+                      alt="판매완료"
+                    />
+                  </>
                 )}
               </div>
               <div className="card-body">

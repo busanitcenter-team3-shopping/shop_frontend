@@ -168,22 +168,39 @@ const Mypage = ({ user, setUser, products }) => {
           {likedProducts.length === 0 ? (
             <p className="text-center fw-bold mt-3">찜한 상품이 없습니다.</p>
           ) : (
-            <div className="product-container row1">
+            <div className="product-container row row1">
               {likedProducts.map((product) => (
-                <div key={product.product_id} className="card">
+                <div key={product.product_id}>
                   <Link to={`/product/${product.product_id}`}>
-                    <div className="position-relative card-img">
-                      <img
-                        src={product.images?.[0]}
-                        className="card-img-top"
-                        alt={product.title}
-                      />
-                    </div>
-                    <div className="card-body">
-                      <p className="card-title">{product.title}</p>
-                      <p className="card-price mb-0">
-                        {product.price.toLocaleString()}원
-                      </p>
+                    <div className="card">
+                      <div className="position-relative card-img">
+                        {product.status === "판매중" ? (
+                          <img
+                            src={product.images?.[0]}
+                            className="card-img-top"
+                            alt={product.title}
+                          />
+                        ) : (
+                          <>
+                            <img
+                              src={product.images?.[0]}
+                              className="card-img-top opacity-50"
+                              alt={product.title}
+                            />
+                            <img
+                              className="soldout-my"
+                              src="/soldout1.png"
+                              alt="판매완료"
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div className="card-body">
+                        <p className="card-title">{product.title}</p>
+                        <p className="card-price mb-0">
+                          {product.price.toLocaleString()}원
+                        </p>
+                      </div>
                     </div>
                   </Link>
                 </div>
