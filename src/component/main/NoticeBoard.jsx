@@ -1,35 +1,44 @@
-import React, { useState } from "react";
-import "./CustomerCenter.css";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "./NoticeBoard.css";
 
 function NoticeBoard() {
-  const [notices, setNotices] = useState([
-    {
-      id: 1,
-      title: "공지 1",
-      content: "공지 1의 내용입니다.",
-      expanded: false,
-    },
-    {
-      id: 2,
-      title: "공지 2",
-      content: "공지 2의 내용입니다.",
-      expanded: false,
-    },
-    {
-      id: 3,
-      title: "공지 3",
-      content: "공지 3의 내용입니다.",
-      expanded: false,
-    },
-    {
-      id: 4,
-      title: "공지 4",
-      content: "공지 4의 내용입니다.",
-      expanded: false,
-    },
-  ]);
+  const [notices, setNotices] = useState(() => {
+    const savedNotices = localStorage.getItem("notices");
+    return savedNotices
+      ? JSON.parse(savedNotices)
+      : [
+          {
+            id: 1,
+            title: "공지 1",
+            content: "공지 1의 내용입니다.",
+            expanded: false,
+          },
+          {
+            id: 2,
+            title: "공지 2",
+            content: "공지 2의 내용입니다.",
+            expanded: false,
+          },
+          {
+            id: 3,
+            title: "공지 3",
+            content: "공지 3의 내용입니다.",
+            expanded: false,
+          },
+          {
+            id: 4,
+            title: "공지 4",
+            content: "공지 4의 내용입니다.",
+            expanded: false,
+          },
+        ];
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem("notices", JSON.stringify(notices));
+  }, [notices]);
 
   const toggleExpand = (id) => {
     setNotices((prev) =>
@@ -40,7 +49,7 @@ function NoticeBoard() {
   };
 
   const deleteNotice = (id) => {
-    setNotices((prev) => prev.filter((n) => n.id !== id));
+    setNotices((prev) => prev.filter((notice) => notice.id !== id));
   };
 
   const startEdit = (notice) => {
@@ -57,8 +66,7 @@ function NoticeBoard() {
               className="notice-header"
               onClick={() => toggleExpand(notice.id)}
             >
-              <div />
-              {notice.title}
+              <div className="notice-title">{notice.title}</div>
               <span className={`arrow ${notice.expanded ? "up" : "down"}`}>
                 ▼
               </span>
