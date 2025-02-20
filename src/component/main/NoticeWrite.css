@@ -45,8 +45,9 @@
 
 .button-group {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: row;
+  justify-content: center !important;
+  gap: 5px;
   margin-top: 20px;
 }
 
@@ -75,4 +76,8 @@
 
 .notice-write-container form button[type="button"]:hover {
   background-color: #aaa;
+}
+
+.notice-text {
+  resize: none !important;
 }

@@ -72,7 +72,11 @@ function NoticeBoard() {
               </span>
             </div>
             {notice.expanded && (
-              <div className="notice-content">{notice.content}</div>
+              <div id="textarea" contenteditable className="notice-content">
+                <textarea className="notice-textarea">
+                  {notice.content}
+                </textarea>
+              </div>
             )}
             <button onClick={() => startEdit(notice)}>수정</button>
             <button onClick={() => deleteNotice(notice.id)}>삭제</button>

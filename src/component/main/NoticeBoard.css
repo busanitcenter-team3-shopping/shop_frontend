@@ -42,6 +42,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 10px;
+  max-width: 300px;
 }
 
 .arrow {
@@ -105,4 +106,14 @@
 
 .notice-button:hover {
   background: #0056b3;
+}
+
+.notice-textarea {
+  width: 100%;
+  overflow: auto;
+  border: none;
+}
+
+.notice-textarea:hover {
+  border: none;
 }

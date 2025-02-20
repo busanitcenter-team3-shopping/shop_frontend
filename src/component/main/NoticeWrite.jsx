@@ -60,6 +60,7 @@ function NoticeWrite() {
         <div>
           <label>내용:</label>
           <textarea
+            className="notice-text"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
