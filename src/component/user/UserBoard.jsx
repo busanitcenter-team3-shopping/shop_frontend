@@ -121,19 +121,23 @@ const UserBoard = ({ user, products }) => {
                   className="card-img-top"
                   alt="..."
                 />
-                <img
-                  src={
-                    likedItems[product.product_id]
-                      ? "/colorHeart.png"
-                      : "/heart.png"
-                  }
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleLike(product.product_id);
-                  }}
-                  alt="찜"
-                  className="heart"
-                />
+                {!user ? (
+                  <div></div>
+                ) : (
+                  <img
+                    src={
+                      likedItems[product.product_id]
+                        ? "/colorHeart.png"
+                        : "/heart.png"
+                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleLike(product.product_id);
+                    }}
+                    alt="찜"
+                    className="heart"
+                  />
+                )}
               </div>
               <div className="card-body">
                 <p className="card-title">{product.title}</p>

@@ -27,13 +27,9 @@ import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
 
-// 1.지금 문제는 제가 props를 사용해서 전부 값을 넘기고 있는데
-// useContext를 활용 해서 전역으로 사용할수 있도록 바꾸는것이 효율적이라 이 방법은 다 같이 토론합시다(사용 방법이 기억나는 사람이 있으면 도와주세요....)
+// 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 
-// 2. 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
-
-// 마이페이지 찜 목록을 나오게 설정은 하였으나 순서가 지정이 안됨
-// 해야할 일 : 공지사항, 메세지, 주문내역, 판매물품, 리뷰, 이미지3개 초과시 이상해짐
+// 해야할 일 : 공지사항, 메세지, 주문내역, 판매물품, 리뷰, 이미지3개 초과시 이상해짐, 판매완료시 이미지 변환
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);

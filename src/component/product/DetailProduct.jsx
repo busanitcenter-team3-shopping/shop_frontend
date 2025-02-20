@@ -72,7 +72,18 @@ const DetailProduct = ({ user, products, setProducts }) => {
         JSON.stringify(purchasedProducts)
       );
       setPurchased(true);
-      setProduct((prev) => ({ ...prev, status: "판매완료" }));
+
+      const updatedProduct = { ...product, status: "판매완료" };
+      setProduct(updatedProduct);
+
+      // 로컬스토리지 products 업데이트
+      const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+      const updatedProducts = storedProducts.map((p) =>
+        p.product_id === product.product_id ? updatedProduct : p
+      );
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+      setProducts(updatedProducts);
     }
   };
 
@@ -138,7 +149,18 @@ const DetailProduct = ({ user, products, setProducts }) => {
               </button>
             ))}
           </div>
-          <img className="mainImg" src={mainImg} alt="메인 상품 이미지" />
+          {product.status === "판매중" ? (
+            <img className="mainImg" src={mainImg} alt="메인 상품 이미지" />
+          ) : (
+            <div className="image-container">
+              <img
+                className="mainImg opacity-50"
+                src={mainImg}
+                alt="메인 상품 이미지"
+              />
+              <img className="soldout" src="/soldout1.png" alt="판매완료" />
+            </div>
+          )}
         </div>
 
         {/* 우측 상세 정보 */}
