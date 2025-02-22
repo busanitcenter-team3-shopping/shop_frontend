@@ -15,10 +15,32 @@ const Signup = ({ setUser }) => {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const phoneRegex = /^01[016789]-\d{4}-\d{4}$/;
+
   // 회원가입 API 호출
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
+
+    // 이메일 형식
+    if (!emailRegex.test(email)) {
+      setError("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 비밀번호 형식
+    if (!passwordRegex.test(password)) {
+      setError("영문자, 숫자를 포함하여 8자리 이상입력하셔야합니다.");
+      return;
+    }
+
+    // 전화번호호 형식
+    if (!phoneRegex.test(phone)) {
+      setError("영문자, 숫자를 포함하여 8자리 이상입력하셔야합니다.");
+      return;
+    }
 
     // 비밀번호 확인
     if (password !== confirmPassword) {
@@ -27,7 +49,6 @@ const Signup = ({ setUser }) => {
     }
 
     try {
-      // 백엔드 API 호출
       const response = await api.post("/createuser", {
         name,
         email,
@@ -35,14 +56,16 @@ const Signup = ({ setUser }) => {
         phone,
       });
 
-      // 응답 확인 후 처리
       if (response.status === 200) {
-        alert("회원가입이 성공적으로 완료되었습니다!");
-        navigate("/login"); // 회원가입 후 로그인 페이지로 이동
+        alert("회원가입이 되었습니다.");
+        navigate("/");
       }
     } catch (error) {
-      console.error("회원가입 실패:", error);
-      setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+      if (error.response && error.response.status === 409) {
+        setError("동일한 이메일이 존재합니다.");
+      } else {
+        setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
@@ -98,7 +121,7 @@ const Signup = ({ setUser }) => {
           </div>
 
           <div className="input-group">
-            <label>전화번호</label>
+            <label>전화번호(-포함)</label>
             <input
               type="tel"
               value={phone}

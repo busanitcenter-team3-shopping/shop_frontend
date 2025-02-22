@@ -1,8 +1,7 @@
-import { meta } from "@eslint/js";
 import axios from "axios";
 
 // 환경 변수에서 API URL 가져오기
-const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
+const API_BASE_URL = "http://localhost:8090";
 
 console.log("API URL:", API_BASE_URL);
 
