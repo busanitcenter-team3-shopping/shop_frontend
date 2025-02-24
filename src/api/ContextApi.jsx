@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import api from './axiosInstance'
 
 const ContextApi = createContext();
 
-export const ContextProivider = ({children}) => {
+export const ContextProvider = ({children}) => {
   //로컬 토큰 들고오기
   const getToken = localStorage.getItem("JWT_TOKEN")?JSON.stringify(localStorage.getItem("JWT_TOKEN")) : null;
 
   const [token, setToken] = useState(getToken)
 
   // 현재 로그인 유저 관리
-  const [currentUser, setCurrentUser] = userState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const fetchUser = async () => {
     const user = JSON.parse(localStorage.getItem("USER"));
@@ -33,12 +34,12 @@ export const ContextProivider = ({children}) => {
   }, [token]);
 
   return (
-    <ContextApi.provider 
+    <ContextApi.Provider 
     value={{
       token, setToken, currentUser, setCurrentUser
     }}>
     {children}
-    </ContextApi.provider>
+    </ContextApi.Provider>
   )
 };
 
