@@ -1,31 +1,71 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
+import { useMyContext } from "../../api/ContextApi";
+import api from "../../api/axiosInstance";
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [jwtToken, setJwtToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { setToken, token } = useMyContext();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleSuccessfulLogin = (token, decodedToken) => {
+    const user = {
+      username: decodedToken.sub,
+    };
+    localStorage.setItem("JWT_TOKEN", token);
+    localStorage.setItem("USER", JSON.stringify(user));
+
+    setToken(token);
+
+    navigate("/");
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    try {
+      setLoading(true);
+      const response = await api.post("/user/login", { email, password });
 
-    const user = existingUsers.find(
-      (user) => user.email === email && user.password === password
-    );
+      alert("로그인이 되었습니다.");
 
-    if (!user) {
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
-      return;
+      if (response.status === 200 && response.data.jwtToken) {
+        setJwtToken(response.data.jwtToken);
+        const decodedToken = jwtDecode(response.data.jwtToken);
+        console.log(decodedToken);
+        handleSuccessfulLogin(response.data.jwtToken, decodedToken);
+        console.log(token);
+      } else {
+        setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
+      }
+    } catch (error) {
+      if (error) {
+        setError("로그인 실패! 에러가 발생하였습니다.");
+      }
+    } finally {
+      setLoading(false);
     }
-    console.log(user);
 
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-    setUser(user);
-    navigate("/");
+    //   const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    //   const user = existingUsers.find(
+    //     (user) => user.email === email && user.password === password
+    //   );
+
+    //   if (!user) {
+    //     setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    //     return;
+    //   }
+    //   console.log(user);
+
+    //   localStorage.setItem("loggedInUser", JSON.stringify(user));
+    //   setUser(user);
+    //   navigate("/");
   };
 
   return (
