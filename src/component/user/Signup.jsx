@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Signup.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useMyContext } from "../../api/ContextApi";
 import axios from "axios";
 import api from "../../api/axiosInstance";
 
@@ -11,9 +12,10 @@ const Signup = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const {token} = useMyContext();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -36,7 +38,7 @@ const Signup = ({ setUser }) => {
       return;
     }
 
-    // 전화번호호 형식
+    // 전화번호 형식
     if (!phoneRegex.test(phone)) {
       setError("영문자, 숫자를 포함하여 8자리 이상입력하셔야합니다.");
       return;
@@ -49,8 +51,8 @@ const Signup = ({ setUser }) => {
     }
 
     try {
-      const response = await api.post("/createuser", {
-        name,
+      const response = await api.post("/user/createuser", {
+        username,
         email,
         password,
         phone,
@@ -59,6 +61,7 @@ const Signup = ({ setUser }) => {
       if (response.status === 200) {
         alert("회원가입이 되었습니다.");
         navigate("/");
+        console.log(token)
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -68,6 +71,10 @@ const Signup = ({ setUser }) => {
       }
     }
   };
+
+  useEffect(() => {
+    if(token) navigate("/");
+  },[navigate,token])
 
   return (
     <div className="signup-container">
@@ -113,8 +120,8 @@ const Signup = ({ setUser }) => {
             <label>이름</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="이름 입력"
               required
             />

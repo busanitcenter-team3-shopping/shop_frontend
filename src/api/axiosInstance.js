@@ -13,14 +13,15 @@ const api = axios.create({
   withCredentials: true,
 });
 
-//Axios 인터셉터로 미리 jwt 토큰을 가져와 헤더에 설정
 api.interceptors.request.use(
   async (config) => {
-    //로컬스토리지에 jwt토큰이 있으면 헤더에 추가함
+    //로컬스토리지에 jwt 토큰이 있으면 헤더에 추가한다.
+
     const token = localStorage.getItem("JWT_TOKEN");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => {
