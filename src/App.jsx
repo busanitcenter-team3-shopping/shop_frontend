@@ -70,7 +70,7 @@ function App() {
           path="/"
           element={<MainPage user={user} products={products} />}
         /> */}
-        <Route path="/login" element={<Login setUser={setUser} />} /> 
+        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         {/* <Route
           path="/add-product"
