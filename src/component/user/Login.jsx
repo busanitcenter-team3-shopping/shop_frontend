@@ -3,6 +3,7 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 import api from "../../api/axiosInstance";
+import { jwtDecode } from "jwt-decode";
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ const Login = ({ setUser }) => {
 
     setToken(token);
 
-    navigate("/");
+    
   };
 
   const handleLogin = async (e) => {
@@ -40,6 +41,7 @@ const Login = ({ setUser }) => {
         console.log(decodedToken);
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
         console.log(token);
+        navigate("/");
       } else {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       }

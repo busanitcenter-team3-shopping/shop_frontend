@@ -20,7 +20,7 @@ function Navbar({ user, setUser }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
+    const storedUser = localStorage.getItem("USER");
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
@@ -34,7 +34,7 @@ function Navbar({ user, setUser }) {
   }, []);
 
   const handellogout = () => {
-    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("USER");
     setUser(null);
     alert("로그아웃 되었습니다.");
     navigate("/");
