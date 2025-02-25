@@ -4,6 +4,7 @@ import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useMyContext } from "../../api/ContextApi";
 
 const categories = [
   { id: 1, name: "전체" },
@@ -18,6 +19,7 @@ function Navbar({ user, setUser }) {
   const location = useLocation(); // 현재 경로 가져오기
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { setToken } = useMyContext();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
@@ -31,11 +33,13 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
-  }, []);
+  }, [location]);
 
   const handellogout = () => {
+    localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("USER");
     setUser(null);
+    setToken(null);
     alert("로그아웃 되었습니다.");
     navigate("/");
   };
@@ -60,7 +64,7 @@ function Navbar({ user, setUser }) {
             <Link to="/login" className="me-3 text-dark">
               로그인
             </Link>
-            <Link to="signup" className="me-3 text-dark">
+            <Link to="/signup" className="me-3 text-dark">
               회원가입
             </Link>
           </>
