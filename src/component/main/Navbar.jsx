@@ -6,13 +6,13 @@ import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 
-const categories = [
-  { id: 1, name: "전체" },
-  { id: 2, name: "IT" },
-  { id: 3, name: "의류" },
-  { id: 4, name: "문구" },
-  { id: 5, name: "악기" },
-];
+// const categories = [
+//   { id: 1, name: "전체" },
+//   { id: 2, name: "IT" },
+//   { id: 3, name: "의류" },
+//   { id: 4, name: "문구" },
+//   { id: 5, name: "악기" },
+// ];
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
@@ -20,6 +20,15 @@ function Navbar({ user, setUser }) {
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken } = useMyContext();
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8090/enum")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
@@ -48,7 +57,7 @@ function Navbar({ user, setUser }) {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       navigate(
-        `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
+        `/products?category=ALL&search=${encodeURIComponent(searchQuery)}`
       );
       setSearchQuery(""); // 검색 후 검색창 비우기
     }
@@ -97,10 +106,10 @@ function Navbar({ user, setUser }) {
           {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
           {showCategories && (
             <ul className="list-group">
-              {categories.map((category) => (
-                <li key={category.id} className="list-group-item">
+              {categories.map((category, index) => (
+                <li key={index} className="list-group-item">
                   <Link
-                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
+                    to={`/product?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
                     onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
                     className="category-link"
                   >
