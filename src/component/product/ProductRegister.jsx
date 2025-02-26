@@ -55,7 +55,7 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
   };
 
   // 상품 등록 및 수정 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (images.length > maxImg) {

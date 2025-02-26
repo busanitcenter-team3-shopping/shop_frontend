@@ -32,7 +32,6 @@ const Login = ({ setUser }) => {
     try {
       setLoading(true);
       const response = await api.post("/user/login", { email, password });
-
       alert("로그인이 되었습니다.");
 
       if (response.status === 200 && response.data.jwtToken) {
