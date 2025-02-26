@@ -33,12 +33,17 @@ import AdminLogin from "./component/user/AdminLogin";
 // 해야할 일 : 공지사항, 메세지, 주문내역, 판매물품, 리뷰, 이미지3개 초과시 이상해짐, 판매완료시 이미지 변환
 function App() {
   const [user, setUser] = useState(null);
+  const [USER, setUSER] = useState(null);
   const [products, setProducts] = useState([]);
 
   // 로컬에 있는 상품들을 전역으로 쓰려고
   useEffect(() => {
     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
     setProducts(storedProducts);
+  }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("USER")) || [];
+    setUser(user);
   }, []);
 
   // 로컬 데이터 지우기
@@ -59,7 +64,7 @@ function App() {
     );
 
     setProducts(updatedProducts);
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+    localStorage.setItem("product", JSON.stringify(updatedProducts));
   };
 
   return (
@@ -73,9 +78,13 @@ function App() {
         />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup setUser={setUser} />} />
+<<<<<<< HEAD
+        <Route
+=======
         <Route path="/adminlogin" element={<AdminLogin setUser={setUser} />} />
         {/* <Route
 
+>>>>>>> origin/dev
           path="/add-product"
           element={
             <PrivateRoute user={user}>
@@ -83,7 +92,7 @@ function App() {
             </PrivateRoute>
           }
         />
-         {/* <Route
+        {/* <Route
           path="/edit-product"
           element={
             <PrivateRoute user={user}>
@@ -95,18 +104,20 @@ function App() {
             </PrivateRoute>
           }
         />
+        */}
         <Route
           path="/mypage"
           element={
-            <PrivateRoute user={user}>
+            <PrivateRoute USER={USER} user={user}>
               <Mypage user={user} setUser={setUser} products={products} />
             </PrivateRoute>
           }
         />
+
         <Route
-          path="/products"
+          path="/product"
           element={<ProductsPage products={products} user={user} />}
-        /> */}
+        />
 
         {/* <Route
           path="/product/:product_id"

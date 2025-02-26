@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
+import { Category } from "../../enums/Category";
 
 function ProductsList({ selectedCategory, products, user }) {
   let filteredProducts = [];
 
-  if (!selectedCategory || selectedCategory === "전체") {
+  if (!selectedCategory || selectedCategory === "ALL") {
     filteredProducts = [...products].reverse();
   } else {
     filteredProducts = [...products]
-      .filter((product) => product.category === selectedCategory)
+      .filter(
+        (product) =>
+          product.category === (Category[selectedCategory] || selectedCategory) // Enum 변환 처리
+      )
       .reverse();
   }
 
