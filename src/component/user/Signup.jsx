@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./Signup.css";
 import { useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
-import axios from "axios";
 import api from "../../api/axiosInstance";
 
 const Signup = ({ setUser }) => {
@@ -15,7 +14,7 @@ const Signup = ({ setUser }) => {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
-  const {token} = useMyContext();
+  const { token } = useMyContext();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -61,7 +60,7 @@ const Signup = ({ setUser }) => {
       if (response.status === 200) {
         alert("회원가입이 되었습니다.");
         navigate("/");
-        console.log(token)
+        console.log(token);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -73,8 +72,8 @@ const Signup = ({ setUser }) => {
   };
 
   useEffect(() => {
-    if(token) navigate("/");
-  },[navigate,token])
+    if (token) navigate("/");
+  }, [navigate, token]);
 
   return (
     <div className="signup-container">

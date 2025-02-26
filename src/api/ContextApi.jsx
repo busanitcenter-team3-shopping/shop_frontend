@@ -17,7 +17,7 @@ export const ContextProvider = ({ children }) => {
   const fetchUser = async () => {
     const user = JSON.parse(localStorage.getItem("USER"));
 
-    if (user?.username) {
+    if (user?.email) {
       try {
         const { data } = await api.get(`/user`);
 

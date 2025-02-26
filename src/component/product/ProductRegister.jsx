@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./productRegister.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
 const ProductRegister = ({ addProduct, updateProduct }) => {
   const location = useLocation();
@@ -29,92 +30,82 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
     }
   }, [existingProduct]);
 
-  // 파일을 Base64로 변환하는 함수
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   // 이미지 변경 핸들러 (새로운 이미지만 저장)
   const handleImageChange = async (e) => {
     const selectedFiles = Array.from(e.target.files);
 
     if (selectedFiles.length > maxImg) {
-      alert(`이미지 변경`);
+      alert(`이미지는 3개까지 등록가능합니다.`);
     } else {
-      // 새로운 이미지만 Base64로 변환하여 저장
-      const base64Images = await Promise.all(
-        selectedFiles.map(convertToBase64)
-      );
-      setImages(base64Images); // 기존 이미지 삭제후 이미지 추가
+      setImages(selectedFiles); // 기존 이미지 삭제후 이미지 추가
     }
   };
 
   // 상품 등록 및 수정 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (images.length > maxImg) {
-      alert("최대 3개의 이미지만 등록할 수 있습니다.");
-      //return;
-    } else {
-      const existingProducts =
-        JSON.parse(localStorage.getItem("products")) || [];
+    // if (images.length > maxImg) {
+    //   alert("최대 3개의 이미지만 등록할 수 있습니다.");
+    //   //return;
+    // } else {
+    //   const existingProducts =
+    //     JSON.parse(localStorage.getItem("products")) || [];
 
-      if (existingProduct) {
-        // 상품 수정
-        const updatedProduct = {
-          ...existingProduct,
-          title,
-          price,
-          description,
-          category,
-          images, // 기존 이미지 삭제 후 새로운 이미지 저장
-        };
+    //   if (existingProduct) {
+    //     // 상품 수정
+    //     const updatedProduct = {
+    //       ...existingProduct,
+    //       title,
+    //       price,
+    //       description,
+    //       category,
+    //       images, // 기존 이미지 삭제 후 새로운 이미지 저장
+    //     };
 
-        const updatedProducts = existingProducts.map((product) =>
-          product.product_id === existingProduct.product_id
-            ? updatedProduct
-            : product
-        );
+    //     const updatedProducts = existingProducts.map((product) =>
+    //       product.product_id === existingProduct.product_id
+    //         ? updatedProduct
+    //         : product
+    //     );
 
-        localStorage.setItem("products", JSON.stringify(updatedProducts));
+    //     localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-        if (updateProduct) updateProduct(updatedProduct);
-        alert("상품이 성공적으로 수정되었습니다.");
-      } else {
-        // 상품 등록
-        const newProductId =
-          existingProducts.length > 0
-            ? Math.max(...existingProducts.map((p) => p.product_id)) + 1
-            : 1;
+    //     if (updateProduct) updateProduct(updatedProduct);
+    //     alert("상품이 성공적으로 수정되었습니다.");
+    //   } else {
+    // 상품 등록
 
-        const newProduct = {
-          product_id: newProductId,
-          user_id,
-          seller_id: user_id,
-          title,
-          price,
-          description,
-          category,
-          status: "판매중",
-          images,
-        };
+    const productData = {
+      title,
+      price,
+      description,
+      category,
+    };
 
-        const updatedProducts = [...existingProducts, newProduct];
-        localStorage.setItem("products", JSON.stringify(updatedProducts));
+    const formData = new FormData();
+    formData.append("product", JSON.stringify(productData)); // JSON 문자열로 변환
 
-        if (addProduct) addProduct(newProduct);
-        alert("상품 등록이 완료되었습니다.");
-      }
-
-      navigate("/");
+    const files = document.querySelector("#fileInput").files;
+    for (let i = 0; i < maxImg; i++) {
+      formData.append("files", files[i]); // 여러 개의 파일 추가
     }
+
+    try {
+      const response = await api.post("product/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // JSON 대신 multipart/form-data 사용
+        },
+      });
+
+      console.log("상품 등록 성공!", response.data);
+    } catch (error) {
+      console.error("상품 등록 실패", error.response?.data || error.message);
+    }
+
+    navigate("/");
   };
+  // };
 
   return (
     <div className="container mt-5">
@@ -189,11 +180,11 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
             <div className="form-group mt-3">
               <label htmlFor="image">상품 이미지 (최대 3개)</label>
               <input
-                id="image"
+                id="fileInput"
                 type="file"
-                onChange={handleImageChange}
                 accept="image/*"
                 className="form-control-file"
+                onChange={handleImageChange}
                 multiple
                 required
               />

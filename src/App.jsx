@@ -75,6 +75,7 @@ function App() {
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route path="/adminlogin" element={<AdminLogin setUser={setUser} />} />
         {/* <Route
+
           path="/add-product"
           element={
             <PrivateRoute user={user}>
@@ -82,7 +83,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
+         {/* <Route
           path="/edit-product"
           element={
             <PrivateRoute user={user}>

@@ -20,7 +20,9 @@ function Navbar({ user, setUser }) {
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken } = useMyContext();
+
   const [admin, setAdmin] = useState(null);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
@@ -34,6 +36,7 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
+
     //관리자
     const storedAdmin = localStorage.getItem("ADMIN_USER");
     if (storedAdmin) {
@@ -47,6 +50,7 @@ function Navbar({ user, setUser }) {
       setAdmin(null);
     }
   }, [location, setUser]);
+
 
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
@@ -128,8 +132,8 @@ function Navbar({ user, setUser }) {
               {categories.map((category) => (
                 <li key={category.id} className="list-group-item">
                   <Link
-                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
-                    onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                    to={`/products?category=${category.name}`} // URL에 카테고리 쿼리 추가
+                    onClick={() => setShowCategories(false)} // 클릭 후 목록 숨기기
                     className="category-link"
                   >
                     {category.name}
