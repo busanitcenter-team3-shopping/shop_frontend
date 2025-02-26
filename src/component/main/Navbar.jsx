@@ -4,6 +4,7 @@ import note from "../../assets/icon-envelope.svg";
 import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useMyContext } from "../../api/ContextApi";
 
 const categories = [
   { id: 1, name: "전체" },
@@ -18,9 +19,11 @@ function Navbar({ user, setUser }) {
   const location = useLocation(); // 현재 경로 가져오기
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { setToken } = useMyContext();
+  const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
+    const storedUser = localStorage.getItem("USER");
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
@@ -31,12 +34,35 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
-  }, []);
+    //관리자
+    const storedAdmin = localStorage.getItem("ADMIN_USER");
+    if (storedAdmin) {
+      try {
+        setAdmin(JSON.parse(storedAdmin));
+      } catch (error) {
+        console.error("관리자 JSON 파싱 오류:", error);
+        setAdmin(null);
+      }
+    } else {
+      setAdmin(null);
+    }
+  }, [location, setUser]);
 
   const handellogout = () => {
-    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("JWT_TOKEN");
+    localStorage.removeItem("USER");
     setUser(null);
+    setToken(null);
     alert("로그아웃 되었습니다.");
+    navigate("/");
+  };
+
+  //관리자
+  const handleAdminLogout = () => {
+    localStorage.removeItem("ADMIN_JWT_TOKEN");
+    localStorage.removeItem("ADMIN_USER");
+    setAdmin(null);
+    alert("관리자 로그아웃 되었습니다.");
     navigate("/");
   };
 
@@ -53,15 +79,21 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
+        {/* 만약 관리자 또는 일반 사용자가 로그인 중이면 로그인/회원가입 링크는 사라짐 */}
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
+        ) : admin ? (
+          <button onClick={handleAdminLogout}>로그아웃</button>
         ) : (
           <>
             <Link to="/login" className="me-3 text-dark">
               로그인
             </Link>
-            <Link to="signup" className="me-3 text-dark">
+            <Link to="/signup" className="me-3 text-dark">
               회원가입
+            </Link>
+            <Link to="/adminlogin" className="me-3 text-dark">
+              관리자
             </Link>
           </>
         )}
