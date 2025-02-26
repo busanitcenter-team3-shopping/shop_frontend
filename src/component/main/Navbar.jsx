@@ -6,13 +6,13 @@ import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 
-const categories = [
-  { id: 1, name: "전체" },
-  { id: 2, name: "IT" },
-  { id: 3, name: "의류" },
-  { id: 4, name: "문구" },
-  { id: 5, name: "악기" },
-];
+// const categories = [
+//   { id: 1, name: "전체" },
+//   { id: 2, name: "IT" },
+//   { id: 3, name: "의류" },
+//   { id: 4, name: "문구" },
+//   { id: 5, name: "악기" },
+// ];
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
@@ -20,6 +20,17 @@ function Navbar({ user, setUser }) {
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken } = useMyContext();
+
+  const [admin, setAdmin] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8090/enum")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
@@ -33,7 +44,20 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
-  }, [location]);
+
+    //관리자
+    const storedAdmin = localStorage.getItem("ADMIN_USER");
+    if (storedAdmin) {
+      try {
+        setAdmin(JSON.parse(storedAdmin));
+      } catch (error) {
+        console.error("관리자 JSON 파싱 오류:", error);
+        setAdmin(null);
+      }
+    } else {
+      setAdmin(null);
+    }
+  }, [location, setUser]);
 
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
@@ -44,11 +68,20 @@ function Navbar({ user, setUser }) {
     navigate("/");
   };
 
+  //관리자
+  const handleAdminLogout = () => {
+    localStorage.removeItem("ADMIN_JWT_TOKEN");
+    localStorage.removeItem("ADMIN_USER");
+    setAdmin(null);
+    alert("관리자 로그아웃 되었습니다.");
+    navigate("/");
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       navigate(
-        `/products?category=전체&search=${encodeURIComponent(searchQuery)}`
+        `/products?category=ALL&search=${encodeURIComponent(searchQuery)}`
       );
       setSearchQuery(""); // 검색 후 검색창 비우기
     }
@@ -57,8 +90,11 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
+        {/* 만약 관리자 또는 일반 사용자가 로그인 중이면 로그인/회원가입 링크는 사라짐 */}
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
+        ) : admin ? (
+          <button onClick={handleAdminLogout}>로그아웃</button>
         ) : (
           <>
             <Link to="/login" className="me-3 text-dark">
@@ -66,6 +102,9 @@ function Navbar({ user, setUser }) {
             </Link>
             <Link to="/signup" className="me-3 text-dark">
               회원가입
+            </Link>
+            <Link to="/adminlogin" className="me-3 text-dark">
+              관리자
             </Link>
           </>
         )}
@@ -97,8 +136,8 @@ function Navbar({ user, setUser }) {
           {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
           {showCategories && (
             <ul className="list-group">
-              {categories.map((category) => (
-                <li key={category.id} className="list-group-item">
+              {categories.map((category, index) => (
+                <li key={index} className="list-group-item">
                   <Link
                     to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
                     onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기

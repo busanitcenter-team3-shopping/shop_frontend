@@ -36,6 +36,7 @@ const Mypage = ({ user, setUser, products }) => {
     const { setToken } = useMyContext();
 
   useEffect(() => {
+
     const updatedUser = JSON.parse(localStorage.getItem("loggedInUser")); // 현재 로그인된 유저의 정보
 
     if (updatedUser) {
