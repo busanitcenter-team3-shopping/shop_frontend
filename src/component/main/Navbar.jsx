@@ -21,6 +21,9 @@ function Navbar({ user, setUser }) {
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken } = useMyContext();
 
+  const [admin, setAdmin] = useState(null);
+
+
   useEffect(() => {
     const storedUser = localStorage.getItem("USER");
     if (storedUser) {
@@ -33,7 +36,21 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
-  }, [location]);
+
+    //관리자
+    const storedAdmin = localStorage.getItem("ADMIN_USER");
+    if (storedAdmin) {
+      try {
+        setAdmin(JSON.parse(storedAdmin));
+      } catch (error) {
+        console.error("관리자 JSON 파싱 오류:", error);
+        setAdmin(null);
+      }
+    } else {
+      setAdmin(null);
+    }
+  }, [location, setUser]);
+
 
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
@@ -41,6 +58,15 @@ function Navbar({ user, setUser }) {
     setUser(null);
     setToken(null);
     alert("로그아웃 되었습니다.");
+    navigate("/");
+  };
+
+  //관리자
+  const handleAdminLogout = () => {
+    localStorage.removeItem("ADMIN_JWT_TOKEN");
+    localStorage.removeItem("ADMIN_USER");
+    setAdmin(null);
+    alert("관리자 로그아웃 되었습니다.");
     navigate("/");
   };
 
@@ -57,8 +83,11 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
+        {/* 만약 관리자 또는 일반 사용자가 로그인 중이면 로그인/회원가입 링크는 사라짐 */}
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
+        ) : admin ? (
+          <button onClick={handleAdminLogout}>로그아웃</button>
         ) : (
           <>
             <Link to="/login" className="me-3 text-dark">
@@ -66,6 +95,9 @@ function Navbar({ user, setUser }) {
             </Link>
             <Link to="/signup" className="me-3 text-dark">
               회원가입
+            </Link>
+            <Link to="/adminlogin" className="me-3 text-dark">
+              관리자
             </Link>
           </>
         )}
@@ -100,8 +132,8 @@ function Navbar({ user, setUser }) {
               {categories.map((category) => (
                 <li key={category.id} className="list-group-item">
                   <Link
-                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
-                    onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
+                    to={`/products?category=${category.name}`} // URL에 카테고리 쿼리 추가
+                    onClick={() => setShowCategories(false)} // 클릭 후 목록 숨기기
                     className="category-link"
                   >
                     {category.name}
