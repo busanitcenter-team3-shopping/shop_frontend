@@ -45,36 +45,34 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (images.length > maxImg) {
-    //   alert("최대 3개의 이미지만 등록할 수 있습니다.");
-    //   //return;
-    // } else {
-    //   const existingProducts =
-    //     JSON.parse(localStorage.getItem("products")) || [];
+   
+    
+      const existingProducts =
+        JSON.parse(localStorage.getItem("products")) || [];
 
-    //   if (existingProduct) {
-    //     // 상품 수정
-    //     const updatedProduct = {
-    //       ...existingProduct,
-    //       title,
-    //       price,
-    //       description,
-    //       category,
-    //       images, // 기존 이미지 삭제 후 새로운 이미지 저장
-    //     };
+      if (existingProduct) {
+        // 상품 수정
+        const updatedProduct = {
+          ...existingProduct,
+          title,
+          price,
+          description,
+          category,
+          images, // 기존 이미지 삭제 후 새로운 이미지 저장
+        };
 
-    //     const updatedProducts = existingProducts.map((product) =>
-    //       product.product_id === existingProduct.product_id
-    //         ? updatedProduct
-    //         : product
-    //     );
+        const updatedProducts = existingProducts.map((product) =>
+          product.product_id === existingProduct.product_id
+            ? updatedProduct
+            : product
+        );
 
-    //     localStorage.setItem("products", JSON.stringify(updatedProducts));
+        localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-    //     if (updateProduct) updateProduct(updatedProduct);
-    //     alert("상품이 성공적으로 수정되었습니다.");
-    //   } else {
-    // 상품 등록
+        if (updateProduct) updateProduct(updatedProduct);
+        alert("상품이 성공적으로 수정되었습니다.");
+      } else {
+ 
 
     const productData = {
       title,
@@ -98,13 +96,15 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
         },
       });
 
-      console.log("상품 등록 성공!", response.data);
+      alert("상품이 등록 되었습니다.")
     } catch (error) {
       console.error("상품 등록 실패", error.response?.data || error.message);
     }
 
     navigate("/");
   };
+    }
+
   // };
 
   return (
@@ -207,6 +207,6 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
       </div>
     </div>
   );
-};
+}
 
 export default ProductRegister;
