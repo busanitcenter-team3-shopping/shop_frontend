@@ -37,6 +37,8 @@ const Login = ({ setUser }) => {
       if (response.status === 200 && response.data.jwtToken) {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
+        
+        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken))
         console.log(decodedToken);
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
         console.log(token);

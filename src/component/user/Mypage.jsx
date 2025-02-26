@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./myPage.css";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
+import { useMyContext } from "../../api/ContextApi";
 
 const orders = [
   {
@@ -31,9 +33,11 @@ const orders = [
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
+    const { setToken } = useMyContext();
 
   useEffect(() => {
     const updatedUser = JSON.parse(localStorage.getItem("loggedInUser")); // 현재 로그인된 유저의 정보
+
     if (updatedUser) {
       setUser(updatedUser);
     }
@@ -55,24 +59,36 @@ const Mypage = ({ user, setUser, products }) => {
     }
   }, [setUser, products]);
 
-  const handleDelete = () => {
+  // 회원 삭제
+  const handleDelete = async () => {
     const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
+    if(!isConfirmed) return;
 
-    if (!isConfirmed) {
-      return;
-    }
+    try {
+      // 로그인된 사용자
+      const user = JSON.stringify(localStorage.getItem("loggedInUser"));
+      console.log(user);
+      if(!user) {
+        alert("사용자 정보가 없습니다.")
+        return
+      }
+      const response = await api.delete(`/user/delete/${user.user.id}`);
+      if(response.status === 200) {
+        alert("탈퇴가 완료되었습니다.");
 
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    const updatedUsers = existingUsers.filter(
-      (existingUsers) => existingUsers.email !== user.email
-    );
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-    localStorage.removeItem("loggedInUser");
+        localStorage.removeItem("loggedInUser")
+        
     setUser(null);
-
-    alert("탈퇴가 완료되었습니다.");
+    setToken(null);
     navigate("/");
+      }
+
+    }catch(error) {
+      console.error("에러 발생: " + error)
+
+    }
+    
+
   };
 
   const recentOrders = orders.slice(0, 2);
@@ -125,7 +141,7 @@ const Mypage = ({ user, setUser, products }) => {
               <img src="/basicUser.png" className="profile-img" />
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h3 className="profile-name">{user?.name}</h3>
+              <h3 className="profile-name">{user?.username}</h3>
               <p className="email-text">{user?.email}</p>
             </div>
           </div>
