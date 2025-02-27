@@ -22,8 +22,6 @@ const Login = ({ setUser }) => {
     localStorage.setItem("USER", JSON.stringify(user));
 
     setToken(token);
-
-    
   };
 
   const handleLogin = async (e) => {
@@ -31,14 +29,14 @@ const Login = ({ setUser }) => {
 
     try {
       setLoading(true);
-      const response = await api.post("/user/login", { email, password });
+      const response = await api.post("/login", { email, password });
       alert("로그인이 되었습니다.");
 
       if (response.status === 200 && response.data.jwtToken) {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
-        
-        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken))
+
+        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken));
         console.log(decodedToken);
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
         console.log(token);
@@ -47,7 +45,9 @@ const Login = ({ setUser }) => {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       }
     } catch (error) {
-      if (error) {
+      if (error.response && error.response.status === 401) {
+        setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
+      } else {
         setError("로그인 실패! 에러가 발생하였습니다.");
       }
     } finally {
