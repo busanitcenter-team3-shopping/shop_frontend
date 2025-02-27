@@ -4,14 +4,6 @@ import ProductsList from "./ProductsList";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 
-const categoryMap = {
-  ALL: "전체",
-  CLOTHING: "의류",
-  IT: "IT",
-  STATIONERY: "문구",
-  INSTRUMENT: "악기",
-};
-
 const ProductsPage = ({ user }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,7 +20,7 @@ const ProductsPage = ({ user }) => {
     const params = new URLSearchParams(location.search);
     const categoryParam = params.get("category") || "ALL"; // 카테고리
     const searchQuery = params.get("search") || "";
-    setSelectedCategory(categoryMap[categoryParam] || categoryParam);
+    setSelectedCategory(categoryParam);
     setSearchQuery(searchQuery);
 
     api

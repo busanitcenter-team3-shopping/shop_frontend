@@ -6,7 +6,7 @@ import api from "../../api/axiosInstance";
 
 const Signup = ({ setUser }) => {
   const navigate = useNavigate();
-  const { token, currentUser } = useMyContext();
+  const { token, currentUser, setCurrentUser } = useMyContext();
 
   // 입력 필드 상태 관리
   const [email, setEmail] = useState("");
@@ -20,15 +20,14 @@ const Signup = ({ setUser }) => {
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   const phoneRegex = /^01[016789]-\d{4}-\d{4}$/;
 
-  const isEditMode = token && currentUser
+  const isEditMode = token && currentUser;
 
-  
   useEffect(() => {
     if (isEditMode && currentUser) {
       setEmail(currentUser.email);
       setUsername(currentUser.username);
-      setPhone(currentUser.phone)
-    };
+      setPhone(currentUser.phone);
+    }
   }, [isEditMode, currentUser]);
 
   // 회원가입 API 호출
@@ -48,7 +47,6 @@ const Signup = ({ setUser }) => {
       return;
     }
 
-
     // 전화번호 형식
     if (!phoneRegex.test(phone)) {
       setError("영문자, 숫자를 포함하여 8자리 이상입력하셔야합니다.");
@@ -56,72 +54,83 @@ const Signup = ({ setUser }) => {
     }
 
     // 비밀번호 확인
-    if (!isEditMode &&password !== confirmPassword) {
+    if (!isEditMode && password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.");
       return;
     }
     try {
-      if(isEditMode) {
+      if (isEditMode) {
         // 회원수정
-        const response = await api.put(`/user/updateuser/${currentUser.userId}`, {
-        username, password: password || undefined, phone
-    });
+        const response = await api.put(
+          `/user/updateuser/${currentUser.userId}`,
+          {
+            username,
+            password: password || undefined,
+            phone,
+          }
+        );
 
-    if(response.status === 200) {
-      alert("수정이 완료되었습니다.");
-      navigate("/")
-    }
-  }else {
-    // 가입
-    try {
-      const response = await api.post("/user/createuser", {
-        username,
-        email,
-        password,
-        phone,
-      });
+        if (response.status === 200) {
+          const usdatedUser = { ...currentUser, username };
+          localStorage.setItem("USER", JSON.stringify(usdatedUser));
+          setCurrentUser(usdatedUser);
+          alert("수정이 완료되었습니다.");
+          navigate("/");
+        }
+      } else {
+        // 가입
+        try {
+          const response = await api.post("/user/createuser", {
+            username,
+            email,
+            password,
+            phone,
+          });
 
-      if (response.status === 200) {
-        alert("회원가입이 되었습니다.");
-        navigate("/");
+          if (response.status === 200) {
+            alert("회원가입이 되었습니다.");
+            navigate("/");
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 409) {
+            setError("동일한 이메일이 존재합니다.");
+          } else {
+            setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+          }
+        }
       }
     } catch (error) {
-      if (error.response && error.response.status === 409) {
-        setError("동일한 이메일이 존재합니다.");
+      if (error.response) {
+        setError(`${error.response.data}`);
       } else {
-        setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+        setError("네트워크 오류");
       }
     }
   };
-} catch(error) {
-  if(error.response) {
-    setError(`${error.response.data}`)
-  } else {
-    setError("네트워크 오류")
-  }
-}
-  }
 
   return (
     <div className="signup-container">
       <div className="signup-box">
-        <h2>{isEditMode ?"회원수정" : "회원가입"}</h2>
+        <h2>{isEditMode ? "회원수정" : "회원가입"}</h2>
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleSignup}>
-          {isEditMode? <div></div>: <div className="input-group">
-            <label>이메일</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일 입력"
-              required
-            />
-          </div>}
-        
-        
- <div className="input-group">
+          {isEditMode ? (
+            <div></div>
+          ) : (
+            <div className="input-group">
+              <label>이메일</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="이메일 입력"
+                required
+              />
+            </div>
+          )}
+
+          <div className="input-group">
             <label>비밀번호</label>
             <input
               type="password"
@@ -131,18 +140,20 @@ const Signup = ({ setUser }) => {
               required
             />
           </div>
-         {isEditMode? <div></div> : <div className="input-group">
-            <label>비밀번호 확인</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="비밀번호 확인"
-              required
-            />
-          </div>}
-
-         
+          {isEditMode ? (
+            <div></div>
+          ) : (
+            <div className="input-group">
+              <label>비밀번호 확인</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="비밀번호 확인"
+                required
+              />
+            </div>
+          )}
 
           <div className="input-group">
             <label>이름</label>
@@ -166,9 +177,8 @@ const Signup = ({ setUser }) => {
             />
           </div>
 
-
           <button type="submit" className="signup-btn">
-            {isEditMode? "회원수정" : "회원가입"}
+            {isEditMode ? "회원수정" : "회원가입"}
           </button>
         </form>
       </div>

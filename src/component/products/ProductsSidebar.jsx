@@ -36,7 +36,11 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
                   : ""
               }`}
               style={{ cursor: "pointer" }}
-              onClick={() => onSelectCategory(mappedCategory)}
+              onClick={() => {
+                if (selectedCategory !== mappedCategory) {
+                  onSelectCategory(mappedCategory); // 선택된 카테고리가 변경될 때만 업데이트
+                }
+              }}
             >
               {category.name}
             </li>
