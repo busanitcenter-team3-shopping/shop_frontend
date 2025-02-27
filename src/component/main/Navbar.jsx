@@ -6,13 +6,13 @@ import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 
-// const categories = [
-//   { id: 1, name: "전체" },
-//   { id: 2, name: "IT" },
-//   { id: 3, name: "의류" },
-//   { id: 4, name: "문구" },
-//   { id: 5, name: "악기" },
-// ];
+const categoryMap = {
+  ALL: "전체",
+  CLOTHING: "의류",
+  IT: "IT",
+  STATIONERY: "문구",
+  INSTRUMENT: "악기",
+};
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
@@ -81,10 +81,17 @@ function Navbar({ user, setUser }) {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       navigate(
-        `/products?category=ALL&search=${encodeURIComponent(searchQuery)}`
+        `/product?category=ALL&search=${encodeURIComponent(searchQuery)}`
       );
       setSearchQuery(""); // 검색 후 검색창 비우기
     }
+  };
+
+  const handleCategoryClick = (category) => {
+    navigate(
+      `/product?category=${categoryMap[category.name] || category.name}`
+    );
+    setShowCategories(false);
   };
 
   return (
@@ -137,14 +144,12 @@ function Navbar({ user, setUser }) {
           {showCategories && (
             <ul className="list-group">
               {categories.map((category, index) => (
-                <li key={index} className="list-group-item">
-                  <Link
-                    to={`/products?category=${category.name}`} // ✅ URL에 카테고리 쿼리 추가
-                    onClick={() => setShowCategories(false)} // ✅ 클릭 후 목록 숨기기
-                    className="category-link"
-                  >
-                    {category.name}
-                  </Link>
+                <li
+                  key={index}
+                  className="list-group-item"
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  {category.name}
                 </li>
               ))}
             </ul>

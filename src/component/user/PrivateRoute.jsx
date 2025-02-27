@@ -2,11 +2,10 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 
-
 const PrivateRoute = ({ children }) => {
-  const { currentUser } = useMyContext();
+  const { token } = useMyContext();
 
-  if (!currentUser) {
+  if (!token) {
     alert("로그인 해주세요.");
     return <Navigate to="/login" replace />;
   }

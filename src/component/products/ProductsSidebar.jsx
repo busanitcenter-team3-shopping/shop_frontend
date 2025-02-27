@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 
+const categoryMap = {
+  ALL: "ALL",
+  IT: "IT",
+  의류: "CLOTHING",
+  문구: "STATIONERY",
+  악기: "INSTRUMENT",
+};
+
 function ProductsSidebar({ selectedCategory, onSelectCategory }) {
   const [categories, setCategories] = useState([]);
 
@@ -20,12 +28,14 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
           <li
             key={index}
             className={`py-2 ${
-              selectedCategory === category.name
+              selectedCategory === categoryMap[category.name]
                 ? "fw-bold text-primary active"
                 : ""
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => onSelectCategory(category.name)}
+            onClick={() =>
+              onSelectCategory(categoryMap[category.name] || category.name)
+            }
           >
             {category.name}
           </li>

@@ -33,63 +33,60 @@ const orders = [
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
-    const { setToken } = useMyContext();
+  const { token, setToken, currentUser } = useMyContext();
+  console.log(currentUser);
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("USER")); // 현재 로그인된 유저의 정보
 
-    const updatedUser = JSON.parse(localStorage.getItem("loggedInUser")); // 현재 로그인된 유저의 정보
-
-    if (updatedUser) {
-      setUser(updatedUser);
-    }
-
-    if (updatedUser) {
-      const storedLikes =
-        JSON.parse(
-          localStorage.getItem(`likeProducts_${updatedUser.user_id}`)
-        ) || [];
-
-      const likedProductList = Object.keys(storedLikes)
-        .map((product_id) =>
-          products.find((product) => String(product.product_id) === product_id)
-        )
-        .filter(Boolean)
-        .reverse();
-
-      setLikedProducts(likedProductList.slice(0, 4));
+    if (storedUser) {
+      setUser(storedUser);
     }
   }, [setUser, products]);
+
+  //찜 리스트
+  // if (updatedUser) {
+  //   const storedLikes =
+  //     JSON.parse(
+  //       localStorage.getItem(`likeProducts_${updatedUser.username}`)
+  //     ) || [];
+
+  //   const likedProductList = Object.keys(storedLikes)
+  //     .map((product_id) =>
+  //       products.find((product) => String(product.product_id) === product_id)
+  //     )
+  //     .filter(Boolean)
+  //     .reverse();
+
+  //   setLikedProducts(likedProductList.slice(0, 4));
+  // }
 
   // 회원 삭제
   const handleDelete = async () => {
     const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
-    if(!isConfirmed) return;
+    if (!isConfirmed) return;
 
     try {
       // 로그인된 사용자
-      const user = JSON.stringify(localStorage.getItem("loggedInUser"));
-      console.log(user);
-      if(!user) {
-        alert("사용자 정보가 없습니다.")
-        return
+      if (!user) {
+        alert("사용자 정보가 없습니다.");
+        return;
       }
-      const response = await api.delete(`/user/delete/${user.user.id}`);
-      if(response.status === 200) {
+      const response = await api.delete(`/user/delete/${currentUser.userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.status === 200) {
         alert("탈퇴가 완료되었습니다.");
 
-        localStorage.removeItem("loggedInUser")
-        
-    setUser(null);
-    setToken(null);
-    navigate("/");
+        localStorage.removeItem("USER");
+
+        setUser(null);
+        setToken(null);
+        navigate("/");
       }
-
-    }catch(error) {
-      console.error("에러 발생: " + error)
-
+    } catch (error) {
+      console.error("에러 발생: " + error);
     }
-    
-
   };
 
   const recentOrders = orders.slice(0, 2);
@@ -117,7 +114,7 @@ const Mypage = ({ user, setUser, products }) => {
             <h5>
               <strong>나의 판매정보</strong>
             </h5>
-            <Link to={`/user-page/${user.user_id}`}>
+            <Link to={`/user-page/${currentUser?.userid}`}>
               <p>판매물품</p>
             </Link>
             <Link to="/review">
@@ -142,8 +139,8 @@ const Mypage = ({ user, setUser, products }) => {
               <img src="/basicUser.png" className="profile-img" />
             </div>
             <div className="d-flex flex-column align-items-center">
-              <h3 className="profile-name">{user?.username}</h3>
-              <p className="email-text">{user?.email}</p>
+              <h3 className="profile-name">{currentUser?.username}</h3>
+              <p className="email-text">{currentUser?.email}</p>
             </div>
           </div>
 

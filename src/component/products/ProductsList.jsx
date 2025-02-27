@@ -2,18 +2,26 @@ import React, { useEffect, useState } from "react";
 import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
-import { Category } from "../../enums/Category";
+
+const categoryMap = {
+  ALL: "전체",
+  CLOTHING: "의류",
+  IT: "IT",
+  STATIONERY: "문구",
+  INSTRUMENT: "악기",
+};
 
 function ProductsList({ selectedCategory, products, user }) {
   let filteredProducts = [];
 
-  if (!selectedCategory || selectedCategory === "ALL") {
+  if (!selectedCategory || selectedCategory === "전체") {
     filteredProducts = [...products].reverse();
   } else {
     filteredProducts = [...products]
       .filter(
         (product) =>
-          product.category === (Category[selectedCategory] || selectedCategory) // Enum 변환 처리
+          product.category.name ===
+          (categoryMap[selectedCategory] || selectedCategory)
       )
       .reverse();
   }
@@ -92,7 +100,7 @@ function ProductsList({ selectedCategory, products, user }) {
           <div className="product-container">
             {currentProducts.map((product, index) => (
               <div key={index} className="card">
-                <Link to={`/product/${product.product_id}`}>
+                <Link to={`/product/${product.productId}`}>
                   <div className="position-relative card-img">
                     {product.status === "판매중" ? (
                       <>
@@ -106,13 +114,13 @@ function ProductsList({ selectedCategory, products, user }) {
                         ) : (
                           <img
                             src={
-                              likedItems[product.product_id]
+                              likedItems[product.productId]
                                 ? "/colorHeart.png"
                                 : "/heart.png"
                             }
                             onClick={(e) => {
                               e.preventDefault();
-                              toggleLike(product.product_id);
+                              toggleLike(product.productId);
                             }}
                             alt="찜"
                             className="heart"
