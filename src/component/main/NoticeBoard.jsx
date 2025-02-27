@@ -34,11 +34,28 @@ function NoticeBoard() {
           },
         ];
   });
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem("notices", JSON.stringify(notices));
   }, [notices]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("USER");
+    console.log(storedUser);
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setIsAdmin(user.role === "ROLE_ADMIN");
+      } catch (error) {
+        console.error("USER 파싱 오류:", error);
+        setIsAdmin(false);
+      }
+    } else {
+      setIsAdmin(false);
+    }
+  }, []);
 
   const toggleExpand = (id) => {
     setNotices((prev) =>
@@ -72,25 +89,31 @@ function NoticeBoard() {
               </span>
             </div>
             {notice.expanded && (
-              <div id="textarea" contenteditable className="notice-content">
+              <div id="textarea" contentEditable className="notice-content">
                 <textarea className="notice-textarea">
                   {notice.content}
                 </textarea>
               </div>
             )}
-            <button onClick={() => startEdit(notice)}>수정</button>
-            <button onClick={() => deleteNotice(notice.id)}>삭제</button>
+            {isAdmin && (
+              <>
+                <button onClick={() => startEdit(notice)}>수정</button>
+                <button onClick={() => deleteNotice(notice.id)}>삭제</button>
+              </>
+            )}
           </div>
         ))}
       </div>
-      <div className="notice-buttons">
-        <button
-          className="notice-button"
-          onClick={() => navigate("/notice-write")}
-        >
-          글쓰기
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="notice-buttons">
+          <button
+            className="notice-button"
+            onClick={() => navigate("/notice-write")}
+          >
+            글쓰기
+          </button>
+        </div>
+      )}
     </div>
   );
 }

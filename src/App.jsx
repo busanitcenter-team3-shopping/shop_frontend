@@ -26,7 +26,6 @@ import UserPage from "./component/user/UserPage";
 import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
-import AdminLogin from "./component/user/AdminLogin";
 
 // 토큰은 남아있는데 마이페이지랑 상품추가를 클릭시 계속 로그인 하라고 뜬다.
 
@@ -47,7 +46,10 @@ function App() {
     setProducts(storedProducts);
   }, []);
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("USER")) || [];
+    console.log(localStorage);
+    const user = JSON.parse(localStorage.getItem("USER")) || {};
+    console.log(user.email);
+    console.log(user);
     setUser(user);
   }, []);
 
@@ -89,7 +91,6 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup setUser={setUser} />} />
 
-        <Route path="/adminlogin" element={<AdminLogin setUser={setUser} />} />
         <Route
           path="/add-product"
           element={
@@ -99,7 +100,7 @@ function App() {
           }
         />
 
-        {/* <Route
+        <Route
           path="/edit-product"
           element={
             <PrivateRoute user={user}>
@@ -111,7 +112,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        */}
 
         <Route
           path="/mypage"
@@ -127,7 +127,7 @@ function App() {
           element={<ProductsPage products={products} user={user} />}
         />
 
-        {/* <Route
+        <Route
           path="/product/:product_id"
           element={
             <DetailProduct
@@ -165,7 +165,7 @@ function App() {
         <Route
           path="/wishlist"
           element={<Wishlist user={user} products={products} />}
-        /> */}
+        />
       </Routes>
     </Router>
   );

@@ -110,9 +110,6 @@ function Navbar({ user, setUser }) {
             <Link to="/signup" className="me-3 text-dark">
               회원가입
             </Link>
-            <Link to="/adminlogin" className="me-3 text-dark">
-              관리자
-            </Link>
           </>
         )}
         <Link to="/notice-board" className="text-dark">
