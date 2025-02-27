@@ -5,11 +5,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 
 const categoryMap = {
-  ALL: "ALL",
+  ALL: "전체",
+  CLOTHING: "의류",
   IT: "IT",
-  CLOTHING: "CLOTHING",
-  STATIONERY: "STATIONERY",
-  INSTRUMENT: "INSTRUMENT",
+  STATIONERY: "문구",
+  INSTRUMENT: "악기",
 };
 
 const ProductsPage = ({ user }) => {
@@ -27,21 +27,19 @@ const ProductsPage = ({ user }) => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categoryParam = params.get("category") || "ALL"; // 카테고리
-    setSelectedCategory(categoryParam);
-  }, [location.search]);
-
-  useEffect(() => {
-    const categoryEnum = categoryMap[selectedCategory] || "ALL"; // ENUM 변환
+    const searchQuery = params.get("search") || "";
+    setSelectedCategory(categoryMap[categoryParam] || categoryParam);
+    setSearchQuery(searchQuery);
 
     api
       .get(
-        `/product?category=${encodeURIComponent(
-          categoryEnum
-        )}&search=${encodeURIComponent(searchQuery)}`
+        `/product?category=${
+          categoryParam === "ALL" ? "" : encodeURIComponent(categoryParam)
+        }&search=${encodeURIComponent(searchQuery)}`
       )
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("상품 로드 실패:", error));
-  }, [selectedCategory, searchQuery]);
+  }, [location.search]);
 
   //console.log(products);
 
