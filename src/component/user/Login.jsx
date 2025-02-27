@@ -14,9 +14,10 @@ const Login = ({ setUser }) => {
   const { setToken, token } = useMyContext();
   const navigate = useNavigate();
 
-  const handleSuccessfulLogin = (token, decodedToken) => {
+  const handleSuccessfulLogin = (token, decodedToken, role) => {
     const user = {
       username: decodedToken.sub,
+      role: role,
       email: decodedToken.role,
     };
     localStorage.setItem("JWT_TOKEN", token);
@@ -31,16 +32,29 @@ const Login = ({ setUser }) => {
       setLoading(true);
       const response = await api.post("/login", { email, password });
       alert("로그인이 되었습니다.");
-
       if (response.status === 200 && response.data.jwtToken) {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
+
+        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken));
+        console.log(decodedToken);
+        handleSuccessfulLogin(
+          response.data.jwtToken,
+          decodedToken,
+          response.data.role
+        );
+        console.log(token);
+
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
+
         navigate("/");
       } else {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       }
     } catch (error) {
+
+      setError("로그인 실패! 에러가 발생하였습니다.");
+
       if (error.response && error.response.status === 401) {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       } else {
@@ -49,22 +63,6 @@ const Login = ({ setUser }) => {
     } finally {
       setLoading(false);
     }
-
-    //   const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-    //   const user = existingUsers.find(
-    //     (user) => user.email === email && user.password === password
-    //   );
-
-    //   if (!user) {
-    //     setError("이메일 또는 비밀번호가 올바르지 않습니다.");
-    //     return;
-    //   }
-    //   console.log(user);
-
-    //   localStorage.setItem("loggedInUser", JSON.stringify(user));
-    //   setUser(user);
-    //   navigate("/");
   };
 
   return (
