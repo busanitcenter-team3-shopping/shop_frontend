@@ -17,10 +17,10 @@ const Login = ({ setUser }) => {
   const handleSuccessfulLogin = (token, decodedToken) => {
     const user = {
       username: decodedToken.sub,
+      email: decodedToken.role,
     };
     localStorage.setItem("JWT_TOKEN", token);
     localStorage.setItem("USER", JSON.stringify(user));
-
     setToken(token);
   };
 
@@ -35,11 +35,7 @@ const Login = ({ setUser }) => {
       if (response.status === 200 && response.data.jwtToken) {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
-
-        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken));
-        console.log(decodedToken);
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
-        console.log(token);
         navigate("/");
       } else {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
