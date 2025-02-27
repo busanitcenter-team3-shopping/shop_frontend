@@ -16,13 +16,10 @@ const reverseCategoryMap = {
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate();
-  const location = useLocation(); // 현재 경로 가져오기
+  const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken } = useMyContext();
-
-  const [admin, setAdmin] = useState(null);
-
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -44,19 +41,6 @@ function Navbar({ user, setUser }) {
     } else {
       setUser(null);
     }
-
-    //관리자
-    const storedAdmin = localStorage.getItem("ADMIN_USER");
-    if (storedAdmin) {
-      try {
-        setAdmin(JSON.parse(storedAdmin));
-      } catch (error) {
-        console.error("관리자 JSON 파싱 오류:", error);
-        setAdmin(null);
-      }
-    } else {
-      setAdmin(null);
-    }
   }, [location, setUser]);
 
   useEffect(() => {
@@ -72,22 +56,13 @@ function Navbar({ user, setUser }) {
     navigate("/");
   };
 
-  //관리자
-  const handleAdminLogout = () => {
-    localStorage.removeItem("ADMIN_JWT_TOKEN");
-    localStorage.removeItem("ADMIN_USER");
-    setAdmin(null);
-    alert("관리자 로그아웃 되었습니다.");
-    navigate("/");
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim() !== "") {
       navigate(
         `/product?category=ALL&search=${encodeURIComponent(searchQuery)}`
       );
-      setSearchQuery(""); // 검색 후 검색창 비우기
+      setSearchQuery("");
     }
   };
 
@@ -100,11 +75,8 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
-        {/* 만약 관리자 또는 일반 사용자가 로그인 중이면 로그인/회원가입 링크는 사라짐 */}
         {user ? (
           <button onClick={handellogout}>로그아웃</button>
-        ) : admin ? (
-          <button onClick={handleAdminLogout}>로그아웃</button>
         ) : (
           <>
             <Link to="/login" className="me-3 text-dark">
@@ -112,9 +84,6 @@ function Navbar({ user, setUser }) {
             </Link>
             <Link to="/signup" className="me-3 text-dark">
               회원가입
-            </Link>
-            <Link to="/adminlogin" className="me-3 text-dark">
-              관리자
             </Link>
           </>
         )}
@@ -125,11 +94,14 @@ function Navbar({ user, setUser }) {
       <header className="bg-white pt-5">
         <div className="container text-center nav-container">
           <Link to="/" className="fw-bold fs-3 text-dark text-decoration-none">
-            <img src="../src/assets/logo.png" style={{ width: "100px" }} />
+            <img
+              src="../src/assets/logo.png"
+              style={{ width: "100px" }}
+              alt="Logo"
+            />
           </Link>
         </div>
       </header>
-
       <div
         className="container d-flex justify-content-between align-items-center"
         id="nav-container"
@@ -142,8 +114,6 @@ function Navbar({ user, setUser }) {
           >
             ☰ 전체 카테고리
           </button>
-
-          {/* 목록 (showCategories 상태에 따라 보이거나 숨김) */}
           {showCategories && (
             <ul className="list-group">
               {categories.map((category, index) => (
@@ -158,7 +128,6 @@ function Navbar({ user, setUser }) {
             </ul>
           )}
         </div>
-
         <form
           className="d-flex w-50"
           style={{ maxWidth: "500px" }}
@@ -175,18 +144,17 @@ function Navbar({ user, setUser }) {
             🔍
           </button>
         </form>
-
         <ul className="nav-item">
           <li>
             <Link
               to="/add-product"
               className="text-dark"
-              state={{ user_id: user?.user_id }}
+              state={{ user_id: user?.userId }}
             >
               <img
                 className="mb-2"
                 src={plus}
-                alt="heart"
+                alt="상품등록"
                 height="30"
                 width="30"
               />
@@ -198,7 +166,7 @@ function Navbar({ user, setUser }) {
               <img
                 className="mb-2"
                 src={myuser}
-                alt="myPage"
+                alt="마이페이지"
                 height="30"
                 width="30"
               />
@@ -210,7 +178,7 @@ function Navbar({ user, setUser }) {
               <img
                 className="mb-2"
                 src={note}
-                alt="note"
+                alt="메시지"
                 height="30"
                 width="30"
               />
