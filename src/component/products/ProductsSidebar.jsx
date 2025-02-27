@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-const categoryMap = {
-  ALL: "ALL",
-  IT: "IT",
+const reverseCategoryMap = {
+  전체: "ALL",
   의류: "CLOTHING",
+  IT: "IT",
   문구: "STATIONERY",
   악기: "INSTRUMENT",
 };
@@ -24,22 +24,28 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
     >
       <h4 className="fw-bold">카테고리</h4>
       <ul className="list-unstyled sidebar-list">
-        {categories.map((category, index) => (
-          <li
-            key={index}
-            className={`py-2 ${
-              selectedCategory === categoryMap[category.name]
-                ? "fw-bold text-primary active"
-                : ""
-            }`}
-            style={{ cursor: "pointer" }}
-            onClick={() =>
-              onSelectCategory(categoryMap[category.name] || category.name)
-            }
-          >
-            {category.name}
-          </li>
-        ))}
+        {categories.map((category, index) => {
+          const mappedCategory =
+            reverseCategoryMap[category.name] ?? category.name;
+          return (
+            <li
+              key={index}
+              className={`py-2 ${
+                selectedCategory === mappedCategory
+                  ? "fw-bold text-primary active"
+                  : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                if (selectedCategory !== mappedCategory) {
+                  onSelectCategory(mappedCategory); // 선택된 카테고리가 변경될 때만 업데이트
+                }
+              }}
+            >
+              {category.name}
+            </li>
+          );
+        })}
       </ul>
     </aside>
   );

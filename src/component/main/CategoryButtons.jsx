@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./CategoryButtons.css";
 
+const reverseCategoryMap = {
+  전체: "ALL",
+  의류: "CLOTHING",
+  IT: "IT",
+  문구: "STATIONERY",
+  악기: "INSTRUMENT",
+};
+
 function CategoryButtons() {
   const [categories, setCategories] = useState([]);
 
@@ -14,7 +22,8 @@ function CategoryButtons() {
   const navigate = useNavigate();
 
   const handleCategoryClick = (categoryName) => {
-    navigate(`/product?category=${categoryName}`);
+    const categoryEnglish = reverseCategoryMap[categoryName] || categoryName;
+    navigate(`/product?category=${categoryEnglish}`);
   };
   return (
     <div className="category-container">

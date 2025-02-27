@@ -14,7 +14,7 @@ const categoryMap = {
 function ProductsList({ selectedCategory, products, user }) {
   let filteredProducts = [];
 
-  if (!selectedCategory || selectedCategory === "전체") {
+  if (!selectedCategory || selectedCategory === "ALL") {
     filteredProducts = [...products].reverse();
   } else {
     filteredProducts = [...products]
@@ -73,6 +73,8 @@ function ProductsList({ selectedCategory, products, user }) {
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
+  const BASE_URL = "http://localhost:8090";
+
   return (
     <div className="container">
       <main className="flex-grow-1 p-4">
@@ -105,9 +107,9 @@ function ProductsList({ selectedCategory, products, user }) {
                     {product.status === "판매중" ? (
                       <>
                         <img
-                          src={product.images?.[0]}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                           className="card-img-top"
-                          alt="..."
+                          alt={product.description}
                         />
                         {!user ? (
                           <div></div>

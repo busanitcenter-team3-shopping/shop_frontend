@@ -18,10 +18,10 @@ const Login = ({ setUser }) => {
     const user = {
       username: decodedToken.sub,
       role: role,
+      email: decodedToken.role,
     };
     localStorage.setItem("JWT_TOKEN", token);
     localStorage.setItem("USER", JSON.stringify(user));
-
     setToken(token);
   };
 
@@ -44,12 +44,22 @@ const Login = ({ setUser }) => {
           response.data.role
         );
         console.log(token);
+
+        handleSuccessfulLogin(response.data.jwtToken, decodedToken);
+
         navigate("/");
       } else {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       }
     } catch (error) {
+
       setError("로그인 실패! 에러가 발생하였습니다.");
+
+      if (error.response && error.response.status === 401) {
+        setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
+      } else {
+        setError("로그인 실패! 에러가 발생하였습니다.");
+      }
     } finally {
       setLoading(false);
     }
