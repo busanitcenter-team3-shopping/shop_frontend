@@ -45,65 +45,60 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
-    
-      const existingProducts =
-        JSON.parse(localStorage.getItem("products")) || [];
+    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
 
-      if (existingProduct) {
-        // 상품 수정
-        const updatedProduct = {
-          ...existingProduct,
-          title,
-          price,
-          description,
-          category,
-          images, // 기존 이미지 삭제 후 새로운 이미지 저장
-        };
+    if (existingProduct) {
+      // 상품 수정
+      const updatedProduct = {
+        ...existingProduct,
+        title,
+        price,
+        description,
+        category,
+        images, // 기존 이미지 삭제 후 새로운 이미지 저장
+      };
 
-        const updatedProducts = existingProducts.map((product) =>
-          product.product_id === existingProduct.product_id
-            ? updatedProduct
-            : product
-        );
+      const updatedProducts = existingProducts.map((product) =>
+        product.product_id === existingProduct.product_id
+          ? updatedProduct
+          : product
+      );
 
-        localStorage.setItem("products", JSON.stringify(updatedProducts));
+      localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-        if (updateProduct) updateProduct(updatedProduct);
-        alert("상품이 성공적으로 수정되었습니다.");
-      } else {
- 
+      if (updateProduct) updateProduct(updatedProduct);
+      alert("상품이 성공적으로 수정되었습니다.");
+    } else {
+      const productData = {
+        title,
+        price,
+        description,
+        category,
+      };
 
-    const productData = {
-      title,
-      price,
-      description,
-      category,
-    };
+      const formData = new FormData();
+      formData.append("product", JSON.stringify(productData)); // JSON 문자열로 변환
 
-    const formData = new FormData();
-    formData.append("product", JSON.stringify(productData)); // JSON 문자열로 변환
+      const files = document.querySelector("#fileInput").files;
+      for (let i = 0; i < maxImg; i++) {
+        formData.append("files", files[i]); // 여러 개의 파일 추가
+      }
 
-    const files = document.querySelector("#fileInput").files;
-    for (let i = 0; i < maxImg; i++) {
-      formData.append("files", files[i]); // 여러 개의 파일 추가
+      try {
+        const response = await api.post("product/create", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // JSON 대신 multipart/form-data 사용
+          },
+        });
+
+        alert("상품이 등록 되었습니다.");
+      } catch (error) {
+        console.error("상품 등록 실패", error.response?.data || error.message);
+      }
+
+      navigate("/");
     }
-
-    try {
-      const response = await api.post("product/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // JSON 대신 multipart/form-data 사용
-        },
-      });
-
-      alert("상품이 등록 되었습니다.")
-    } catch (error) {
-      console.error("상품 등록 실패", error.response?.data || error.message);
-    }
-
-    navigate("/");
   };
-    }
 
   // };
 
@@ -171,9 +166,9 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
               >
                 <option value="">카테고리를 선택하세요</option>
                 <option value="IT">IT</option>
-                <option value="의류">의류</option>
-                <option value="문구">문구</option>
-                <option value="악기">악기</option>
+                <option value="CLOTHING">의류</option>
+                <option value="STATIONERY">문구</option>
+                <option value="INSTRUMENT">악기</option>
               </select>
             </div>
 
@@ -207,6 +202,6 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
       </div>
     </div>
   );
-}
+};
 
 export default ProductRegister;
