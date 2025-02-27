@@ -6,12 +6,12 @@ import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 
-const categoryMap = {
-  ALL: "전체",
-  CLOTHING: "의류",
+const reverseCategoryMap = {
+  전체: "ALL",
+  의류: "CLOTHING",
   IT: "IT",
-  STATIONERY: "문구",
-  INSTRUMENT: "악기",
+  문구: "STATIONERY",
+  악기: "INSTRUMENT",
 };
 
 function Navbar({ user, setUser }) {
@@ -59,6 +59,10 @@ function Navbar({ user, setUser }) {
     }
   }, [location, setUser]);
 
+  useEffect(() => {
+    setShowCategories(false); // 페이지 변경되면 닫기
+  }, [location.pathname]);
+
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("USER");
@@ -88,9 +92,8 @@ function Navbar({ user, setUser }) {
   };
 
   const handleCategoryClick = (category) => {
-    navigate(
-      `/product?category=${categoryMap[category.name] || category.name}`
-    );
+    const categoryEnglish = reverseCategoryMap[category.name] || category.name;
+    navigate(`/product?category=${categoryEnglish}&search=`);
     setShowCategories(false);
   };
 
