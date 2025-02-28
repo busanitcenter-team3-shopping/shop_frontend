@@ -29,8 +29,6 @@ import NoticeBoard from "./component/main/NoticeBoard";
 
 // 토큰은 남아있는데 마이페이지랑 상품추가를 클릭시 계속 로그인 하라고 뜬다.
 
-//userDetails 유저이름이 같으면 null로 뜸 (curruntUser)
-
 // 백을 구현안하고 프론트만 일단 구현하고 있어서 jwt토큰을 활용 못해서 로컬스토리지에 일단 모든 값들을 저장시키도록 만들어서 나중에 그 부분은 백엔드 구현하면서 하나씩 전부 수정해야합니다.
 
 // 해야할 일 : 공지사항, 메세지, 주문내역, 판매물품, 리뷰, 이미지3개 초과시 이상해짐, 판매완료시 이미지 변환
@@ -44,10 +42,7 @@ function App({ children }) {
     setProducts(storedProducts);
   }, []);
   useEffect(() => {
-    console.log(localStorage);
     const user = JSON.parse(localStorage.getItem("USER")) || {};
-    console.log(user.email);
-    console.log(user);
     setUser(user);
   }, []);
 

@@ -34,8 +34,6 @@ const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
   const { token, setToken, currentUser } = useMyContext();
-  console.log(currentUser);
-
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("USER")); // 현재 로그인된 유저의 정보
 

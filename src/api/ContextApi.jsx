@@ -20,7 +20,6 @@ export const ContextProvider = ({ children }) => {
     if (user?.email) {
       try {
         const { data } = await api.get(`/user`);
-        console.log(data);
 
         setCurrentUser(data);
       } catch (error) {

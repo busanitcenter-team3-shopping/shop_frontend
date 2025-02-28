@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./detailProduct.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import api from "../../api/axiosInstance";
 
 const DetailProduct = ({ user, products, setProducts }) => {
   const { product_id } = useParams();
@@ -11,14 +13,30 @@ const DetailProduct = ({ user, products, setProducts }) => {
   const [purchased, setPurchased] = useState(false);
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null)
+  const BASE_URL = "http://localhost:8090"; 
+  
   useEffect(() => {
-    if (!user) {
-      console.warn("로그인 정보가 없습니다.");
+  const fetchProduct = async() => {
+
+    try {
+
+      const response = await api.get(`/product/${product_id}`);
+      const foundProduct = response.data
+      
+      setProduct(foundProduct)
+      setMainImg(`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`)  
+      
+    } catch(err) {
+      setError("상품 불러오기 실패")
+    }finally {
+      setLoading(false)
     }
-    const foundProduct = products.find(
-      (item) => String(item.product_id) === product_id
-    );
+     
+  };
+  fetchProduct()},[product_id]);
+
 
     //판매자 정보 찾기
     const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
@@ -29,31 +47,47 @@ const DetailProduct = ({ user, products, setProducts }) => {
     console.log(foundUser);
     setUsers(foundUser);
 
-    // if (foundUser === undefined) {
-    //   foundUser.name = "알수없음";
-    //   setUsers(foundUser);
-    // }
+useEffect(() => {
+  if(product?.images?.length > 0) {
+    setMainImg(`${BASE_URL}/product/images/${product.images[0].imageName}`);
+  }
+},[product])
 
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setMainImg(foundProduct.images?.[0]);
 
-      // 로컬에 구매 완료 여부
-      const purchasedProducts =
-        JSON.parse(localStorage.getItem("purchasedProducts")) || [];
-      setPurchased(purchasedProducts.includes(foundProduct.product_id));
+  //   //판매자 정보 찾기
+  //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  //   setUsers(storedUsers);
+  //   const foundUser = storedUsers.find(
+  //     (u) => String(u.user_id) === String(foundProduct?.user_id)
+  //   );
+  //   console.log(foundUser);
+  //   setUsers(foundUser);
 
-      // 로컬에 있는 찜 상품
-      if (user?.user_id) {
-        const likedProducts =
-          JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) ||
-          [];
-        setLike(!!likedProducts[foundProduct.product_id]);
-      } else {
-        setProduct(null);
-      }
-    }
-  }, [product_id, products, user]);
+  //   // if (foundUser === undefined) {
+  //   //   foundUser.name = "알수없음";
+  //   //   setUsers(foundUser);
+  //   // }
+
+  //   if (foundProduct) {
+  //     setProduct(foundProduct);
+  //     setMainImg(foundProduct.images?.[0]);
+
+  //     // 로컬에 구매 완료 여부
+  //     const purchasedProducts =
+  //       JSON.parse(localStorage.getItem("purchasedProducts")) || [];
+  //     setPurchased(purchasedProducts.includes(foundProduct.product_id));
+
+  //     // 로컬에 있는 찜 상품
+  //     if (user?.user_id) {
+  //       const likedProducts =
+  //         JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) ||
+  //         [];
+  //       setLike(!!likedProducts[foundProduct.product_id]);
+  //     } else {
+  //       setProduct(null);
+  //     }
+  //   }
+  // }, [product_id, products, user]);
 
   useEffect(() => {
     const updatedProduct = products.find(
@@ -145,10 +179,10 @@ const DetailProduct = ({ user, products, setProducts }) => {
               <button
                 key={index}
                 className="imgbtn"
-                onClick={() => setMainImg(img)}
+                onClick={() => setMainImg(`${BASE_URL}/product/images/${img.imageName}`)}
               >
                 <img
-                  src={img}
+                  src={`${BASE_URL}/product/images/${product.images?.[index]?.imageName}`}
                   className="mb-2 sub-img"
                   alt={`상품 이미지 ${index}`}
                 />
@@ -204,7 +238,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
               <span className=" fw-bold">탈퇴한 계정입니다.</span>
             ) : (
               <Link to={`/user-board/${product.user_id}`} className="fw-bold">
-                {users.name}
+                {product.user.username}
               </Link>
             )}
           </p>

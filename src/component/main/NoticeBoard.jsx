@@ -47,7 +47,8 @@ function NoticeBoard() {
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        setIsAdmin(user.role === "ROLE_ADMIN");
+        // setIsAdmin(user.role === "ROLE_ADMIN");
+        setIsAdmin(user.email === "ROLE_ADMIN")
       } catch (error) {
         console.error("USER 파싱 오류:", error);
         setIsAdmin(false);
