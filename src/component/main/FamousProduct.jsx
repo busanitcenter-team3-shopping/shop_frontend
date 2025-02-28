@@ -3,9 +3,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "./famousProduct.css";
 import { Link } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
-const FamousProduct = ({ products }) => {
+const FamousProduct = () => {
+  const [products, setProducts] = useState([]);
   const latestProducts = [...products].reverse().slice(0, 8);
+
+  useEffect(() => {
+    api
+      .get(`/product/main`)
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("상품 로드 실패:", error));
+  }, []);
+
+  const BASE_URL = "http://localhost:8090";
 
   return (
     <div className="container container1">
@@ -13,7 +24,7 @@ const FamousProduct = ({ products }) => {
         등록된 상품
       </h1>
       <div className="d-flex justify-content-end">
-        <Link to="/products" className="btn btn-link btn-about">
+        <Link to="/product" className="btn btn-link btn-about">
           더보기 &gt;
         </Link>
       </div>
@@ -21,22 +32,22 @@ const FamousProduct = ({ products }) => {
       <div className="row row1">
         {latestProducts.length > 0 ? (
           latestProducts.map((product) => (
-            <div key={product.product_id} className="col-md-3 mb-4">
-              <Link to={`/product/${product.product_id}`}>
+            <div key={product.productId} className="col-md-3 mb-4">
+              <Link to={`/product/${product.productId}`}>
                 <div className="card">
                   <div className="position-relative card-img">
                     {product.status === "판매중" ? (
                       <img
-                        src={product.images?.[0]}
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                         className="card-img-top"
-                        alt={product.title}
+                        alt={product.description}
                       />
                     ) : (
                       <>
                         <img
-                          src={product.images?.[0]}
-                          className="card-img-top opacity-50"
-                          alt={product.title}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                          className="card-img-top"
+                          alt={product.description}
                         />
                         <img
                           className="soldout-main"

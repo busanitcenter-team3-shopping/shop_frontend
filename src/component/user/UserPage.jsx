@@ -3,25 +3,27 @@ import "../products/ProductsList.css";
 import "./userPage.css";
 import Pagination from "../products/Pagination";
 import { Link, useParams } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
-const UserPage = ({ user, products }) => {
-  const { user_id } = useParams();
+const UserPage = ({ user }) => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
-
-  const userProducts = products.filter(
-    (product) => String(product.user_id) === user_id
-  );
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    api
+      .get(`/product/user-page`)
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("상품 로드 실패:", error));
+  }, []);
+
+  const BASE_URL = "http://localhost:8090";
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
     setUsers(storedUsers);
-
-    const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
-
-    setUsers(foundUser);
-  }, [user_id]);
+  }, []);
 
   const [likedItems, setLikedItems] = useState({});
 
@@ -64,15 +66,15 @@ const UserPage = ({ user, products }) => {
   };
 
   // 현재 페이지의 상품 계산
-  const totalPages = Math.ceil(userProducts.length / itemsPerPage);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentProducts = userProducts.slice(startIndex, endIndex);
+  const currentProducts = products.slice(startIndex, endIndex);
 
   return (
     <div className="container container1">
       <main className="flex-grow-1 p-4">
-        <h2 className="text-center mb-3 mt-3">{users.name}님의 상품목록</h2>
+        <h2 className="text-center mb-3 mt-3">{users.username}님의 상품목록</h2>
 
         {/* 페이지당 아이템 개수 선택 */}
         <div className="d-flex justify-content-end mb-3">
@@ -92,7 +94,7 @@ const UserPage = ({ user, products }) => {
           </select>
         </div>
 
-        {userProducts.length === 0 && (
+        {currentProducts.length === 0 && (
           <p className="text-center mt-4">등록된 상품이 없습니다.</p>
         )}
 
@@ -100,28 +102,28 @@ const UserPage = ({ user, products }) => {
         <div className="product-container row row1">
           {currentProducts.map((product, index) => (
             <div key={index}>
-              <Link to={`/product/${product.product_id}`}>
+              <Link to={`/product/${product.productId}`}>
                 <div className="card">
                   <div className="position-relative card-img">
                     {product.status === "판매중" ? (
                       <>
                         <img
-                          src={product.images?.[0]}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                           className="card-img-top"
-                          alt="..."
+                          alt={product.description}
                         />
                         {!user ? (
                           <div></div>
                         ) : (
                           <img
                             src={
-                              likedItems[product.product_id]
+                              likedItems[product.productId]
                                 ? "/colorHeart.png"
                                 : "/heart.png"
                             }
                             onClick={(e) => {
                               e.preventDefault();
-                              toggleLike(product.product_id);
+                              toggleLike(product.productId);
                             }}
                             alt="찜"
                             className="heart"
@@ -131,9 +133,9 @@ const UserPage = ({ user, products }) => {
                     ) : (
                       <>
                         <img
-                          src={product.images?.[0]}
-                          className="card-img-top opacity-50"
-                          alt={product.title}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                          className="card-img-top"
+                          alt={product.description}
                         />
                         <img
                           className="soldout-user"
@@ -157,7 +159,7 @@ const UserPage = ({ user, products }) => {
 
         {/* 페이지네이션 */}
         <Pagination
-          totalItems={userProducts.length}
+          totalItems={currentProducts.length}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
           onPageChange={setCurrentPage}

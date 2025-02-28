@@ -37,11 +37,22 @@ const DetailProduct = ({ user, products, setProducts }) => {
   };
   fetchProduct()},[product_id]);
 
+
+    //판매자 정보 찾기
+    const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
+    setUsers(storedUsers);
+    const foundUser = storedUsers.find(
+      (u) => String(u.user_id) === String(foundProduct?.user_id)
+    );
+    console.log(foundUser);
+    setUsers(foundUser);
+
 useEffect(() => {
   if(product?.images?.length > 0) {
     setMainImg(`${BASE_URL}/product/images/${product.images[0].imageName}`);
   }
 },[product])
+
 
   //   //판매자 정보 찾기
   //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
