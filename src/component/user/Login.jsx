@@ -17,7 +17,7 @@ const Login = ({ setUser }) => {
   const handleSuccessfulLogin = (token, decodedToken, role) => {
     const user = {
       username: decodedToken.sub,
-      role: role,
+      // role: role,
       email: decodedToken.role,
     };
     localStorage.setItem("JWT_TOKEN", token);
@@ -36,14 +36,11 @@ const Login = ({ setUser }) => {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
 
-        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken));
-        console.log(decodedToken);
         handleSuccessfulLogin(
           response.data.jwtToken,
           decodedToken,
           response.data.role
         );
-        console.log(token);
 
         handleSuccessfulLogin(response.data.jwtToken, decodedToken);
 
