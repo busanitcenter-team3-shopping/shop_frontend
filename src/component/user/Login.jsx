@@ -35,9 +35,6 @@ const Login = ({ setUser }) => {
       if (response.status === 200 && response.data.jwtToken) {
         setJwtToken(response.data.jwtToken);
         const decodedToken = jwtDecode(response.data.jwtToken);
-
-        localStorage.setItem("loggedInUser", JSON.stringify(decodedToken));
-        console.log(decodedToken);
         handleSuccessfulLogin(
           response.data.jwtToken,
           decodedToken,
@@ -52,7 +49,6 @@ const Login = ({ setUser }) => {
         setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
       }
     } catch (error) {
-
       setError("로그인 실패! 에러가 발생하였습니다.");
 
       if (error.response && error.response.status === 401) {

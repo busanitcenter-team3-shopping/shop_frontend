@@ -21,7 +21,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
     );
 
     //판매자 정보 찾기
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
     setUsers(storedUsers);
     const foundUser = storedUsers.find(
       (u) => String(u.user_id) === String(foundProduct?.user_id)
