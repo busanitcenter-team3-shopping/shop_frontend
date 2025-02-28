@@ -12,7 +12,18 @@ export const ContextProvider = ({ children }) => {
   const [token, setToken] = useState(getToken);
 
   // 현재 로그인 유저 관리
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("currentUser")) || null;
+  });
+
+  // currentUser가 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [currentUser]);
 
   const fetchUser = async () => {
     const user = JSON.parse(localStorage.getItem("USER"));

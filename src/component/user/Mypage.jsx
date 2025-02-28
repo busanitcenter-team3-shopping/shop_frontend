@@ -40,6 +40,7 @@ const Mypage = ({ user, setUser, products }) => {
     if (storedUser) {
       setUser(storedUser);
     }
+    console.log(currentUser.userId);
   }, [setUser, products]);
 
   //찜 리스트
@@ -70,7 +71,7 @@ const Mypage = ({ user, setUser, products }) => {
         alert("사용자 정보가 없습니다.");
         return;
       }
-      const response = await api.delete(`/user/delete/${currentUser.userId}`, {
+      const response = await api.delete(`/user/delete/${currentUser?.userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
@@ -112,7 +113,7 @@ const Mypage = ({ user, setUser, products }) => {
             <h5>
               <strong>나의 판매정보</strong>
             </h5>
-            <Link to={`/user-page/${currentUser?.userid}`}>
+            <Link to={`/user-page/${currentUser?.userId}`}>
               <p>판매물품</p>
             </Link>
             <Link to="/review">

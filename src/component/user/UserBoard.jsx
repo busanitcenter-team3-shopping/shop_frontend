@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import api from "../../api/axiosInstance";
+import { useMyContext } from "../../api/ContextApi";
 
 const reviews = [
   {
@@ -22,23 +24,44 @@ const reviews = [
   },
 ];
 
-const UserBoard = ({ user, products }) => {
+const UserBoard = ({ user }) => {
   const { user_id } = useParams();
   const [users, setUsers] = useState([]);
-
-  const userProducts = products
-    .filter((product) => String(product.user_id) === user_id)
-    .slice(0, 4);
-  console.log(userProducts);
+  const [products, setProducts] = useState([]);
+  const latestProducts = [...products].reverse().slice(0, 4);
 
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(storedUsers);
+    api
+      .get(`/product/user-page/${user_id}`)
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("상품 로드 실패:", error));
+  }, []);
 
-    const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
-    console.log(foundUser);
-    setUsers(foundUser);
-  }, [user_id]);
+  useEffect(() => {
+    api
+      .get(`/user/${user_id}`)
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.error("유저 로드 실패:", error));
+  }, []);
+
+  console.log(products);
+  console.log(users);
+
+  const BASE_URL = "http://localhost:8090";
+
+  // const userProducts = products
+  //   .filter((product) => String(product.user_id) === user_id)
+  //   .slice(0, 4);
+  // console.log(userProducts);
+
+  // useEffect(() => {
+  //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  //   setUsers(storedUsers);
+
+  //   const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
+  //   console.log(foundUser);
+  //   setUsers(foundUser);
+  // }, [user_id]);
 
   const [likedItems, setLikedItems] = useState({});
 
@@ -89,7 +112,7 @@ const UserBoard = ({ user, products }) => {
           <img src="/basicUser.png" className="profile-img" />
         </div>
         <div className="d-flex flex-column align-items-center">
-          <h3 className="profile-name">{users.name}</h3>
+          <h3 className="profile-name">{users.username}</h3>
           <p className="email-text">{users.email}</p>
         </div>
       </div>
@@ -99,30 +122,30 @@ const UserBoard = ({ user, products }) => {
       <div className="section-header">
         <h2 className="fw-bold">상품목록</h2>
         <Link
-          to={`/user-page/${users.user_id}`}
+          to={`/user-page/${users.userId}`}
           className="btn btn-link btn-about"
         >
           더보기 &gt;
         </Link>
       </div>
 
-      {userProducts.length === 0 && (
+      {latestProducts.length === 0 && (
         <p className="text-center mt-4">등록된 상품이 없습니다.</p>
       )}
 
       {/* 상품 그리드 */}
       <div className="product-container row row1">
-        {userProducts.map((product, index) => (
+        {latestProducts.map((product, index) => (
           <div key={index}>
-            <Link to={`/product/${product.product_id}`}>
+            <Link to={`/product/${product.productId}`}>
               <div className="card">
                 <div className="position-relative card-img">
                   {product.status === "판매중" ? (
                     <>
                       <img
-                        src={product.images?.[0]}
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                         className="card-img-top"
-                        alt="..."
+                        alt={product.description}
                       />
                       {!user ? (
                         <div></div>
@@ -145,9 +168,9 @@ const UserBoard = ({ user, products }) => {
                   ) : (
                     <>
                       <img
-                        src={product.images?.[0]}
-                        className="card-img-top opacity-50"
-                        alt={product.title}
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        className="card-img-top"
+                        alt={product.description}
                       />
                       <img
                         className="soldout-user"

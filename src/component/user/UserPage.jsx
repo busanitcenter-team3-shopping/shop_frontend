@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 
 const UserPage = ({ user }) => {
+  const { user_id } = useParams();
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]);
@@ -13,34 +14,36 @@ const UserPage = ({ user }) => {
 
   useEffect(() => {
     api
-      .get(`/product/user-page`)
+      .get(`/product/user-page/${user_id}`)
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("상품 로드 실패:", error));
   }, []);
 
-  const BASE_URL = "http://localhost:8090";
-
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
-    setUsers(storedUsers);
+    api
+      .get(`/user/${user_id}`)
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.error("유저 로드 실패:", error));
   }, []);
+
+  const BASE_URL = "http://localhost:8090";
 
   const [likedItems, setLikedItems] = useState({});
 
   // 좋아요 불러오기
   useEffect(() => {
-    if (user && user.user_id) {
+    if (user && user.userId) {
       const storedLikes =
-        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
+        JSON.parse(localStorage.getItem(`likeProducts_${user.userId}`)) || [];
       setLikedItems(storedLikes);
     }
   }, [user]);
 
   // 변경될때마다 저장
   useEffect(() => {
-    if (user && user.user_id) {
+    if (user && user.userId) {
       localStorage.setItem(
-        `likeProducts_${user.user_id}`,
+        `likeProducts_${user.userId}`,
         JSON.stringify(likedItems)
       );
     }
@@ -57,7 +60,7 @@ const UserPage = ({ user }) => {
       }
 
       localStorage.setItem(
-        `likeProducts_${user.user_id}`,
+        `likeProducts_${user.userId}`,
         JSON.stringify(updatedLikes)
       );
 

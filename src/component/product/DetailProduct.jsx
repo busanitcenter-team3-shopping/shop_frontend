@@ -4,6 +4,7 @@ import "./detailProduct.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import api from "../../api/axiosInstance";
+import { useMyContext } from "../../api/ContextApi";
 
 const DetailProduct = ({ user, products, setProducts }) => {
   const { product_id } = useParams();
@@ -14,45 +15,43 @@ const DetailProduct = ({ user, products, setProducts }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null)
-  const BASE_URL = "http://localhost:8090"; 
-  
+  const [error, setError] = useState(null);
+  const BASE_URL = "http://localhost:8090";
+  const { currentUser, token } = useMyContext();
+
   useEffect(() => {
-  const fetchProduct = async() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await api.get(`/product/${product_id}`);
+        const foundProduct = response.data;
 
-    try {
+        setProduct(foundProduct);
+        setMainImg(
+          `${BASE_URL}/product/images/${product.images?.[0]?.imageName}`
+        );
+      } catch (err) {
+        setError("상품 불러오기 실패");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [product_id]);
 
-      const response = await api.get(`/product/${product_id}`);
-      const foundProduct = response.data
-      
-      setProduct(foundProduct)
-      setMainImg(`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`)  
-      
-    } catch(err) {
-      setError("상품 불러오기 실패")
-    }finally {
-      setLoading(false)
+  // //판매자 정보 찾기
+  // const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
+  // setUsers(storedUsers);
+  // const foundUser = storedUsers.find(
+  //   (u) => String(u.user_id) === String(foundProduct?.user_id)
+  // );
+  // console.log(foundUser);
+  // setUsers(foundUser);
+
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      setMainImg(`${BASE_URL}/product/images/${product.images[0].imageName}`);
     }
-     
-  };
-  fetchProduct()},[product_id]);
-
-
-    //판매자 정보 찾기
-    const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
-    setUsers(storedUsers);
-    const foundUser = storedUsers.find(
-      (u) => String(u.user_id) === String(foundProduct?.user_id)
-    );
-    console.log(foundUser);
-    setUsers(foundUser);
-
-useEffect(() => {
-  if(product?.images?.length > 0) {
-    setMainImg(`${BASE_URL}/product/images/${product.images[0].imageName}`);
-  }
-},[product])
-
+  }, [product]);
 
   //   //판매자 정보 찾기
   //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
@@ -89,12 +88,12 @@ useEffect(() => {
   //   }
   // }, [product_id, products, user]);
 
-  useEffect(() => {
-    const updatedProduct = products.find(
-      (item) => String(item.product_id) === product_id
-    );
-    setProduct(updatedProduct || null);
-  }, [products, product_id]);
+  // useEffect(() => {
+  //   const updatedProduct = products.find(
+  //     (item) => String(item.product_id) === product_id
+  //   );
+  //   setProduct(updatedProduct || null);
+  // }, [products, product_id]);
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
@@ -167,8 +166,8 @@ useEffect(() => {
     alert("상품이 삭제되었습니다.");
     navigate("/products");
   };
-
-  console.log(product);
+  console.log(currentUser.userId);
+  console.log(product.user.userId);
   return (
     <div className="container mt-5">
       <div className="row">
@@ -179,7 +178,9 @@ useEffect(() => {
               <button
                 key={index}
                 className="imgbtn"
-                onClick={() => setMainImg(`${BASE_URL}/product/images/${img.imageName}`)}
+                onClick={() =>
+                  setMainImg(`${BASE_URL}/product/images/${img.imageName}`)
+                }
               >
                 <img
                   src={`${BASE_URL}/product/images/${product.images?.[index]?.imageName}`}
@@ -237,7 +238,10 @@ useEffect(() => {
             {users === undefined ? (
               <span className=" fw-bold">탈퇴한 계정입니다.</span>
             ) : (
-              <Link to={`/user-board/${product.user_id}`} className="fw-bold">
+              <Link
+                to={`/user-board/${product.user.userId}`}
+                className="fw-bold"
+              >
                 {product.user.username}
               </Link>
             )}
@@ -271,7 +275,7 @@ useEffect(() => {
             {product.price.toLocaleString()}원
           </h3>
 
-          {product.user_id === user?.user_id ? (
+          {product.user.userId === currentUser.userId ? (
             <div className="d-flex gap-3">
               <button
                 className={`btn w-10 mt-3 ${

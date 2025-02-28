@@ -11,7 +11,7 @@ const Login = ({ setUser }) => {
   const [error, setError] = useState("");
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setToken, token } = useMyContext();
+  const { setToken, token, setCurrentUser } = useMyContext();
   const navigate = useNavigate();
 
   const handleSuccessfulLogin = (token, decodedToken, role) => {
