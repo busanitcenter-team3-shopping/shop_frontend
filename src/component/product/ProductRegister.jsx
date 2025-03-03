@@ -45,62 +45,51 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
+    const productData = {
+      title,
+      price,
+      description,
+      category,
+    };
 
-    if (existingProduct) {
-      // 상품 수정
-      const updatedProduct = {
-        ...existingProduct,
-        title,
-        price,
-        description,
-        category,
-        images, // 기존 이미지 삭제 후 새로운 이미지 저장
-      };
+    const formData = new FormData();
+    formData.append("product", JSON.stringify(productData)); // JSON 문자열로 변환
 
-      const updatedProducts = existingProducts.map((product) =>
-        product.product_id === existingProduct.product_id
-          ? updatedProduct
-          : product
-      );
+    const files = document.querySelector("#fileInput").files;
+    for (let i = 0; i < maxImg; i++) {
+      formData.append("files", files[i]); // 여러 개의 파일 추가
+    }
+    try {
+      if (existingProduct) {
+        // 수정
+        const response = await api.put(
+          `product/${existingProduct.productId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-      if (updateProduct) updateProduct(updatedProduct);
-      alert("상품이 성공적으로 수정되었습니다.");
-    } else {
-      const productData = {
-        title,
-        price,
-        description,
-        category,
-      };
-
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(productData)); // JSON 문자열로 변환
-
-      const files = document.querySelector("#fileInput").files;
-      for (let i = 0; i < maxImg; i++) {
-        formData.append("files", files[i]); // 여러 개의 파일 추가
-      }
-
-      try {
+        alert("상품이 성공적으로 수정되었습니다.");
+      } else {
+        // 상품 등록
         const response = await api.post("product/create", formData, {
           headers: {
-            "Content-Type": "multipart/form-data", // JSON 대신 multipart/form-data 사용
+            "Content-Type": "multipart/form-data",
           },
         });
 
-        alert("상품이 등록 되었습니다.");
-      } catch (error) {
-        console.error("상품 등록 실패", error.response?.data || error.message);
+        alert("상품이 등록되었습니다.");
       }
-
-      navigate("/");
+    } catch (error) {
+      console.error("상품 처리 실패", error.response?.data || error.message);
+      alert("상품 처리 중 오류가 발생했습니다.");
     }
-  };
 
-  // };
+    navigate("/");
+  };
 
   return (
     <div className="container mt-5">
