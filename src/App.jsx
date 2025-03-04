@@ -36,16 +36,6 @@ function App({ children }) {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
 
-  // 로컬에 있는 상품들을 전역으로 쓰려고
-  useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-    setProducts(storedProducts);
-  }, []);
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("USER")) || {};
-    setUser(user);
-  }, []);
-
   // 로컬 데이터 지우기
   // localStorage.clear();
 
