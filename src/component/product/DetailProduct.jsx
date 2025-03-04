@@ -126,6 +126,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   };
 
+  // console.log(product.user.userId);
   // 찜
   const toggleLike = () => {
     let likedProducts =
@@ -158,11 +159,13 @@ const DetailProduct = ({ user, products, setProducts }) => {
     console.log(product.productId)
     const response = await api.delete(`/product/${product.productId}`)
     // 상품 삭제 후 업데이트
+
    if(response === 200) {
     alert("상품이 삭제되었습니다.");
    }
     navigate("/");
   };
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -269,44 +272,54 @@ const DetailProduct = ({ user, products, setProducts }) => {
           >
             {product.price.toLocaleString()}원
           </h3>
-          {product.user === null ? (<div></div>) : (
-          <div>
-          {product?.user.userId === currentUser?.userId ? (
-            <div className="d-flex gap-3">
-              <button
-                className={`btn w-10 mt-3 ${
-                  purchased ? "btn-secondary" : "btn-warning"
-                }`}
-                onClick={handlePurchase}
-                disabled={purchased}
-              >
-                판매완료
-              </button>
-              {!purchased && (
-                <>
+
+          {product.user === null ? (
+            <div></div>
+          ) : (
+            <div>
+              {product.user?.userId === currentUser?.userId ? (
+                <div className="d-flex gap-3">
+
                   <button
-                    className="btn btn-success w-10 mt-3"
-                    onClick={handleEdit}
+                    className={`btn w-10 mt-3 ${
+                      purchased ? "btn-secondary" : "btn-warning"
+                    }`}
+                    onClick={handlePurchase}
+                    disabled={purchased}
                   >
-                    수정하기
+                    판매완료
                   </button>
+                  {!purchased && (
+                    <>
+                      <button
+                        className="btn btn-success w-10 mt-3"
+                        onClick={handleEdit}
+                      >
+                        수정하기
+                      </button>
+                      <button
+                        className="btn btn-danger w-10 mt-3"
+                        onClick={handleDelete}
+                      >
+                        삭제하기
+                      </button>
+                    </>
+                  )}
+                </div>
+              ) : (
+                // 구매자
+                <div className="d-flex gap-3">
                   <button
                     className="btn btn-danger w-10 mt-3"
-                    onClick={handleDelete}
+                    disabled={purchased}
                   >
-                    삭제하기
+                    메시지 보내기
                   </button>
-                </>
+                </div>
               )}
             </div>
-          ) : (
-            // 구매자
-            <div className="d-flex gap-3">
-              <button className="btn btn-danger w-10 mt-3" disabled={purchased}>
-                메시지 보내기
-              </button>
-            </div>
-          )}</div>)}
+          )}
+
         </div>
       </div>
     </div>
