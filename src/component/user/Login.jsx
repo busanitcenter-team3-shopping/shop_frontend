@@ -5,19 +5,18 @@ import { useMyContext } from "../../api/ContextApi";
 import api from "../../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 
-const Login = ({ setUser }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [jwtToken, setJwtToken] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setToken, token, setCurrentUser } = useMyContext();
+  const { setToken } = useMyContext();
   const navigate = useNavigate();
 
-  const handleSuccessfulLogin = (token, decodedToken, role) => {
+  const handleSuccessfulLogin = (token, decodedToken) => {
     const user = {
       username: decodedToken.sub,
-      // role: role,
       email: decodedToken.role,
     };
     localStorage.setItem("JWT_TOKEN", token);

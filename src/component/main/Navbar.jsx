@@ -19,7 +19,7 @@ function Navbar({ user, setUser }) {
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken, currentUser,setCurrentUser } = useMyContext();
+  const { setToken, setCurrentUser } = useMyContext();
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {

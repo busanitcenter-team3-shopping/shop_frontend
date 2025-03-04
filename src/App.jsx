@@ -26,6 +26,7 @@ import UserPage from "./component/user/UserPage";
 import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
+import Chat from "./component/chat/Chat";
 
 // 해야할 일 : (공지사항), 메세지, 찜, 주문내역, 리뷰, 판매완료시 이미지 변환
 function App({ children }) {
@@ -57,6 +58,7 @@ function App({ children }) {
     <Router>
       <Navbar user={user} setUser={setUser} />
 
+<Chat />
       <Routes>
         <Route
           path="/"

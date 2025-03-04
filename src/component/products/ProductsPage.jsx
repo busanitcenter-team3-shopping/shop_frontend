@@ -33,7 +33,6 @@ const ProductsPage = ({ user }) => {
       .catch((error) => console.error("상품 로드 실패:", error));
   }, [location.search]);
 
-  //console.log(products);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -43,13 +42,6 @@ const ProductsPage = ({ user }) => {
       )}&search=${encodeURIComponent(searchQuery)}`
     );
   };
-
-  // // 검색 및 카테고리에 맞는 상품 필터링
-  // const filteredProducts = products.filter(
-  //   (product) =>
-  //     product.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-  //     (selectedCategory === "전체" || product.category === selectedCategory)
-  // );
 
   return (
     <div className="container d-flex">
