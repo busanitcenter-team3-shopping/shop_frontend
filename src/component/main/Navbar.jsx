@@ -19,7 +19,7 @@ function Navbar({ user, setUser }) {
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken } = useMyContext();
+  const { setToken, currentUser } = useMyContext();
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
-        {user ? (
+        {currentUser ? (
           <button onClick={handellogout}>로그아웃</button>
         ) : (
           <>
