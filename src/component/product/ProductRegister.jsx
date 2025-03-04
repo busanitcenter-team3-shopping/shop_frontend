@@ -36,6 +36,9 @@ const ProductRegister = ({ addProduct, updateProduct }) => {
 
     if (selectedFiles.length > maxImg) {
       alert(`이미지는 3개까지 등록가능합니다.`);
+      setImages([]);
+      e.target.value = "";
+      return;
     } else {
       setImages(selectedFiles); // 기존 이미지 삭제후 이미지 추가
     }

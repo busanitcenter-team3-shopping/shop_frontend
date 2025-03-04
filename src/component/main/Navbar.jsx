@@ -19,7 +19,7 @@ function Navbar({ user, setUser }) {
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken, currentUser } = useMyContext();
+  const { setToken, currentUser,setCurrentUser } = useMyContext();
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -50,8 +50,10 @@ function Navbar({ user, setUser }) {
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("USER");
+    localStorage.removeItem("currentUser");
     setUser(null);
     setToken(null);
+    setCurrentUser(null);
     alert("로그아웃 되었습니다.");
     navigate("/");
   };
@@ -75,7 +77,7 @@ function Navbar({ user, setUser }) {
   return (
     <div>
       <article className="top-bar bg-secondary bg-opacity-25">
-        {currentUser ? (
+        {user ? (
           <button onClick={handellogout}>로그아웃</button>
         ) : (
           <>

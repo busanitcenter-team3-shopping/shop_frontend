@@ -151,23 +151,18 @@ const DetailProduct = ({ user, products, setProducts }) => {
     });
   };
   // 삭제
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
       return;
     }
+    console.log(product.productId)
+    const response = await api.delete(`/product/${product.productId}`)
     // 상품 삭제 후 업데이트
-    const updatedProducts = products.filter(
-      (item) => item.product_id !== product.product_id
-    );
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
-    if (typeof setProducts === "function") {
-      setProducts(updatedProducts); // 업데이트
-    }
+   if(response === 200) {
     alert("상품이 삭제되었습니다.");
-    navigate("/products");
+   }
+    navigate("/");
   };
-  console.log(currentUser.userId);
-  console.log(product.user.userId);
   return (
     <div className="container mt-5">
       <div className="row">
@@ -235,7 +230,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
 
           <p>
             판매자:{" "}
-            {users === undefined ? (
+            {product.user === null ? (
               <span className=" fw-bold">탈퇴한 계정입니다.</span>
             ) : (
               <Link
@@ -274,8 +269,9 @@ const DetailProduct = ({ user, products, setProducts }) => {
           >
             {product.price.toLocaleString()}원
           </h3>
-
-          {product.user.userId === currentUser.userId ? (
+          {product.user === null ? (<div></div>) : (
+          <div>
+          {product?.user.userId === currentUser?.userId ? (
             <div className="d-flex gap-3">
               <button
                 className={`btn w-10 mt-3 ${
@@ -310,7 +306,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
                 메시지 보내기
               </button>
             </div>
-          )}
+          )}</div>)}
         </div>
       </div>
     </div>
