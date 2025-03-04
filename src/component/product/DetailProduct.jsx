@@ -156,13 +156,16 @@ const DetailProduct = ({ user, products, setProducts }) => {
     if (!window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
       return;
     }
+    console.log(product.productId)
+    const response = await api.delete(`/product/${product.productId}`)
     // 상품 삭제 후 업데이트
-    const response = await api.delete(`/product/${product.productId}`);
+
+   if(response === 200) {
     alert("상품이 삭제되었습니다.");
-    navigate("/product");
+   }
+    navigate("/");
   };
-  // console.log(currentUser.userId);
-  // console.log(product.user.userId);
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -269,12 +272,14 @@ const DetailProduct = ({ user, products, setProducts }) => {
           >
             {product.price.toLocaleString()}원
           </h3>
+
           {product.user === null ? (
             <div></div>
           ) : (
             <div>
               {product.user?.userId === currentUser?.userId ? (
                 <div className="d-flex gap-3">
+
                   <button
                     className={`btn w-10 mt-3 ${
                       purchased ? "btn-secondary" : "btn-warning"
@@ -314,6 +319,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
               )}
             </div>
           )}
+
         </div>
       </div>
     </div>
