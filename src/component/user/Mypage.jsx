@@ -33,7 +33,7 @@ const orders = [
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
-  const { token, setToken, currentUser } = useMyContext();
+  const { token, setToken, currentUser, setCurrentUser } = useMyContext();
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("USER")); // 현재 로그인된 유저의 정보
 
@@ -78,9 +78,13 @@ const Mypage = ({ user, setUser, products }) => {
         alert("탈퇴가 완료되었습니다.");
 
         localStorage.removeItem("USER");
+        localStorage.removeItem("JWT_TOKEN");
+        localStorage.removeItem("currentUser");
 
         setUser(null);
         setToken(null);
+        setCurrentUser(null);
+
         navigate("/");
       }
     } catch (error) {
