@@ -44,7 +44,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
-
   // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
   useEffect(() => {
     const checkFavorite = async () => {
@@ -145,6 +144,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
     try {
       setLoading(true);
       // 여기서 콘솔에 productId, userId 출력
+      console.log("상품 상세 : ", product);
       console.log("토글 전송 직전 - Product ID:", product.productId);
       console.log("토글 전송 직전 - User ID:", currentUser?.userId);
       if (like) {
@@ -237,7 +237,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
               {product.title}
             </h2>
             {/* 찜 아이콘 */}
-            {currentUser && (
+            {currentUser && product.user !== null && (
               <img
                 src={like ? "/colorHeart.png" : "/heart.png"}
                 alt="찜"
