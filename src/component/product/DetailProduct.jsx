@@ -38,27 +38,18 @@ const DetailProduct = ({ user, products, setProducts }) => {
     fetchProduct();
   }, [product_id]);
 
-  // //판매자 정보 찾기
-  // const storedUsers = JSON.parse(localStorage.getItem("USER")) || [];
-  // setUsers(storedUsers);
-  // const foundUser = storedUsers.find(
-  //   (u) => String(u.user_id) === String(foundProduct?.user_id)
-  // );
-  // console.log(foundUser);
-  // setUsers(foundUser);
-
   useEffect(() => {
     if (product?.images?.length > 0) {
       setMainImg(`${BASE_URL}/product/images/${product.images[0].imageName}`);
     }
   }, [product]);
 
+
   // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
   useEffect(() => {
     const checkFavorite = async () => {
       try {
         const response = await api.get("/favorite");
-        // response.data가 Favorite 배열임 (각 Favorite 객체에 product 객체가 포함)
         let isFavorited = false;
         response.data.forEach((fav) => {
           console.log("Favorite product:", fav.product); // 디버깅용 출력
@@ -149,7 +140,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   };
 
-  // console.log(product.user.userId);
   // 찜
   const toggleLike = async () => {
     try {
