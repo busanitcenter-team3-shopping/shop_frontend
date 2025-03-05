@@ -161,7 +161,7 @@ const UserBoard = ({ user }) => {
                         className="card-img-top"
                         alt={product.description}
                       />
-                      {user && (
+                      {user && product.user !== null && (
                         <img
                           src={
                             likedItems[product.productId]
