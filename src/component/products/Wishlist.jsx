@@ -1,42 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Wishlist.css";
+import Pagination from "./Pagination";
+import api from "../../api/axiosInstance";
 
 const Wishlist = ({ user, products }) => {
   const [likedProducts, setLikedProducts] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
+  const BASE_URL = "http://localhost:8090";
+
+  // 백엔드 API로부터 찜 목록을 불러와, product 객체들을 배열로 저장
+  const fetchFavorites = async () => {
+    try {
+      const response = await api.get("/favorite");
+      // response.data: Favorite 배열 (각 Favorite 객체에 product 필드가 포함됨)
+      if (Array.isArray(response.data)) {
+        const products = response.data
+          .filter((fav) => fav.product) // product가 null이 아닌 항목만 필터링
+          .map((fav) => fav.product);
+        // 최신 찜이 맨 앞에 오도록 reverse 처리
+        setLikedProducts(products.reverse());
+      } else {
+        console.log("응답 데이터 형식이 배열이 아닙니다:", response.data);
+      }
+    } catch (error) {
+      console.error("찜 목록 불러오기 실패", error);
+    }
+  };
 
   useEffect(() => {
-    if (user && user.user_id) {
-      const storedLikes =
-        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || {};
-      const likedList = Object.keys(storedLikes)
-        .map((productId) =>
-          products.find((product) => String(product.product_id) === productId)
-        )
-        .filter(Boolean)
-        .reverse();
-      setLikedProducts(likedList);
+    if (user) {
+      fetchFavorites();
+    } else {
+      console.log("user가 설정되지 않았습니다.");
     }
-  }, [user, products]);
+  }, [user]);
 
-  const removeFromWishlist = (product_id) => {
-    if (user && user.user_id) {
-      const storedLikes =
-        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || {};
-      if (storedLikes[product_id]) {
-        delete storedLikes[product_id];
-        localStorage.setItem(
-          `likeProducts_${user.user_id}`,
-          JSON.stringify(storedLikes)
-        );
-      }
-      setLikedProducts((prev) =>
-        prev.filter(
-          (product) => String(product.product_id) !== String(product_id)
-        )
-      );
+  // 찜 해제: 삭제 API 호출 후 찜 목록 재조회
+  const removeFromWishlist = async (productId) => {
+    try {
+      await api.delete(`/favorite/${productId}`);
+      // 삭제 후 목록 재조회
+      fetchFavorites();
+    } catch (error) {
+      console.error("찜 삭제 실패", error);
     }
   };
 
@@ -70,15 +78,18 @@ const Wishlist = ({ user, products }) => {
         <>
           <div className="wishlist-grid">
             {currentProducts.map((product) => (
-              <div key={product.product_id} className="wishlist-item">
-                <Link to={`/product/${product.product_id}`}>
+              <div key={product.productId} className="wishlist-item">
+                <Link to={`/product/${product.productId}`}>
                   <div className="wishlist-img">
                     {product.status === "판매중" ? (
-                      <img src={product.images?.[0]} alt={product.title} />
+                      <img
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        alt={product.title}
+                      />
                     ) : (
                       <>
                         <img
-                          src={product.images?.[0]}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                           className="card-img-top opacity-50"
                           alt={product.title}
                         />
@@ -121,7 +132,7 @@ const Wishlist = ({ user, products }) => {
                 </Link>
                 <button
                   className="remove-btn"
-                  onClick={() => removeFromWishlist(product.product_id)}
+                  onClick={() => removeFromWishlist(product.productId)}
                 >
                   찜 해제
                 </button>

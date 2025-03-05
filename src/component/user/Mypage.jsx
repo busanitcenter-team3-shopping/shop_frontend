@@ -92,7 +92,36 @@ const Mypage = ({ user, setUser, products }) => {
     }
   };
 
+  // 백엔드 API를 사용하여 현재 로그인한 사용자의 찜 목록을 불러오기
+  const fetchFavorites = async () => {
+    try {
+      const response = await api.get("/favorite");
+      // response.data: Favorite 배열 (각 Favorite에 product 객체가 포함됨)
+      if (Array.isArray(response.data)) {
+        const productsFromFavorites = response.data
+          .filter((fav) => fav.product) // product가 존재하는 항목만
+          .map((fav) => fav.product);
+        // 최신 찜이 먼저 보이도록 reverse 처리 후, 최대 4개만 저장
+        setLikedProducts(productsFromFavorites.reverse().slice(0, 4));
+      } else {
+        console.log("응답 데이터 형식이 배열이 아닙니다:", response.data);
+      }
+    } catch (error) {
+      console.error("찜 목록 불러오기 실패", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchFavorites();
+    } else {
+      console.log("user가 설정되지 않았습니다.");
+    }
+  }, [user]);
+
   const recentOrders = orders.slice(0, 2);
+
+  const BASE_URL = "http://localhost:8090";
 
   return (
     <div className="container container1 mt-5">
@@ -187,20 +216,20 @@ const Mypage = ({ user, setUser, products }) => {
           ) : (
             <div className="product-container row row1">
               {likedProducts.map((product) => (
-                <div key={product.product_id}>
-                  <Link to={`/product/${product.product_id}`}>
+                <div key={product.productId}>
+                  <Link to={`/product/${product.productId}`}>
                     <div className="card">
                       <div className="position-relative card-img">
                         {product.status === "판매중" ? (
                           <img
-                            src={product.images?.[0]}
+                            src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                             className="card-img-top"
                             alt={product.title}
                           />
                         ) : (
                           <>
                             <img
-                              src={product.images?.[0]}
+                              src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                               className="card-img-top opacity-50"
                               alt={product.title}
                             />
