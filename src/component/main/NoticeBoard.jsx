@@ -48,7 +48,7 @@ function NoticeBoard() {
       try {
         const user = JSON.parse(storedUser);
         // setIsAdmin(user.role === "ROLE_ADMIN");
-        setIsAdmin(user.email === "ROLE_ADMIN")
+        setIsAdmin(user.email === "ROLE_ADMIN");
       } catch (error) {
         console.error("USER 파싱 오류:", error);
         setIsAdmin(false);
@@ -90,10 +90,12 @@ function NoticeBoard() {
               </span>
             </div>
             {notice.expanded && (
-              <div id="textarea" contentEditable className="notice-content">
-                <textarea className="notice-textarea">
-                  {notice.content}
-                </textarea>
+              <div id="textarea" className="notice-content">
+                <textarea
+                  className="notice-textarea"
+                  readOnly
+                  value={notice.content}
+                />
               </div>
             )}
             {isAdmin && (
