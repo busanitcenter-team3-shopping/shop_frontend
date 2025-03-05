@@ -6,7 +6,7 @@ const Chat = () => {
   const [socket,setSocket] = useState(null)
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8090/chat");
+    const ws = new WebSocket("ws://localhost:8090/ws/chat");
 
     ws.onopen = () => {
       console.log("연결 성공")
