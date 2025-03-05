@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./NoticeWrite.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
 function NoticeWrite() {
   const navigate = useNavigate();
@@ -12,35 +13,33 @@ function NoticeWrite() {
     editingNotice ? editingNotice.content : ""
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit triggered", { title, content });
 
-    const savedNotices = localStorage.getItem("notices");
-    const notices = savedNotices ? JSON.parse(savedNotices) : [];
+    // const savedNotices = localStorage.getItem("notices");
+    // const notices = savedNotices ? JSON.parse(savedNotices) : [];
 
-    if (editingNotice) {
-      // 수정: 해당 notice의 id를 기준으로 업데이트
-      const updatedNotices = notices.map((notice) =>
-        notice.id === editingNotice.id ? { ...notice, title, content } : notice
-      );
-      localStorage.setItem("notices", JSON.stringify(updatedNotices));
-      console.log("Notice updated", updatedNotices);
-    } else {
-      // 신규 작성: 고유 id 생성 후 추가
-      const newNotice = {
-        id: Date.now(),
-        title,
-        content,
-        expanded: false,
-      };
-      notices.push(newNotice);
-      localStorage.setItem("notices", JSON.stringify(notices));
-      console.log("New notice added", newNotice);
+    try {
+      if (editingNotice) {
+        // 수정: PUT /notice/update/{id} 엔드포인트 호출
+        const response = await api.put(
+          `/notice/update/${editingNotice.noticeId}`,
+          {
+            title,
+            content,
+          }
+        );
+      } else {
+        // 신규 작성: POST /notice/create 엔드포인트 호출
+        const response = await api.post("/notice/create", {
+          title,
+          content,
+        });
+      }
+      navigate("/notice-board");
+    } catch (error) {
+      console.error("공지사항 저장 실패:", error);
     }
-
-    // 저장 후 공지사항 목록 페이지로 이동
-    navigate("/notice-board");
   };
 
   return (

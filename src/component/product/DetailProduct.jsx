@@ -44,7 +44,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
-
   // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
   useEffect(() => {
     const checkFavorite = async () => {
@@ -66,48 +65,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
       checkFavorite();
     }
   }, [product]);
-
-  //   //판매자 정보 찾기
-  //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  //   setUsers(storedUsers);
-  //   const foundUser = storedUsers.find(
-  //     (u) => String(u.user_id) === String(foundProduct?.user_id)
-  //   );
-  //   console.log(foundUser);
-  //   setUsers(foundUser);
-
-  //   // if (foundUser === undefined) {
-  //   //   foundUser.name = "알수없음";
-  //   //   setUsers(foundUser);
-  //   // }
-
-  //   if (foundProduct) {
-  //     setProduct(foundProduct);
-  //     setMainImg(foundProduct.images?.[0]);
-
-  //     // 로컬에 구매 완료 여부
-  //     const purchasedProducts =
-  //       JSON.parse(localStorage.getItem("purchasedProducts")) || [];
-  //     setPurchased(purchasedProducts.includes(foundProduct.product_id));
-
-  //     // 로컬에 있는 찜 상품
-  //     if (user?.user_id) {
-  //       const likedProducts =
-  //         JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) ||
-  //         [];
-  //       setLike(!!likedProducts[foundProduct.product_id]);
-  //     } else {
-  //       setProduct(null);
-  //     }
-  //   }
-  // }, [product_id, products, user]);
-
-  // useEffect(() => {
-  //   const updatedProduct = products.find(
-  //     (item) => String(item.product_id) === product_id
-  //   );
-  //   setProduct(updatedProduct || null);
-  // }, [products, product_id]);
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
