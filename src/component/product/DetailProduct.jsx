@@ -44,6 +44,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
+
   // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
   useEffect(() => {
     const checkFavorite = async () => {
@@ -69,6 +70,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
       }
     }
   }, [product]);
+
 
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
@@ -144,6 +146,39 @@ const DetailProduct = ({ user, products, setProducts }) => {
       alert("상품이 삭제되었습니다.");
     }
     navigate("/");
+  };
+
+  //메시지 보내기 (채팅방 생성)
+  const createChatRoom = async () => {
+    try {
+      const response = await fetch(
+        "http://http://10.100.202.82:5173/chat/rooms",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${token}`,
+          },
+          body: new URLSearchParams({
+            status: "OPEN",
+            productId: product.productId,
+            userId: currentUser.userId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("채팅방 생성에 실패했습니다.");
+      }
+
+      const newRoom = await response.json();
+      console.log(newRoom);
+      alert("채팅방이 생성되었습니다. ID: " + newRoom.chatRoomId);
+      navigate(`/chat/${newRoom.chatRoomId}`);
+    } catch (error) {
+      console.error(error);
+      alert("채팅방 생성하는 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -289,6 +324,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
                   <button
                     className="btn btn-danger w-10 mt-3"
                     disabled={purchased}
+                    onClick={createChatRoom}
                   >
                     메시지 보내기
                   </button>
