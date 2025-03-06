@@ -32,7 +32,6 @@ function ProductsList({ selectedCategory, products, user }) {
   const [likedItems, setLikedItems] = useState({});
 
   // 좋아요 불러오기
-  // 백엔드에서 현재 사용자의 찜 목록을 불러와 likedItems 객체에 저장
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -62,21 +61,10 @@ function ProductsList({ selectedCategory, products, user }) {
     }
   }, [user]);
 
-  // 변경될때마다 저장
-  // useEffect(() => {
-  //   if (user && user.user_id) {
-  //     localStorage.setItem(
-  //       `likeProducts_${user.user_id}`,
-  //       JSON.stringify(likedItems)
-  //     );
-  //   }
-  // }, [likedItems, user]);
-
-  // 찜 상태를 토글하는 함수: 찜이 되어있으면 DELETE, 아니면 POST 요청
   const toggleLike = async (id) => {
     try {
       if (likedItems[id]) {
-        // 찜 해제: DELETE /favorite/{productId}
+        // 찜 해제
         await api.delete(`/favorite/${id}`);
         setLikedItems((prev) => {
           const newLikes = { ...prev };
@@ -84,7 +72,7 @@ function ProductsList({ selectedCategory, products, user }) {
           return newLikes;
         });
       } else {
-        // 찜 추가: POST /favorite, { productId }
+        // 찜 추가
         await api.post("/favorite", { productId: id });
         setLikedItems((prev) => ({ ...prev, [id]: true }));
       }

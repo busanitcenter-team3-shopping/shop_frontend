@@ -62,7 +62,11 @@ const DetailProduct = ({ user, products, setProducts }) => {
       }
     };
     if (product) {
-      checkFavorite();
+      if (user) {
+        checkFavorite();
+      } else {
+        console.log("user가 설정되지 않았습니다.");
+      }
     }
   }, [product]);
 
