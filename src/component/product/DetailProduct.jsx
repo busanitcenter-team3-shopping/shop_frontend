@@ -44,7 +44,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
-
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
@@ -105,14 +104,47 @@ const DetailProduct = ({ user, products, setProducts }) => {
     if (!window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
       return;
     }
-    console.log(product.productId)
-    const response = await api.delete(`/product/${product.productId}`)
+    console.log(product.productId);
+    const response = await api.delete(`/product/${product.productId}`);
     // 상품 삭제 후 업데이트
 
-   if(response === 200) {
-    alert("상품이 삭제되었습니다.");
-   }
+    if (response === 200) {
+      alert("상품이 삭제되었습니다.");
+    }
     navigate("/");
+  };
+
+  //메시지 보내기 (채팅방 생성)
+  const createChatRoom = async () => {
+    try {
+      const response = await fetch(
+        "http://http://10.100.202.82:5173/chat/rooms",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${token}`,
+          },
+          body: new URLSearchParams({
+            status: "OPEN",
+            productId: product.productId,
+            userId: currentUser.userId,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("채팅방 생성에 실패했습니다.");
+      }
+
+      const newRoom = await response.json();
+      console.log(newRoom);
+      alert("채팅방이 생성되었습니다. ID: " + newRoom.chatRoomId);
+      navigate(`/chat/${newRoom.chatRoomId}`);
+    } catch (error) {
+      console.error(error);
+      alert("채팅방 생성하는 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -228,7 +260,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
             <div>
               {product.user?.userId === currentUser?.userId ? (
                 <div className="d-flex gap-3">
-
                   <button
                     className={`btn w-10 mt-3 ${
                       purchased ? "btn-secondary" : "btn-warning"
@@ -261,6 +292,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
                   <button
                     className="btn btn-danger w-10 mt-3"
                     disabled={purchased}
+                    onClick={createChatRoom}
                   >
                     메시지 보내기
                   </button>
@@ -268,7 +300,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>

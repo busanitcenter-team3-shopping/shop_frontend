@@ -176,7 +176,7 @@ function Navbar({ user, setUser }) {
             </Link>
           </li>
           <li>
-            <Link to="/note" className="text-dark">
+            <Link to="/chat" className="text-dark">
               <img
                 className="mb-2"
                 src={note}
