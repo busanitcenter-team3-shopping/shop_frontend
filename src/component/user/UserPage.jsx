@@ -30,44 +30,6 @@ const UserPage = ({ user }) => {
 
   const [likedItems, setLikedItems] = useState({});
 
-  // 좋아요 불러오기
-  useEffect(() => {
-    if (user && user.userId) {
-      const storedLikes =
-        JSON.parse(localStorage.getItem(`likeProducts_${user.userId}`)) || [];
-      setLikedItems(storedLikes);
-    }
-  }, [user]);
-
-  // 변경될때마다 저장
-  useEffect(() => {
-    if (user && user.userId) {
-      localStorage.setItem(
-        `likeProducts_${user.userId}`,
-        JSON.stringify(likedItems)
-      );
-    }
-  }, [likedItems, user]);
-
-  // 로컬에 좋아요 저장
-  const toggleLike = (id) => {
-    setLikedItems((prev) => {
-      const updatedLikes = { ...prev };
-      if (updatedLikes[id]) {
-        delete updatedLikes[id]; // 찜 해제
-      } else {
-        updatedLikes[id] = true; // 찜 추가
-      }
-
-      localStorage.setItem(
-        `likeProducts_${user.userId}`,
-        JSON.stringify(updatedLikes)
-      );
-
-      return updatedLikes;
-    });
-  };
-
   // 현재 페이지의 상품 계산
   const totalPages = Math.ceil(products.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -115,23 +77,6 @@ const UserPage = ({ user }) => {
                           className="card-img-top"
                           alt={product.description}
                         />
-                        {!user ? (
-                          <div></div>
-                        ) : (
-                          <img
-                            src={
-                              likedItems[product.productId]
-                                ? "/colorHeart.png"
-                                : "/heart.png"
-                            }
-                            onClick={(e) => {
-                              e.preventDefault();
-                              toggleLike(product.productId);
-                            }}
-                            alt="찜"
-                            className="heart"
-                          />
-                        )}
                       </>
                     ) : (
                       <>
