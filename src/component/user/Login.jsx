@@ -44,13 +44,13 @@ const Login = () => {
 
         navigate("/");
       } else {
-        setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
+        setError("로그인 실패! 이메일 혹은 패스워드를 확인하십시오.");
       }
     } catch (error) {
       setError("로그인 실패! 에러가 발생하였습니다.");
 
       if (error.response && error.response.status === 401) {
-        setError("로그인 실패! 유저네임과 패스워드를 확인하십시오.");
+        setError("로그인 실패! 이메일 혹은 패스워드를 확인하십시오.");
       } else {
         setError("로그인 실패! 에러가 발생하였습니다.");
       }
