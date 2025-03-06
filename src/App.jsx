@@ -27,6 +27,7 @@ import UserBoard from "./component/user/UserBoard";
 import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
+import ChatRoomList from "./component/chat/ChatRoomList";
 
 // 해야할 일 : (공지사항), 메세지, 찜, 주문내역, 리뷰, 판매완료시 이미지 변환
 function App({ children }) {
@@ -58,7 +59,7 @@ function App({ children }) {
     <Router>
       <Navbar user={user} setUser={setUser} />
 
-<Chat />
+      {/* <Chat /> */}
       <Routes>
         <Route
           path="/"
@@ -94,6 +95,8 @@ function App({ children }) {
             </PrivateRoute>
           }
         />
+        <Route path="/chat" element={<ChatRoomList />} />
+        <Route path="/chat/:chatRoomId" element={<Chat />} />
         <Route
           path="/product"
           element={<ProductsPage products={products} user={user} />}
@@ -128,7 +131,6 @@ function App({ children }) {
         />
         <Route path="/notice-board" element={<NoticeBoard />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
-        <Route path="*" element={<Navigate to="/notice-board" replace />} />
         <Route path="/notice-write" element={<NoticeWrite />} />
         <Route path="/orderhistory" element={<OrderHistory />} />
         <Route path="/add-review" element={<ReviewRegister />} />
