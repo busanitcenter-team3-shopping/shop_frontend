@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
-import "./chat.css"
+import "./chat.css";
+import api from "../../api/axiosInstance";
 
 const Chat = () => {
   const { chatRoomId } = useParams();
@@ -23,14 +24,12 @@ const Chat = () => {
 
         const chatRoomData = await response.json();
         setChatRoomData(chatRoomData);
-        console.log(chatRoomData)
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchChatRoomDetails();
-
     const fetchMessages = async () => {
       try {
         const response = await fetch(
@@ -40,7 +39,7 @@ const Chat = () => {
           throw new Error("채팅 메시지를 불러오는 데 실패했습니다.");
         }
         const messages = await response.json();
-        setMessages(messages); // ✅ 메시지를 객체 형태로 저장
+        setMessages(messages);
       } catch (error) {
         console.error(error);
       }
@@ -52,11 +51,9 @@ const Chat = () => {
       `ws://localhost:8090/ws/chat?userId=${currentUser.userId}`
     );
 
-
     ws.onmessage = (event) => {
       const receivedMessage = JSON.parse(event.data);
-    
-      // ✅ 새 메시지를 기존 메시지 목록에 추가
+
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     };
 
@@ -78,7 +75,6 @@ const Chat = () => {
         receiverId: receiverId,
         chatRoomId: Number(chatRoomId),
         content: messageInput,
-        
       };
 
       socket.send(JSON.stringify(messageData));
@@ -86,38 +82,106 @@ const Chat = () => {
       setMessageInput(""); // 입력 필드 초기화
     }
   };
-  
-  return (
 
-<div className="mt-5 container cattiong-room">
-<div className="chatting-title mb-3"><div className="d-flex align-items-center"><div className="me-2 rounded-circle bg-warning" style={{ width: "40px", height: "40px" }}></div>{chatRoomData.user1.username}</div>
-    <button className="btn btn-primary">구매 확정</button>
-    </div>
-  
-        <div className="border p-3 rounded chatting" style={{ maxWidth:"800px" ,maxHeight: "400px", overflowY: "auto" }}>
-          {messages.map((msg, index) => (
-            <div key={index} className={`d-flex mb-2 ${msg.sender?.userId === currentUser.userId ? 'justify-content-end' : 'justify-content-start'}`}>
-              {msg.sender?.userId !== currentUser.userId && (
-                <div className="me-2 rounded-circle bg-warning" style={{ width: "40px", height: "40px" }}></div>
-              )}
-              <div className={`p-2 rounded shadow-sm ${msg.sender?.userId === currentUser.userId ? 'text-dark chatting-username' : 'bg-light text-dark'}`} style={{ maxWidth: "100%" }}>
-                <strong className="d-block small text-muted "></strong>
-                <p className="mb-0">{msg.content}</p>
-              </div>
-            </div>
-          ))}
+  //판매
+  const handleSellProduct = async () => {
+    const buyerId = chatRoomData.user1.userId;
+    try {
+      const response = await api.post(`/chat/purchase/${chatRoomId}`, {
+        buyerId: buyerId,
+      });
+
+      if (response.status === 200) {
+        alert("상품이 판매 되었습니다.");
+        setChatRoomData((prev) => ({
+          ...prev,
+          product: { ...prev.product, status: "판매완료" },
+        }));
+      } else {
+        throw new Error("상품 판매 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("판매 실패");
+    }
+  };
+  console.log(chatRoomData?.product?.status);
+  return (
+    <div className="mt-2 container cattiong-room">
+      <div className="chatting-title">
+        <div className="d-flex align-items-center">
+          <img
+            src="/basicUser.png"
+            className="me-2 rounded-circle"
+            style={{ width: "40px", height: "40px" }}
+          ></img>
+          {chatRoomData?.user2?.username === currentUser.username
+            ? chatRoomData?.user1?.username
+            : chatRoomData?.user2?.username}
         </div>
-        <div className="input-group mt-3 chatting-serch">
-          <input
-            type="text"
-            className="form-control "
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-            placeholder="메시지를 입력하세요..."
-          />
-          <button className="btn btn-primary" onClick={sendMessage}>전송</button>
-        </div>
+        {chatRoomData?.user2?.username === currentUser.username ? (
+          chatRoomData?.product.status === "판매완료" ? (
+            <div></div>
+          ) : (
+            <button className="btn btn-primary" onClick={handleSellProduct}>
+              판매하기
+            </button>
+          )
+        ) : (
+          <div></div>
+        )}
       </div>
+
+      <div
+        className="border p-3 rounded chatting"
+        style={{ maxWidth: "800px", maxHeight: "400px", overflowY: "auto" }}
+      >
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`d-flex mb-2 ${
+              msg.sender?.userId === currentUser.userId
+                ? "justify-content-end"
+                : "justify-content-start"
+            }`}
+          >
+            {msg.sender?.userId !== currentUser.userId && (
+              <img
+                src="/basicUser.png"
+                className="me-2 rounded-circle"
+                style={{ width: "40px", height: "40px" }}
+              ></img>
+            )}
+            <div
+              className={`p-2 rounded shadow-sm ${
+                msg.sender?.userId === currentUser.userId
+                  ? "text-dark chatting-username"
+                  : "bg-light text-dark"
+              }`}
+              style={{ maxWidth: "100%" }}
+            >
+              <strong className="d-block small text-muted "></strong>
+              <p className="mb-0">{msg.content}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="input-group mt-3 chatting-serch">
+        <input
+          type="text"
+          className="form-control "
+          value={messageInput}
+          onChange={(e) => setMessageInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
+          placeholder="메시지를 입력하세요..."
+        />
+        <button className="btn btn-primary" onClick={sendMessage}>
+          전송
+        </button>
+      </div>
+    </div>
   );
 };
 

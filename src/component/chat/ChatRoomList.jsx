@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
-import "./chatRoomList.css"
+import "./chatRoomList.css";
 
 const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:8090"
+  const BASE_URL = "http://localhost:8090";
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -19,32 +19,57 @@ const ChatRoomList = () => {
       }
     };
 
-    fetchChatRooms(); // useEffect 내부에서 함수 실행
+    fetchChatRooms();
   }, []);
   return (
-
     <div className="container mt-4">
-    <h2 className="text-center mb-4">채팅방 목록</h2>
-    <ul className="chat-list">
-      {chatRooms.map((room) => (
-        <li key={room.chatRoomId} className="list-group-item d-flex align-items-center justify-content-between chat-detail">
-          <div className="d-flex align-items-center chat-sta">
-           <img src={`${BASE_URL}/product/images/${room.product.images[0]?.imageName}`} className="chat-img"/>
-            <div className="chat-id">
-              <p className="mb-0 fw-bold room_name">{room.name}</p>
-              <p className="mb-0 text-muted room_user_name d-flex align-items-center">{room.user2.username}</p>
-            </div>
-          </div>
-          <button
-            className="btn btn-primary btn-sm chat-btn"
-            onClick={() => navigate(`/chat/${room.chatRoomId}`)}
+      <h2 className="text-center mb-4">채팅방 목록</h2>
+      <ul className="chat-list">
+        {chatRooms.reverse().map((room) => (
+          <li
+            key={room.chatRoomId}
+            className="list-group-item d-flex align-items-center justify-content-between chat-detail"
           >
-            입장
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
+            <div className="d-flex align-items-center chat-sta">
+              {!room?.product ? (
+                <img src="/lion.png" className="chat-img" />
+              ) : (
+                <img
+                  src={`${BASE_URL}/product/images/${room?.product?.images[0]?.imageName}`}
+                  className="chat-img"
+                />
+              )}
+              <div className="chat-id">
+                {!room?.product ? (
+                  <p className="mb-0 fw-bold room_name">
+                    상품이 삭제된 방입니다.
+                  </p>
+                ) : (
+                  <>
+                    <p className="mb-0 fw-bold room_name">{room.name}</p>
+                    <p className="mb-0 text-muted room_user_name d-flex align-items-center">
+                      {room.user2.username}
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+            {!room?.product ? (
+              <button className="btn btn-primary btn-sm chat-btn" disabled>
+                입장
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary btn-sm chat-btn"
+                onClick={() => navigate(`/chat/${room.chatRoomId}`)}
+              >
+                입장
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

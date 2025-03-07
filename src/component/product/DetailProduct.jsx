@@ -44,7 +44,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
-
   // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
   useEffect(() => {
     const checkFavorite = async () => {
@@ -71,46 +70,42 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
-
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
 
   // 등록자가 구매완료를 눌렀을 시 메시지 보내기가 블락 처리되도록 하는 메서드
-  const handlePurchase = () => {
-    const purchasedProducts =
-      JSON.parse(localStorage.getItem("purchasedProducts")) || [];
+  // const handlePurchase = () => {
+  //   const purchasedProducts =
+  //     JSON.parse(localStorage.getItem("purchasedProducts")) || [];
 
-    if (!purchasedProducts.includes(product.product_id)) {
-      purchasedProducts.push(product.product_id);
-      localStorage.setItem(
-        "purchasedProducts",
-        JSON.stringify(purchasedProducts)
-      );
-      setPurchased(true);
+  //   if (!purchasedProducts.includes(product.product_id)) {
+  //     purchasedProducts.push(product.product_id);
+  //     localStorage.setItem(
+  //       "purchasedProducts",
+  //       JSON.stringify(purchasedProducts)
+  //     );
+  //     setPurchased(true);
 
-      const updatedProduct = { ...product, status: "판매완료" };
-      setProduct(updatedProduct);
+  //     const updatedProduct = { ...product, status: "판매완료" };
+  //     setProduct(updatedProduct);
 
-      // 로컬스토리지 products 업데이트
-      const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-      const updatedProducts = storedProducts.map((p) =>
-        p.product_id === product.product_id ? updatedProduct : p
-      );
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
+  //     // 로컬스토리지 products 업데이트
+  //     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
+  //     const updatedProducts = storedProducts.map((p) =>
+  //       p.product_id === product.product_id ? updatedProduct : p
+  //     );
+  //     localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-      setProducts(updatedProducts);
-    }
-  };
+  //     setProducts(updatedProducts);
+  //   }
+  // };
 
   // 찜
   const toggleLike = async () => {
     try {
       setLoading(true);
       // 여기서 콘솔에 productId, userId 출력
-      console.log("상품 상세 : ", product);
-      console.log("토글 전송 직전 - Product ID:", product.productId);
-      console.log("토글 전송 직전 - User ID:", currentUser?.userId);
       if (like) {
         // 찜 해제
         await api.delete(`/favorite/${product.productId}`);
@@ -176,6 +171,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   };
 
+  console.log(product);
   return (
     <div className="container mt-5">
       <div className="row">
@@ -287,16 +283,16 @@ const DetailProduct = ({ user, products, setProducts }) => {
             <div>
               {product.user?.userId === currentUser?.userId ? (
                 <div className="d-flex gap-3">
-                  <button
-                    className={`btn w-10 mt-3 ${
-                      purchased ? "btn-secondary" : "btn-warning"
-                    }`}
-                    onClick={handlePurchase}
-                    disabled={purchased}
-                  >
-                    판매완료
-                  </button>
-                  {!purchased && (
+                  {product.status === "판매완료" ? (
+                    <>
+                      <button className="btn btn-secondary w-10 mt-3" disabled>
+                        수정하기
+                      </button>
+                      <button className="btn btn-secondary w-10 mt-3" disabled>
+                        삭제하기
+                      </button>
+                    </>
+                  ) : (
                     <>
                       <button
                         className="btn btn-success w-10 mt-3"
@@ -315,15 +311,24 @@ const DetailProduct = ({ user, products, setProducts }) => {
                 </div>
               ) : (
                 // 구매자
-                
+
                 <div className="d-flex gap-3">
-                  <button
-                    className="btn btn-danger w-10 mt-3"
-                    disabled={purchased}
-                    onClick={createChatRoom}
-                  >
-                    메시지 보내기
-                  </button>
+                  {product.status === "판매완료" ? (
+                    <button
+                      className="btn btn-secondary w-10 mt-3"
+                      disabled
+                      onClick={createChatRoom}
+                    >
+                      메시지 보내기
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-danger w-10 mt-3"
+                      onClick={createChatRoom}
+                    >
+                      메시지 보내기
+                    </button>
+                  )}
                 </div>
               )}
             </div>
