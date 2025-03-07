@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ProductsList.css";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
+import api from "../../api/axiosInstance";
 
 const categoryMap = {
   ALL: "전체",
@@ -32,40 +33,52 @@ function ProductsList({ selectedCategory, products, user }) {
 
   // 좋아요 불러오기
   useEffect(() => {
-    if (user && user.user_id) {
-      const storedLikes =
-        JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
-      setLikedItems(storedLikes);
+    const fetchFavorites = async () => {
+      try {
+        const response = await api.get("/favorite");
+
+        const favoritesObj = {};
+        if (Array.isArray(response.data)) {
+          response.data.forEach((fav) => {
+            const prodId = fav.product?.productId || fav.product?.product_id;
+            if (prodId) {
+              favoritesObj[prodId] = true;
+            }
+          });
+        } else {
+          console.log("응답 데이터 형식이 배열이 아닙니다:", response.data);
+        }
+        setLikedItems(favoritesObj);
+      } catch (error) {
+        console.error("찜 목록 불러오기 실패", error);
+      }
+    };
+
+    if (user) {
+      fetchFavorites();
+    } else {
+      console.log("user가 설정되지 않았습니다.");
     }
   }, [user]);
 
-  // 변경될때마다 저장
-  useEffect(() => {
-    if (user && user.user_id) {
-      localStorage.setItem(
-        `likeProducts_${user.user_id}`,
-        JSON.stringify(likedItems)
-      );
-    }
-  }, [likedItems, user]);
-
-  // 로컬에 좋아요 저장
-  const toggleLike = (id) => {
-    setLikedItems((prev) => {
-      const updatedLikes = { ...prev };
-      if (updatedLikes[id]) {
-        delete updatedLikes[id]; // 찜 해제
+  const toggleLike = async (id) => {
+    try {
+      if (likedItems[id]) {
+        // 찜 해제
+        await api.delete(`/favorite/${id}`);
+        setLikedItems((prev) => {
+          const newLikes = { ...prev };
+          delete newLikes[id];
+          return newLikes;
+        });
       } else {
-        updatedLikes[id] = true; // 찜 추가
+        // 찜 추가
+        await api.post("/favorite", { productId: id });
+        setLikedItems((prev) => ({ ...prev, [id]: true }));
       }
-
-      localStorage.setItem(
-        `likeProducts_${user.user_id}`,
-        JSON.stringify(updatedLikes)
-      );
-
-      return updatedLikes;
-    });
+    } catch (error) {
+      console.error("찜 처리 실패", error);
+    }
   };
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -111,9 +124,7 @@ function ProductsList({ selectedCategory, products, user }) {
                           className="card-img-top"
                           alt={product.description}
                         />
-                        {!user ? (
-                          <div></div>
-                        ) : (
+                        {user && product.user !== null && (
                           <img
                             src={
                               likedItems[product.productId]

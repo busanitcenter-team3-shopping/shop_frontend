@@ -44,6 +44,34 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   }, [product]);
 
+
+  // 찜 여부 확인: 백엔드에서 Favorite 목록을 받아서 현재 상품이 찜되어 있는지 체크
+  useEffect(() => {
+    const checkFavorite = async () => {
+      try {
+        const response = await api.get("/favorite");
+        let isFavorited = false;
+        response.data.forEach((fav) => {
+          console.log("Favorite product:", fav.product); // 디버깅용 출력
+          if (fav.product && fav.product.productId === product.productId) {
+            isFavorited = true;
+          }
+        });
+        setLike(isFavorited);
+      } catch (error) {
+        console.error("찜 여부 확인 실패", error);
+      }
+    };
+    if (product) {
+      if (user) {
+        checkFavorite();
+      } else {
+        console.log("user가 설정되지 않았습니다.");
+      }
+    }
+  }, [product]);
+
+
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
@@ -76,21 +104,27 @@ const DetailProduct = ({ user, products, setProducts }) => {
   };
 
   // 찜
-  const toggleLike = () => {
-    let likedProducts =
-      JSON.parse(localStorage.getItem(`likeProducts_${user.user_id}`)) || [];
-
-    if (like) {
-      delete likedProducts[product.product_id]; // 찜 해제
-    } else {
-      likedProducts[product.product_id] = true; // 찜 추가
+  const toggleLike = async () => {
+    try {
+      setLoading(true);
+      // 여기서 콘솔에 productId, userId 출력
+      console.log("상품 상세 : ", product);
+      console.log("토글 전송 직전 - Product ID:", product.productId);
+      console.log("토글 전송 직전 - User ID:", currentUser?.userId);
+      if (like) {
+        // 찜 해제
+        await api.delete(`/favorite/${product.productId}`);
+        setLike(false);
+      } else {
+        // 찜 추가
+        await api.post("/favorite", { productId: product.productId });
+        setLike(true);
+      }
+    } catch (error) {
+      console.error("찜 처리 실패", error);
+    } finally {
+      setLoading(false);
     }
-
-    localStorage.setItem(
-      `likeProducts_${user.user_id}`,
-      JSON.stringify(likedProducts)
-    );
-    setLike(!like);
   };
 
   // 수정
@@ -197,9 +231,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
               {product.title}
             </h2>
             {/* 찜 아이콘 */}
-            {!user || users === undefined ? (
-              <div></div>
-            ) : (
+            {currentUser && product.user !== null && (
               <img
                 src={like ? "/colorHeart.png" : "/heart.png"}
                 alt="찜"

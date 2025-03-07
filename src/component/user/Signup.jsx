@@ -49,7 +49,7 @@ const Signup = ({ setUser }) => {
 
     // 전화번호 형식
     if (!phoneRegex.test(phone)) {
-      setError("영문자, 숫자를 포함하여 8자리 이상입력하셔야합니다.");
+      setError("전화번호 형식이 잘못되었습니다");
       return;
     }
 
@@ -92,7 +92,7 @@ const Signup = ({ setUser }) => {
             navigate("/");
           }
         } catch (error) {
-          if (error.response && error.response.status === 409) {
+          if (error.response && error.response.status === 400) {
             setError("동일한 이메일이 존재합니다.");
           } else {
             setError("회원가입에 실패했습니다. 다시 시도해주세요.");
