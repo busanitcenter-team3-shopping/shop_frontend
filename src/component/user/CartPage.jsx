@@ -9,11 +9,11 @@ const CartPage = ({ user }) => {
   const BASE_SHIPPING_FEE = 3000;
   const FREE_SHIPPING_THRESHOLD = 300000;
 
-  const items = [
-    { id: 1, name: "Lion X s24", price: 100000, image: "lion.png" },
-    { id: 2, name: "Lion X s25", price: 40000, image: "lion.png" },
-    { id: 3, name: "Lion X s26", price: 10000, image: "lion.png" },
-  ];
+  //const items = [
+  //  { id: 1, name: "Lion X s24", price: 100000, image: "lion.png" },
+  //  { id: 2, name: "Lion X s25", price: 40000, image: "lion.png" },
+  //  { id: 3, name: "Lion X s26", price: 10000, image: "lion.png" },
+  //];
 
   const handleSelectAll = () => {
     if (selectAll) {
