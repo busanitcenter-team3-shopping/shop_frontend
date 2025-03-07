@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
+import "./chatRoomList.css"
 
 const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
+
+  const BASE_URL = "http://localhost:8090"
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -18,20 +21,30 @@ const ChatRoomList = () => {
 
     fetchChatRooms(); // useEffect 내부에서 함수 실행
   }, []);
-
   return (
-    <div>
-      <h2>채팅방 목록</h2>
-      <ul>
-        {chatRooms.map((room) => (
-          <li key={room.chatRoomId}>
-            <button onClick={() => navigate(`/chat/${room.chatRoomId}`)}>
-              채팅방 {room.chatRoomId} - {room.status}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+
+    <div className="container mt-4">
+    <h2 className="text-center mb-4">채팅방 목록</h2>
+    <ul className="chat-list">
+      {chatRooms.map((room) => (
+        <li key={room.chatRoomId} className="list-group-item d-flex align-items-center justify-content-between chat-detail">
+          <div className="d-flex align-items-center chat-sta">
+           <img src={`${BASE_URL}/product/images/${room.product.images[0]?.imageName}`} className="chat-img"/>
+            <div className="chat-id">
+              <p className="mb-0 fw-bold room_name">{room.name}</p>
+              <p className="mb-0 text-muted room_user_name d-flex align-items-center">{room.user2.username}</p>
+            </div>
+          </div>
+          <button
+            className="btn btn-primary btn-sm chat-btn"
+            onClick={() => navigate(`/chat/${room.chatRoomId}`)}
+          >
+            입장
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
   );
 };
 

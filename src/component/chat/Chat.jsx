@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
+import "./chat.css"
 
 const Chat = () => {
   const { chatRoomId } = useParams();
@@ -22,6 +23,7 @@ const Chat = () => {
 
         const chatRoomData = await response.json();
         setChatRoomData(chatRoomData);
+        console.log(chatRoomData)
       } catch (error) {
         console.error(error);
       }
@@ -76,6 +78,7 @@ const Chat = () => {
         receiverId: receiverId,
         chatRoomId: Number(chatRoomId),
         content: messageInput,
+        
       };
 
       socket.send(JSON.stringify(messageData));
@@ -83,28 +86,38 @@ const Chat = () => {
       setMessageInput(""); // 입력 필드 초기화
     }
   };
+  
   return (
-    <div>
-      <h2>실시간 채팅</h2>
 
-      <div>
-      {messages.map((msg, index) => (
-  <div key={index}>
-    <strong>{msg.sender?.userId === currentUser.userId ? msg.sender?.username : msg.sender?.username}</strong>
-    <br />
-    {msg.content}
-  </div>
-))}
-      </div>
-
-      <input
-        type="text"
-        value={messageInput}
-        onChange={(e) => setMessageInput(e.target.value)}
-        placeholder="메시지를 입력하세요..."
-      />
-      <button onClick={sendMessage}>전송</button>
+<div className="mt-5 container cattiong-room">
+<div className="chatting-title mb-3"><div className="d-flex align-items-center"><div className="me-2 rounded-circle bg-warning" style={{ width: "40px", height: "40px" }}></div>{chatRoomData.user1.username}</div>
+    <button className="btn btn-primary">구매 확정</button>
     </div>
+  
+        <div className="border p-3 rounded chatting" style={{ maxWidth:"800px" ,maxHeight: "400px", overflowY: "auto" }}>
+          {messages.map((msg, index) => (
+            <div key={index} className={`d-flex mb-2 ${msg.sender?.userId === currentUser.userId ? 'justify-content-end' : 'justify-content-start'}`}>
+              {msg.sender?.userId !== currentUser.userId && (
+                <div className="me-2 rounded-circle bg-warning" style={{ width: "40px", height: "40px" }}></div>
+              )}
+              <div className={`p-2 rounded shadow-sm ${msg.sender?.userId === currentUser.userId ? 'text-dark chatting-username' : 'bg-light text-dark'}`} style={{ maxWidth: "100%" }}>
+                <strong className="d-block small text-muted "></strong>
+                <p className="mb-0">{msg.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="input-group mt-3 chatting-serch">
+          <input
+            type="text"
+            className="form-control "
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            placeholder="메시지를 입력하세요..."
+          />
+          <button className="btn btn-primary" onClick={sendMessage}>전송</button>
+        </div>
+      </div>
   );
 };
 
