@@ -169,8 +169,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
       }
 
       const newRoom = await response.json();
-      console.log(newRoom);
-      alert("채팅방이 생성되었습니다. ID: " + newRoom.chatRoomId);
       navigate(`/chat/${newRoom.chatRoomId}`);
     } catch (error) {
       console.error(error);
@@ -283,7 +281,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
             {product.price.toLocaleString()}원
           </h3>
 
-          {product.user === null ? (
+          {currentUser === null ? (
             <div></div>
           ) : (
             <div>
@@ -317,6 +315,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
                 </div>
               ) : (
                 // 구매자
+                
                 <div className="d-flex gap-3">
                   <button
                     className="btn btn-danger w-10 mt-3"
