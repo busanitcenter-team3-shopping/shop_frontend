@@ -102,9 +102,28 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [socket, setSocket] = useState(null);
+  const [chatRoomData, setChatRoomData] = useState(null);
   const { currentUser } = useMyContext();
 
   useEffect(() => {
+    const fetchChatRoomDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8090/chat/rooms/${chatRoomId}/details`
+        );
+        if (!response.ok) {
+          throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
+        }
+
+        const chatRoomData = await response.json();
+        setChatRoomData(chatRoomData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchChatRoomDetails();
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(
@@ -155,8 +174,13 @@ const Chat = () => {
 
   const sendMessage = () => {
     if (socket && messageInput.trim() !== "") {
+      const receiverId =
+        currentUser.userId === chatRoomData.user2.userId
+          ? chatRoomData.user1.userId
+          : chatRoomData.user2.userId;
       const messageData = {
-        senderId: currentUser.userId, // ✅ userId → senderId로 변경
+        senderId: currentUser.userId,
+        receiverId: receiverId,
         chatRoomId: Number(chatRoomId),
         content: messageInput,
       };
@@ -165,10 +189,10 @@ const Chat = () => {
       socket.send(JSON.stringify(messageData));
 
       // ✅ 화면에 즉시 추가 (로그인한 사용자의 메시지)
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { ...messageData, sender: { id: currentUser.userId } },
-      ]);
+      // setMessages((prevMessages) => [
+      //   ...prevMessages,
+      //   { ...messageData, sender: { id: currentUser.userId } },
+      // ]);
 
       setMessageInput(""); // 입력 필드 초기화
     }
@@ -182,7 +206,7 @@ const Chat = () => {
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>
-              {msg.sender?.id === currentUser.userId ? "나" : "상대"}:
+              {msg.sender?.userId === currentUser.userId ? "나" : "상대"}:
             </strong>{" "}
             {msg.content}
           </div>

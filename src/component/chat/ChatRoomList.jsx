@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
 
 const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -8,17 +9,14 @@ const ChatRoomList = () => {
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
-        const response = await fetch("http://localhost:8090/chat/rooms");
-        if (!response.ok) {
-          throw new Error("채팅방 목록을 불러오는데 실패했습니다.");
-        }
-        const rooms = await response.json();
-        setChatRooms(rooms);
+        const response = await api.get("/chat/rooms");
+        setChatRooms(response.data);
       } catch (error) {
-        console.error(error);
+        console.error("채팅방 로드 실패:", error);
       }
     };
-    fetchChatRooms();
+
+    fetchChatRooms(); // useEffect 내부에서 함수 실행
   }, []);
 
   return (

@@ -151,21 +151,18 @@ const DetailProduct = ({ user, products, setProducts }) => {
   //메시지 보내기 (채팅방 생성)
   const createChatRoom = async () => {
     try {
-      const response = await fetch(
-        "http://http://10.100.202.82:5173/chat/rooms",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: `Bearer ${token}`,
-          },
-          body: new URLSearchParams({
-            status: "OPEN",
-            productId: product.productId,
-            userId: currentUser.userId,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8090/chat/rooms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${token}`,
+        },
+        body: new URLSearchParams({
+          status: "OPEN",
+          productId: product.productId,
+          userId: currentUser.userId,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("채팅방 생성에 실패했습니다.");

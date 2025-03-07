@@ -95,8 +95,22 @@ function App({ children }) {
             </PrivateRoute>
           }
         />
-        <Route path="/chat" element={<ChatRoomList />} />
-        <Route path="/chat/:chatRoomId" element={<Chat />} />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <ChatRoomList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat/:chatRoomId"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/product"
           element={<ProductsPage products={products} user={user} />}
