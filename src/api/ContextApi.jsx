@@ -10,7 +10,7 @@ export const ContextProvider = ({ children }) => {
     : null;
 
   const [token, setToken] = useState(getToken);
-
+  const [messages, setMessages] = useState([]);
   // 현재 로그인 유저 관리
   const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -53,6 +53,8 @@ export const ContextProvider = ({ children }) => {
         setToken,
         currentUser,
         setCurrentUser,
+        messages,
+        setMessages
       }}
     >
       {children}

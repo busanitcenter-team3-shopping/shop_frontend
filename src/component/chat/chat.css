@@ -33,3 +33,12 @@
 .form-control {
   margin-top: 0px;
 }
+
+.unread-count {
+  position: absolute;
+  bottom: -2px;
+  right: -10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ff9800;
+}

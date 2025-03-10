@@ -57,7 +57,6 @@ function ProductsList({ selectedCategory, products, user }) {
     if (user) {
       fetchFavorites();
     } else {
-      console.log("user가 설정되지 않았습니다.");
     }
   }, [user]);
 
@@ -113,9 +112,9 @@ function ProductsList({ selectedCategory, products, user }) {
         ) : (
           <div className="product-container">
             {currentProducts.map((product, index) => (
-              
+              <div key={index}>
                 <Link to={`/product/${product.productId}`}>
-                  <div key={index} className="card">
+                  <div className="card">
                   <div className="position-relative card-img">
                     {product.status === "판매중" ? (
                       <>
@@ -163,6 +162,7 @@ function ProductsList({ selectedCategory, products, user }) {
                   </div>
                   </div>
                 </Link>
+                </div>
               
             ))}
           </div>
