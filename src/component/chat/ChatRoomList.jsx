@@ -32,7 +32,7 @@ const ChatRoomList = () => {
           >
             <div className="d-flex align-items-center chat-sta">
               {!room?.product ? (
-                <img src="/lion.png" className="chat-img" />
+                <img src="/no1.png" className="chat-img chat-no-img" />
               ) : (
                 <img
                   src={`${BASE_URL}/product/images/${room?.product?.images[0]?.imageName}`}

@@ -46,7 +46,7 @@ const FamousProduct = () => {
                       <>
                         <img
                           src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
-                          className="card-img-top"
+                          className="card-img-top opacity-50"
                           alt={product.description}
                         />
                         <img

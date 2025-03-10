@@ -248,7 +248,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
             {product.price.toLocaleString()}원
           </h3>
 
-          {currentUser === null ? (
+          {product.user === null ? (
             <div></div>
           ) : (
             <div>

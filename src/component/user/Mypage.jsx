@@ -146,11 +146,9 @@ const Mypage = ({ user, setUser, products }) => {
               <strong>나의 쇼핑정보</strong>
             </h5>
             <Link to="/orderhistory">
-              <p>주문내역</p>
+              <p>구매내역</p>
             </Link>
-            <Link to="/saleshistory">
-              <p>판매내역</p>
-            </Link>
+           
             <Link to="/wishlist">
               <p>찜 리스트</p>
             </Link>
@@ -161,7 +159,10 @@ const Mypage = ({ user, setUser, products }) => {
               <strong>나의 판매정보</strong>
             </h5>
             <Link to={`/user-page/${currentUser?.userId}`}>
-              <p>판매물품</p>
+              <p>등록한 상품</p>
+            </Link>
+            <Link to="/saleshistory">
+              <p>판매내역</p>
             </Link>
             <Link to="/review">
               <p>리뷰</p>
