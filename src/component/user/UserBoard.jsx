@@ -49,24 +49,8 @@ const UserBoard = ({ user }) => {
 
   const BASE_URL = "http://localhost:8090";
 
-  // const userProducts = products
-  //   .filter((product) => String(product.user_id) === user_id)
-  //   .slice(0, 4);
-  // console.log(userProducts);
-
-  // useEffect(() => {
-  //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  //   setUsers(storedUsers);
-
-  //   const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
-  //   console.log(foundUser);
-  //   setUsers(foundUser);
-  // }, [user_id]);
-
   const [likedItems, setLikedItems] = useState({});
 
-  // 좋아요 불러오기
-  // 백엔드 API를 통해 현재 로그인한 사용자의 찜 목록을 불러와 likedItems에 저장
   useEffect(() => {
     const fetchFavorites = async () => {
       try {

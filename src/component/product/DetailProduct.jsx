@@ -65,7 +65,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
       if (user) {
         checkFavorite();
       } else {
-        console.log("user가 설정되지 않았습니다.");
       }
     }
   }, [product]);
@@ -73,33 +72,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
   if (!product) {
     return <div className="container mt-5 text-center"></div>;
   }
-
-  // 등록자가 구매완료를 눌렀을 시 메시지 보내기가 블락 처리되도록 하는 메서드
-  // const handlePurchase = () => {
-  //   const purchasedProducts =
-  //     JSON.parse(localStorage.getItem("purchasedProducts")) || [];
-
-  //   if (!purchasedProducts.includes(product.product_id)) {
-  //     purchasedProducts.push(product.product_id);
-  //     localStorage.setItem(
-  //       "purchasedProducts",
-  //       JSON.stringify(purchasedProducts)
-  //     );
-  //     setPurchased(true);
-
-  //     const updatedProduct = { ...product, status: "판매완료" };
-  //     setProduct(updatedProduct);
-
-  //     // 로컬스토리지 products 업데이트
-  //     const storedProducts = JSON.parse(localStorage.getItem("products")) || [];
-  //     const updatedProducts = storedProducts.map((p) =>
-  //       p.product_id === product.product_id ? updatedProduct : p
-  //     );
-  //     localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-  //     setProducts(updatedProducts);
-  //   }
-  // };
 
   // 찜
   const toggleLike = async () => {
@@ -171,7 +143,6 @@ const DetailProduct = ({ user, products, setProducts }) => {
     }
   };
 
-  console.log(product);
   return (
     <div className="container mt-5">
       <div className="row">

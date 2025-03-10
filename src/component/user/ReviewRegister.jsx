@@ -18,8 +18,6 @@ const ReviewRegister = () => {
                 placeholder="리뷰를 입력해주세요"
                 className="form-control"
                 rows="4"
-                // value={description}
-                // onChange={(e) => setDescription(e.target.value)}
                 name="description"
                 required
               />
@@ -30,7 +28,6 @@ const ReviewRegister = () => {
               <input
                 id="image"
                 type="file"
-                // onChange={handleImageChange}
                 accept="image/*"
                 className="form-control-file"
                 multiple

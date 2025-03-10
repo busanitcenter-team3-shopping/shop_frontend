@@ -14,19 +14,25 @@ const Chat = () => {
 
   useEffect(() => {
     const fetchChatRoomDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8090/chat/rooms/${chatRoomId}/details`
-        );
-        if (!response.ok) {
-          throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
+      if(chatRoomId !== null) {
+        try {
+          const response = await fetch(
+            `http://localhost:8090/chat/rooms/${chatRoomId}/details`
+          );
+          if (!response.ok) {
+            throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
+          }
+  
+          const chatRoomData = await response.json();
+          setChatRoomData(chatRoomData);
+        } catch (error) {
+          console.error(error);
         }
-
-        const chatRoomData = await response.json();
-        setChatRoomData(chatRoomData);
-      } catch (error) {
-        console.error(error);
+      }else {
+        return
       }
+        
+
     };
 
     fetchChatRoomDetails();
@@ -79,6 +85,11 @@ const Chat = () => {
 
       socket.send(JSON.stringify(messageData));
 
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: { userId: currentUser.userId }, content: messageInput },
+      ]);
+
       setMessageInput(""); // 입력 필드 초기화
     }
   };
@@ -104,7 +115,6 @@ const Chat = () => {
       console.error("판매 실패");
     }
   };
-  console.log(chatRoomData?.product?.status);
   return (
     <div className="mt-2 container cattiong-room">
       <div className="chatting-title">
@@ -114,20 +124,27 @@ const Chat = () => {
             className="me-2 rounded-circle"
             style={{ width: "40px", height: "40px" }}
           ></img>
-          {chatRoomData?.user2?.username === currentUser.username
+
+          {chatRoomData?.user2 === null ? "탈퇴한 계정" :<>{chatRoomData?.user2?.username === currentUser.username
             ? chatRoomData?.user1?.username
-            : chatRoomData?.user2?.username}
+            : chatRoomData?.user2?.username}</>}
         </div>
-        {chatRoomData?.user2?.username === currentUser.username ? (
-          chatRoomData?.product.status === "판매완료" ? (
-            <div></div>
-          ) : (
-            <button className="btn btn-primary" onClick={handleSellProduct}>
-              판매하기
-            </button>
-          )
-        ) : (
+        {chatRoomData?.product?.status === undefined ? (
           <div></div>
+        ) : (
+          <>
+            {chatRoomData?.user2?.username === currentUser.username ? (
+              chatRoomData?.product?.status === "판매완료" ? (
+                <div></div>
+              ) : (
+                <button className="btn btn-primary" onClick={handleSellProduct}>
+                  판매하기
+                </button>
+              )
+            ) : (
+              <div></div>
+            )}
+          </>
         )}
       </div>
 
@@ -167,19 +184,28 @@ const Chat = () => {
       </div>
 
       <div className="input-group mt-3 chatting-serch">
-        <input
+        {chatRoomData?.user2 === null && <><input
+          type="text"
+          className="form-control "
+          disabled
+          placeholder="탈퇴한 계정과 메시지를 입력할수 없습니다."
+        /> <button disabled className="btn btn-primary">
+        전송
+      </button></>}
+      { chatRoomData?.user2 !== null && <><input
           type="text"
           className="form-control "
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") sendMessage();
+            if (e.key === "Enter") sendMessage();   
           }}
           placeholder="메시지를 입력하세요..."
         />
         <button className="btn btn-primary" onClick={sendMessage}>
           전송
-        </button>
+        </button></>}
+       
       </div>
     </div>
   );

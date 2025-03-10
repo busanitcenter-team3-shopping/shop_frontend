@@ -43,23 +43,6 @@ const Mypage = ({ user, setUser, products }) => {
     console.log(currentUser.userId);
   }, [setUser, products]);
 
-  //찜 리스트
-  // if (updatedUser) {
-  //   const storedLikes =
-  //     JSON.parse(
-  //       localStorage.getItem(`likeProducts_${updatedUser.username}`)
-  //     ) || [];
-
-  //   const likedProductList = Object.keys(storedLikes)
-  //     .map((product_id) =>
-  //       products.find((product) => String(product.product_id) === product_id)
-  //     )
-  //     .filter(Boolean)
-  //     .reverse();
-
-  //   setLikedProducts(likedProductList.slice(0, 4));
-  // }
-
   // 회원 삭제
   const handleDelete = async () => {
     const isConfirmed = confirm("정말로 탈퇴 하시겠습니까?");
