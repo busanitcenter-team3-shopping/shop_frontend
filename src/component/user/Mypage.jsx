@@ -8,7 +8,9 @@ import { useMyContext } from "../../api/ContextApi";
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const { token, setToken, currentUser, setCurrentUser } = useMyContext();
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("USER")); // 현재 로그인된 유저의 정보
 
@@ -76,6 +78,21 @@ const Mypage = ({ user, setUser, products }) => {
     }
   }, [user]);
 
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get("/purchase");
+      setOrders(response.data);
+    } catch (error) {
+      console.error("주문 내역 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]);
+
   const recentOrders = orders.slice(0, 2);
 
   const BASE_URL = "http://localhost:8090";
@@ -139,30 +156,37 @@ const Mypage = ({ user, setUser, products }) => {
             <h2 className="fw-bold">최근 주문 내역</h2>
             <Link to="/orderhistory">더보기 &gt;</Link>
           </div>
-          <div className="d-flex justify-content-around mb-5">
-            {recentOrders.map((order) => (
-              <div key={order.id} className="order-card">
-                <div className="order-info">
-                  <img
-                    src={order.image}
-                    alt={order.name}
-                    className="order-image"
-                  />
-                  <div className="order-details">
-                    <div className="status-container">
-                      <p className="order-name mt-3">{order.name}</p>
+          {recentOrders.length === 0 ? (
+            <p className="text-center mt-4">주문 내역이 없습니다.</p>
+          ) : (
+            <div className="d-flex justify-content-around mb-5">
+              {recentOrders.map((order) => {
+                const product = order.product;
+                return (
+                  <div key={order.purchaseId} className="order-card">
+                    <div className="order-info">
+                      <img
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        alt={product.title}
+                        className="order-image"
+                      />
+                      <div className="order-details">
+                        <div className="status-container">
+                          <p className="order-name mt-3">{product.title}</p>
+                        </div>
+                        <p className="order-price">
+                          가격 : {product.price.toLocaleString()}원
+                        </p>
+                      </div>
                     </div>
-                    <p className="order-price">
-                      가격 : {order.price.toLocaleString()}원
-                    </p>
+                    <Link to="/add-review">
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
                   </div>
-                </div>
-                <Link to="/add-review">
-                  <button className="review-button">리뷰쓰기</button>
-                </Link>
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className="section-header mt-4 mb-5">
             <h2 className="fw-bold">찜 리스트</h2>
