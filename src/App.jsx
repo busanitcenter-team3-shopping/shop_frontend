@@ -27,6 +27,7 @@ import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
 import ChatRoomList from "./component/chat/ChatRoomList";
+import SalesHistory from "./component/user/SalesHistory";
 
 // 해야할 일 : 주문내역, 리뷰
 // userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
@@ -172,6 +173,9 @@ function App({ children }) {
 
         {/* 주문 내역 */}
         <Route path="/orderhistory" element={<OrderHistory />} />
+
+        {/* 판매 내역 */}
+        <Route path="/saleshistory" element={<SalesHistory />} />
 
         {/* 리뷰 등록 */}
         <Route path="/add-review" element={<ReviewRegister />} />
