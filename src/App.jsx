@@ -36,6 +36,7 @@ import SalesHistory from "./component/user/SalesHistory";
 // 상품을 삭제 시켰을때 채팅방의 목록에 사진을 불러올수 없어 임시로 라이언 사진으로 변경 되도록 설정해놨습니다. 좋은 이미지 있으면 그걸로 나중에 변경 부탁드릴게요.(public 폴더내 이미지 추가하고 src에 넣기만 하면됨)
 // 상품을 삭제 시켰을때 입장이 불가능하도록 막아놨는데 다른 방법 있으시면 그걸로 변경하여도 됩니다.
 // 개인적으로 메시지가 지금 안읽은게 있으면 우리 카톡처럼 안읽은 메시지 개수가 나오도록 하고싶은데...
+
 function App({ children }) {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);

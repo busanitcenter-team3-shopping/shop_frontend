@@ -40,32 +40,23 @@ const ChatRoomList = () => {
                 />
               )}
               <div className="chat-id">
-                {!room?.product ? (
-                  <p className="mb-0 fw-bold room_name">
-                    상품이 삭제된 방입니다.
-                  </p>
-                ) : (
-                  <>
+              {room.product === null ? <p className="mb-0 fw-bold room_name">삭제된 상품입니다.</p> : <>
                     <p className="mb-0 fw-bold room_name">{room.name}</p>
                     <p className="mb-0 text-muted room_user_name d-flex align-items-center">
-                      {room.user2.username}
+                      {room.user2 === null ? "탈퇴한 계정" : <>{room.user2.username}</>}
                     </p>
-                  </>
-                )}
+                  </>}
+                  
+              
               </div>
             </div>
-            {!room?.product ? (
-              <button className="btn btn-primary btn-sm chat-btn" disabled>
-                입장
-              </button>
-            ) : (
               <button
                 className="btn btn-primary btn-sm chat-btn"
                 onClick={() => navigate(`/chat/${room.chatRoomId}`)}
               >
                 입장
               </button>
-            )}
+          
           </li>
         ))}
       </ul>
