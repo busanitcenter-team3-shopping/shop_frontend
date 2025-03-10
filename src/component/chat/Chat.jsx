@@ -11,6 +11,7 @@ const Chat = () => {
   const [socket, setSocket] = useState(null);
   const [chatRoomData, setChatRoomData] = useState(null);
   const { currentUser } = useMyContext();
+  const [purchased, setPurchased] = useState(false);
 
   useEffect(() => {
     const fetchChatRoomDetails = async () => {
@@ -115,6 +116,7 @@ const Chat = () => {
       console.error("판매 실패");
     }
   };
+
   return (
     <div className="mt-2 container cattiong-room">
       <div className="chatting-title">

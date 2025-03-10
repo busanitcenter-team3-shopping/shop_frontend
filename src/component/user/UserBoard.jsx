@@ -3,27 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
-const reviews = [
-  {
-    id: 1,
-    image: "/car.jpg",
-    content: "친절해요",
-    user_name: "나희",
-  },
-  {
-    id: 2,
-    image: "/car.jpg",
-    content: "거래시간을 잘지켜요",
-    user_name: "둘리",
-  },
-  {
-    id: 3,
-    image: null,
-    content: "답변이 빨라요",
-    user_name: "둘리",
-  },
-];
-
 const UserBoard = ({ user }) => {
   const { user_id } = useParams();
   const [users, setUsers] = useState([]);
@@ -58,7 +37,6 @@ const UserBoard = ({ user }) => {
         const favoritesObj = {};
         if (Array.isArray(response.data)) {
           response.data.forEach((fav, index) => {
-            // product id가 product_id 또는 productId 중 하나인지 확인
             const prodId = fav.product?.product_id || fav.product?.productId;
             if (prodId) {
               favoritesObj[prodId] = true;

@@ -5,35 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
-const orders = [
-  {
-    id: 1,
-    image: "/car.jpg", // 상품 이미지
-    name: "상품명",
-    price: 100000,
-    status: "판매중",
-  },
-  {
-    id: 2,
-    image: "/car.jpg",
-    name: "상품명2",
-    price: 100000,
-    status: "판매완료",
-  },
-  {
-    id: 3,
-    image: "/car.jpg",
-    name: "상품명2",
-    price: 100000,
-    status: "판매완료",
-  },
-  // 더 많은 주문을 추가할 수 있습니다.
-];
-
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [sales, setSales] = useState([]);
   const { token, setToken, currentUser, setCurrentUser } = useMyContext();
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("USER")); // 현재 로그인된 유저의 정보
 
@@ -75,11 +53,10 @@ const Mypage = ({ user, setUser, products }) => {
     }
   };
 
-  // 백엔드 API를 사용하여 현재 로그인한 사용자의 찜 목록을 불러오기
   const fetchFavorites = async () => {
     try {
       const response = await api.get("/favorite");
-      // response.data: Favorite 배열 (각 Favorite에 product 객체가 포함됨)
+
       if (Array.isArray(response.data)) {
         const productsFromFavorites = response.data
           .filter((fav) => fav.product) // product가 존재하는 항목만
@@ -102,7 +79,58 @@ const Mypage = ({ user, setUser, products }) => {
     }
   }, [user]);
 
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get("/purchase");
+      setOrders(response.data);
+    } catch (error) {
+      console.error("주문 내역 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]);
+
   const recentOrders = orders.slice(0, 2);
+
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        console.log("판매 내역 API 호출 시작");
+        const response = await api.get("/purchase/all");
+        console.log("전체 구매 내역 응답:", response.data);
+        if (Array.isArray(response.data)) {
+          // 구매 내역 중, 상품의 판매자가 현재 판매자와 일치하는 항목 필터링
+          const sellerSales = response.data.filter((purchase, index) => {
+            console.log(`구매 내역 ${index}:`, purchase);
+            return (
+              purchase.product &&
+              purchase.product.user &&
+              purchase.product.user.userId === currentUser.userId
+            );
+          });
+          console.log("필터링된 판매 내역:", sellerSales);
+          setSales(sellerSales);
+        } else {
+          console.log("응답 데이터 형식이 배열이 아닙니다:", response.data);
+        }
+      } catch (error) {
+        console.error("판매 내역 불러오기 실패:", error);
+      }
+    };
+
+    if (currentUser) {
+      console.log("현재 판매자 정보:", currentUser);
+      fetchSales();
+    } else {
+      console.log("현재 판매자 정보가 없습니다.");
+    }
+  }, [currentUser]);
+
+  const recentSales = sales.slice(0, 2);
 
   const BASE_URL = "http://localhost:8090";
 
@@ -119,6 +147,9 @@ const Mypage = ({ user, setUser, products }) => {
             </h5>
             <Link to="/orderhistory">
               <p>주문내역</p>
+            </Link>
+            <Link to="/saleshistory">
+              <p>판매내역</p>
             </Link>
             <Link to="/wishlist">
               <p>찜 리스트</p>
@@ -165,30 +196,73 @@ const Mypage = ({ user, setUser, products }) => {
             <h2 className="fw-bold">최근 주문 내역</h2>
             <Link to="/orderhistory">더보기 &gt;</Link>
           </div>
-          <div className="d-flex justify-content-around mb-5">
-            {recentOrders.map((order) => (
-              <div key={order.id} className="order-card">
-                <div className="order-info">
-                  <img
-                    src={order.image}
-                    alt={order.name}
-                    className="order-image"
-                  />
-                  <div className="order-details">
-                    <div className="status-container">
-                      <p className="order-name mt-3">{order.name}</p>
+          {recentOrders.length === 0 ? (
+            <p className="text-center mt-4">주문 내역이 없습니다.</p>
+          ) : (
+            <div className="d-flex justify-content-around mb-5">
+              {recentOrders.map((order) => {
+                const product = order.product;
+                return (
+                  <div key={order.purchaseId} className="order-card">
+                    <div className="order-info">
+                      <img
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        alt={product.title}
+                        className="order-image"
+                      />
+                      <div className="order-details">
+                        <div className="status-container">
+                          <p className="order-name mt-3">{product.title}</p>
+                        </div>
+                        <p className="order-price">
+                          가격 : {product.price.toLocaleString()}원
+                        </p>
+                      </div>
                     </div>
-                    <p className="order-price">
-                      가격 : {order.price.toLocaleString()}원
-                    </p>
+                    <Link to="/add-review">
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
                   </div>
-                </div>
-                <Link to="/add-review">
-                  <button className="review-button">리뷰쓰기</button>
-                </Link>
-              </div>
-            ))}
+                );
+              })}
+            </div>
+          )}
+
+          <div className="section-header mt-4 mb-5">
+            <h2 className="fw-bold">최근 판매 내역</h2>
+            <Link to="/saleshistory">더보기 &gt;</Link>
           </div>
+          {recentSales.length === 0 ? (
+            <p className="text-center mt-4">판매한 상품이 없습니다.</p>
+          ) : (
+            <div className="d-flex justify-content-around mb-5">
+              {recentSales.map((sale) => {
+                const product = sale.product;
+                return (
+                  <div key={sale.purchaseId} className="order-card">
+                    <div className="order-info">
+                      <img
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        alt={product.title}
+                        className="order-image"
+                      />
+                      <div className="order-details">
+                        <div className="status-container">
+                          <p className="order-name mt-3">{product.title}</p>
+                        </div>
+                        <p className="order-price">
+                          가격 : {product.price.toLocaleString()}원
+                        </p>
+                      </div>
+                    </div>
+                    <Link to="/add-review">
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className="section-header mt-4 mb-5">
             <h2 className="fw-bold">찜 리스트</h2>

@@ -27,9 +27,10 @@ import Wishlist from "./component/products/Wishlist";
 import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
 import ChatRoomList from "./component/chat/ChatRoomList";
+import SalesHistory from "./component/user/SalesHistory";
 
 // 해야할 일 : 주문내역, 리뷰
-// ReviewPage(임시값), orderHistory(임시값)주석 지우기
+// userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
 // 관리자가 회원관리 할건지
 
 // 상품을 삭제 시켰을때 채팅방의 목록에 사진을 불러올수 없어 임시로 라이언 사진으로 변경 되도록 설정해놨습니다. 좋은 이미지 있으면 그걸로 나중에 변경 부탁드릴게요.(public 폴더내 이미지 추가하고 src에 넣기만 하면됨)
@@ -173,6 +174,9 @@ function App({ children }) {
 
         {/* 주문 내역 */}
         <Route path="/orderhistory" element={<OrderHistory />} />
+
+        {/* 판매 내역 */}
+        <Route path="/saleshistory" element={<SalesHistory />} />
 
         {/* 리뷰 등록 */}
         <Route path="/add-review" element={<ReviewRegister />} />
