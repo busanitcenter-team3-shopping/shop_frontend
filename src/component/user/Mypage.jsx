@@ -5,31 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
-const orders = [
-  {
-    id: 1,
-    image: "/car.jpg", // 상품 이미지
-    name: "상품명",
-    price: 100000,
-    status: "판매중",
-  },
-  {
-    id: 2,
-    image: "/car.jpg",
-    name: "상품명2",
-    price: 100000,
-    status: "판매완료",
-  },
-  {
-    id: 3,
-    image: "/car.jpg",
-    name: "상품명2",
-    price: 100000,
-    status: "판매완료",
-  },
-  // 더 많은 주문을 추가할 수 있습니다.
-];
-
 const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
@@ -42,23 +17,6 @@ const Mypage = ({ user, setUser, products }) => {
     }
     console.log(currentUser.userId);
   }, [setUser, products]);
-
-  //찜 리스트
-  // if (updatedUser) {
-  //   const storedLikes =
-  //     JSON.parse(
-  //       localStorage.getItem(`likeProducts_${updatedUser.username}`)
-  //     ) || [];
-
-  //   const likedProductList = Object.keys(storedLikes)
-  //     .map((product_id) =>
-  //       products.find((product) => String(product.product_id) === product_id)
-  //     )
-  //     .filter(Boolean)
-  //     .reverse();
-
-  //   setLikedProducts(likedProductList.slice(0, 4));
-  // }
 
   // 회원 삭제
   const handleDelete = async () => {
@@ -92,11 +50,10 @@ const Mypage = ({ user, setUser, products }) => {
     }
   };
 
-  // 백엔드 API를 사용하여 현재 로그인한 사용자의 찜 목록을 불러오기
   const fetchFavorites = async () => {
     try {
       const response = await api.get("/favorite");
-      // response.data: Favorite 배열 (각 Favorite에 product 객체가 포함됨)
+
       if (Array.isArray(response.data)) {
         const productsFromFavorites = response.data
           .filter((fav) => fav.product) // product가 존재하는 항목만

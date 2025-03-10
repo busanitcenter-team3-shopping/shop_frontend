@@ -16,9 +16,6 @@ function NoticeWrite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const savedNotices = localStorage.getItem("notices");
-    // const notices = savedNotices ? JSON.parse(savedNotices) : [];
-
     try {
       if (editingNotice) {
         // 수정: PUT /notice/update/{id} 엔드포인트 호출

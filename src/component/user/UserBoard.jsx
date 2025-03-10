@@ -3,27 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
-const reviews = [
-  {
-    id: 1,
-    image: "/car.jpg",
-    content: "친절해요",
-    user_name: "나희",
-  },
-  {
-    id: 2,
-    image: "/car.jpg",
-    content: "거래시간을 잘지켜요",
-    user_name: "둘리",
-  },
-  {
-    id: 3,
-    image: null,
-    content: "답변이 빨라요",
-    user_name: "둘리",
-  },
-];
-
 const UserBoard = ({ user }) => {
   const { user_id } = useParams();
   const [users, setUsers] = useState([]);
@@ -49,24 +28,8 @@ const UserBoard = ({ user }) => {
 
   const BASE_URL = "http://localhost:8090";
 
-  // const userProducts = products
-  //   .filter((product) => String(product.user_id) === user_id)
-  //   .slice(0, 4);
-  // console.log(userProducts);
-
-  // useEffect(() => {
-  //   const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  //   setUsers(storedUsers);
-
-  //   const foundUser = storedUsers.find((u) => String(u.user_id) === user_id);
-  //   console.log(foundUser);
-  //   setUsers(foundUser);
-  // }, [user_id]);
-
   const [likedItems, setLikedItems] = useState({});
 
-  // 좋아요 불러오기
-  // 백엔드 API를 통해 현재 로그인한 사용자의 찜 목록을 불러와 likedItems에 저장
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -74,7 +37,6 @@ const UserBoard = ({ user }) => {
         const favoritesObj = {};
         if (Array.isArray(response.data)) {
           response.data.forEach((fav, index) => {
-            // product id가 product_id 또는 productId 중 하나인지 확인
             const prodId = fav.product?.product_id || fav.product?.productId;
             if (prodId) {
               favoritesObj[prodId] = true;
