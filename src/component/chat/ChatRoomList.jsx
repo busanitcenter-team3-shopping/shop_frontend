@@ -7,27 +7,37 @@ import { useMyContext } from "../../api/ContextApi";
 const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
-  const {messages, setMessages} = useMyContext();
 
   const BASE_URL = "http://localhost:8090";
-
-  useEffect(() => {
-  }, [messages]);
-  
 
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
         const response = await api.get("/chat/rooms");
-        setChatRooms(response.data);
+        const rooms = response.data;
+
+        // Promise.all은 모든 api 응답을 처리하는거거
+        const updatedRooms = await Promise.all(
+          rooms.map(async (room) => {
+            try {
+              const unreadResponse = await api.get(
+                `/chat/rooms/${room.chatRoomId}/unread-count`
+              );
+              return { ...room, unreadCount: unreadResponse.data };
+            } catch (error) {
+              return { ...room, unreadCount: 0 };
+            }
+          })
+        );
+
+        setChatRooms(updatedRooms);
       } catch (error) {
-        console.error("채팅방 로드 실패:", error);
+        console.error(error);
       }
     };
 
     fetchChatRooms();
   }, []);
-console.log(messages)
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">채팅방 목록</h2>
@@ -53,7 +63,11 @@ console.log(messages)
                   <>
                     <p className="mb-0 fw-bold room_name">{room.name}</p>
                     <p className="mb-0 text-muted room_user_name d-flex align-items-center">
-                      {room.user2 === null ? "탈퇴한 계정" : <>{room.user2.username}</>}
+                      {room.user2 === null ? (
+                        "탈퇴한 계정"
+                      ) : (
+                        <>{room.user2.username}</>
+                      )}
                     </p>
                   </>
                 )}
