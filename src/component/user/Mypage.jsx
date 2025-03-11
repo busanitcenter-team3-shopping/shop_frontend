@@ -179,9 +179,15 @@ const Mypage = ({ user, setUser, products }) => {
                         </p>
                       </div>
                     </div>
-                    <Link to="/add-review">
-                      <button className="review-button">리뷰쓰기</button>
-                    </Link>
+                    {order.alreadyReviewed ? (
+                      <button className="review-button" disabled>
+                        작성 완료
+                      </button>
+                    ) : (
+                      <Link to={`/add-review/${order.purchaseId}`}>
+                        <button className="review-button">리뷰쓰기</button>
+                      </Link>
+                    )}
                   </div>
                 );
               })}

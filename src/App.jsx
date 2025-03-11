@@ -174,7 +174,7 @@ function App({ children }) {
         <Route path="/orderhistory" element={<OrderHistory />} />
 
         {/* 리뷰 등록 */}
-        <Route path="/add-review" element={<ReviewRegister />} />
+        <Route path="/add-review/:purchaseId" element={<ReviewRegister />} />
 
         {/* 전체 리뷰 */}
         <Route path="/review" element={<ReviewPage />} />

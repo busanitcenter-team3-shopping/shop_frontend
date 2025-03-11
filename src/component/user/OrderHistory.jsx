@@ -30,7 +30,6 @@ const OrderHistory = () => {
             <p>주문 내역이 없습니다.</p>
           ) : (
             orders.map((order) => {
-              // order 객체 내에 product 정보가 포함되어 있다고 가정
               const product = order.product;
               return (
                 <div key={order.purchaseId} className="order-card">
@@ -49,9 +48,15 @@ const OrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  <Link to="/add-review">
-                    <button className="review-button">리뷰쓰기</button>
-                  </Link>
+                  {order.alreadyReviewed ? (
+                    <button className="review-button" disabled>
+                      작성 완료
+                    </button>
+                  ) : (
+                    <Link to={`/add-review/${order.purchaseId}`}>
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
+                  )}
                 </div>
               );
             })
