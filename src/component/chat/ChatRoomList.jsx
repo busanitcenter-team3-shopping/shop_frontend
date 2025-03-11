@@ -6,6 +6,7 @@ import { useMyContext } from "../../api/ContextApi";
 
 const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
+  const { currentUser } = useMyContext();
   const navigate = useNavigate();
 
   const BASE_URL = "http://localhost:8090";
@@ -21,7 +22,7 @@ const ChatRoomList = () => {
           rooms.map(async (room) => {
             try {
               const unreadResponse = await api.get(
-                `/chat/rooms/${room.chatRoomId}/unread-count`
+                `/chat/rooms/${room.chatRoomId}/unread-count?userId=${currentUser.userId}`
               );
               return { ...room, unreadCount: unreadResponse.data };
             } catch (error) {
@@ -29,15 +30,14 @@ const ChatRoomList = () => {
             }
           })
         );
-
         setChatRooms(updatedRooms);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchChatRooms();
-  }, []);
+  }, [currentUser.userId]);
+
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">채팅방 목록</h2>
@@ -75,8 +75,11 @@ const ChatRoomList = () => {
             </div>
 
             <div className="d-flex align-items-center gap-2">
-              {room.unreadCount >= 0 && (
-                <div className="bg-warning rounded-circle text-center unread-badge">
+              {room.unreadCount > 0 && (
+                <div
+                  className="bg-warning rounded-circle text-center unread-badge"
+                  style={{ width: "25px", height: "25px" }}
+                >
                   {room.unreadCount}
                 </div>
               )}

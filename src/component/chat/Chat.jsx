@@ -45,7 +45,6 @@ const Chat = () => {
 
         const fetchedMessages = await response.json();
         setMessages(fetchedMessages);
-        console.log("fetchedMessages:", fetchedMessages);
       } catch (error) {
         console.error(error);
       }
@@ -184,6 +183,9 @@ const Chat = () => {
                 : "justify-content-start"
             }`}
           >
+            {msg.sender?.userId === currentUser.userId && !msg.isRead && (
+              <div className="unread-count">1</div>
+            )}
             {msg.sender?.userId !== currentUser.userId && (
               <img
                 src="/basicUser.png"
@@ -199,9 +201,6 @@ const Chat = () => {
               }`}
               style={{ maxWidth: "100%", position: "relative" }}
             >
-              {msg.sender?.userId === currentUser.userId && !msg.isRead && (
-                <span className="unread-count">1</span>
-              )}
               <p className="mb-0">{msg.content}</p>
             </div>
           </div>
