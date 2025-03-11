@@ -5,6 +5,7 @@ import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
+import api from "../../api/axiosInstance";
 
 const reverseCategoryMap = {
   전체: "ALL",
@@ -19,8 +20,9 @@ function Navbar({ user, setUser }) {
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken, setCurrentUser } = useMyContext();
-  const [categories, setCategories] = useState([]);
+  const { setToken, setCurrentUser, currentUser } = useMyContext();
+  const [categories, setCategories] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:8090/enum")
@@ -46,6 +48,24 @@ function Navbar({ user, setUser }) {
   useEffect(() => {
     setShowCategories(false); // 페이지 변경되면 닫기
   }, [location.pathname]);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!currentUser?.userId) {
+        setUnreadCount(0); // userId가 없으면 기본값 0으로 설정
+        return;
+      }
+      try {
+        const response = await api.get(
+          `/chat/rooms/unread?userId=${currentUser.userId}`
+        );
+        setUnreadCount(response.data);
+      } catch (error) {
+        console.error("안 읽은 메시지 수 불러오기 실패:", error);
+      }
+    };
+    fetchUnreadCount();
+  }, [currentUser]);
 
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");
@@ -176,7 +196,7 @@ function Navbar({ user, setUser }) {
             </Link>
           </li>
           <li>
-            <Link to="/chat" className="text-dark">
+            <Link to="/chat" className="text-dark btn position-relative">
               <img
                 className="mb-2"
                 src={note}
@@ -184,6 +204,16 @@ function Navbar({ user, setUser }) {
                 height="30"
                 width="30"
               />
+              {unreadCount > 0 && (
+                <span
+                  className="position-absolute top-0 translate-middle badge rounded-pill bg-warning"
+                  style={{ left: "75%" }}
+                >
+                  {unreadCount}
+                  <span className="visually-hidden">unread messages</span>
+                </span>
+              )}
+
               <span>메세지</span>
             </Link>
           </li>
