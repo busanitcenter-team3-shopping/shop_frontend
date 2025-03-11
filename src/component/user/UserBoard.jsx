@@ -3,6 +3,26 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
+const reviews = [
+  {
+    id: 1,
+    image: "/car.jpg",
+    content: "친절해요",
+    user_name: "나희",
+  },
+  {
+    id: 2,
+    image: "/car.jpg",
+    content: "거래시간을 잘지켜요",
+    user_name: "둘리",
+  },
+  {
+    id: 3,
+    image: null,
+    content: "답변이 빨라요",
+    user_name: "둘리",
+  },
+];
 const UserBoard = ({ user }) => {
   const { user_id } = useParams();
   const [users, setUsers] = useState([]);
@@ -143,7 +163,7 @@ const UserBoard = ({ user }) => {
                     <>
                       <img
                         src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
-                        className="card-img-top"
+                        className="card-img-top opacity-50"
                         alt={product.description}
                       />
                       <img

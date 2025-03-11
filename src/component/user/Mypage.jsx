@@ -9,6 +9,7 @@ const Mypage = ({ user, setUser, products }) => {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [sales, setSales] = useState([]);
   const { token, setToken, currentUser, setCurrentUser } = useMyContext();
 
   useEffect(() => {
@@ -17,7 +18,6 @@ const Mypage = ({ user, setUser, products }) => {
     if (storedUser) {
       setUser(storedUser);
     }
-    console.log(currentUser.userId);
   }, [setUser, products]);
 
   // 회원 삭제
@@ -63,7 +63,6 @@ const Mypage = ({ user, setUser, products }) => {
         // 최신 찜이 먼저 보이도록 reverse 처리 후, 최대 4개만 저장
         setLikedProducts(productsFromFavorites.reverse().slice(0, 4));
       } else {
-        console.log("응답 데이터 형식이 배열이 아닙니다:", response.data);
       }
     } catch (error) {
       console.error("찜 목록 불러오기 실패", error);
@@ -74,7 +73,7 @@ const Mypage = ({ user, setUser, products }) => {
     if (user) {
       fetchFavorites();
     } else {
-      console.log("user가 설정되지 않았습니다.");
+    
     }
   }, [user]);
 
@@ -95,6 +94,35 @@ const Mypage = ({ user, setUser, products }) => {
 
   const recentOrders = orders.slice(0, 2);
 
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        const response = await api.get("/purchase/all");
+        if (Array.isArray(response.data)) {
+          // 구매 내역 중, 상품의 판매자가 현재 판매자와 일치하는 항목 필터링
+          const sellerSales = response.data.filter((purchase, index) => {
+            return (
+              purchase.product &&
+              purchase.product.user &&
+              purchase.product.user.userId === currentUser.userId
+            );
+          });
+          setSales(sellerSales);
+        } else {
+        }
+      } catch (error) {
+        console.error("판매 내역 불러오기 실패:", error);
+      }
+    };
+
+    if (currentUser) {
+      fetchSales();
+    } else {
+    }
+  }, [currentUser]);
+
+  const recentSales = sales.slice(0, 2);
+
   const BASE_URL = "http://localhost:8090";
 
   return (
@@ -109,8 +137,9 @@ const Mypage = ({ user, setUser, products }) => {
               <strong>나의 쇼핑정보</strong>
             </h5>
             <Link to="/orderhistory">
-              <p>주문내역</p>
+              <p>구매내역</p>
             </Link>
+           
             <Link to="/wishlist">
               <p>찜 리스트</p>
             </Link>
@@ -121,7 +150,10 @@ const Mypage = ({ user, setUser, products }) => {
               <strong>나의 판매정보</strong>
             </h5>
             <Link to={`/user-page/${currentUser?.userId}`}>
-              <p>판매물품</p>
+              <p>등록한 상품</p>
+            </Link>
+            <Link to="/saleshistory">
+              <p>판매내역</p>
             </Link>
             <Link to="/review">
               <p>리뷰</p>
@@ -153,11 +185,11 @@ const Mypage = ({ user, setUser, products }) => {
           <hr />
 
           <div className="section-header">
-            <h2 className="fw-bold">최근 주문 내역</h2>
+            <h2 className="fw-bold">최근 구매 내역</h2>
             <Link to="/orderhistory">더보기 &gt;</Link>
           </div>
           {recentOrders.length === 0 ? (
-            <p className="text-center mt-4">주문 내역이 없습니다.</p>
+            <p className="text-center mt-4">구매 내역이 없습니다.</p>
           ) : (
             <div className="d-flex justify-content-around mb-5">
               {recentOrders.map((order) => {
@@ -188,6 +220,42 @@ const Mypage = ({ user, setUser, products }) => {
                         <button className="review-button">리뷰쓰기</button>
                       </Link>
                     )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="section-header mt-4 mb-5">
+            <h2 className="fw-bold">최근 판매 내역</h2>
+            <Link to="/saleshistory">더보기 &gt;</Link>
+          </div>
+          {recentSales.length === 0 ? (
+            <p className="text-center mt-4">판매한 상품이 없습니다.</p>
+          ) : (
+            <div className="d-flex justify-content-around mb-5">
+              {recentSales.map((sale) => {
+                const product = sale.product;
+                return (
+                  <div key={sale.purchaseId} className="order-card">
+                    <div className="order-info">
+                      <img
+                        src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                        alt={product.title}
+                        className="order-image"
+                      />
+                      <div className="order-details">
+                        <div className="status-container">
+                          <p className="order-name mt-3">{product.title}</p>
+                        </div>
+                        <p className="order-price">
+                          가격 : {product.price.toLocaleString()}원
+                        </p>
+                      </div>
+                    </div>
+                    <Link to="/add-review">
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
                   </div>
                 );
               })}

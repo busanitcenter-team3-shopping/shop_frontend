@@ -57,7 +57,6 @@ function ProductsList({ selectedCategory, products, user }) {
     if (user) {
       fetchFavorites();
     } else {
-      console.log("user가 설정되지 않았습니다.");
     }
   }, [user]);
 
@@ -113,8 +112,9 @@ function ProductsList({ selectedCategory, products, user }) {
         ) : (
           <div className="product-container">
             {currentProducts.map((product, index) => (
-              <div key={index} className="card">
+              <div key={index}>
                 <Link to={`/product/${product.productId}`}>
+                  <div className="card">
                   <div className="position-relative card-img">
                     {product.status === "판매중" ? (
                       <>
@@ -142,7 +142,7 @@ function ProductsList({ selectedCategory, products, user }) {
                     ) : (
                       <>
                         <img
-                          src={product.images?.[0]}
+                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
                           className="card-img-top opacity-50"
                           alt={product.title}
                         />
@@ -160,8 +160,10 @@ function ProductsList({ selectedCategory, products, user }) {
                       {product.price.toLocaleString()}원
                     </p>
                   </div>
+                  </div>
                 </Link>
-              </div>
+                </div>
+              
             ))}
           </div>
         )}

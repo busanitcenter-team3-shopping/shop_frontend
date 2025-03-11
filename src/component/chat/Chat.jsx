@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 import "./chat.css";
@@ -6,41 +6,46 @@ import api from "../../api/axiosInstance";
 
 const Chat = () => {
   const { chatRoomId } = useParams();
-  const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [socket, setSocket] = useState(null);
   const [chatRoomData, setChatRoomData] = useState(null);
-  const { currentUser } = useMyContext();
-  const [purchased, setPurchased] = useState(false);
+  const { currentUser, messages, setMessages } = useMyContext();
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchChatRoomDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8090/chat/rooms/${chatRoomId}/details`
-        );
-        if (!response.ok) {
-          throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
-        }
+      if (chatRoomId !== null) {
+        try {
+          const response = await fetch(
+            `http://localhost:8090/chat/rooms/${chatRoomId}/details`
+          );
+          if (!response.ok) {
+            throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
+          }
 
-        const chatRoomData = await response.json();
-        setChatRoomData(chatRoomData);
-      } catch (error) {
-        console.error(error);
+          const chatRoomData = await response.json();
+          setChatRoomData(chatRoomData);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        return;
       }
     };
 
     fetchChatRoomDetails();
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(
           `http://localhost:8090/chat/rooms/${chatRoomId}/messages`
         );
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error("채팅 메시지를 불러오는 데 실패했습니다.");
-        }
-        const messages = await response.json();
-        setMessages(messages);
+
+        const fetchedMessages = await response.json();
+        setMessages(fetchedMessages);
+        console.log("fetchedMessages:", fetchedMessages);
       } catch (error) {
         console.error(error);
       }
@@ -55,7 +60,10 @@ const Chat = () => {
     ws.onmessage = (event) => {
       const receivedMessage = JSON.parse(event.data);
 
-      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, receivedMessage];
+        return updatedMessages;
+      });
     };
 
     setSocket(ws);
@@ -65,24 +73,42 @@ const Chat = () => {
     };
   }, [chatRoomId, currentUser.userId]);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const sendMessage = () => {
     if (socket && messageInput.trim() !== "") {
       const receiverId =
-        currentUser.userId === chatRoomData.user2.userId
-          ? chatRoomData.user1.userId
-          : chatRoomData.user2.userId;
+        currentUser.userId === chatRoomData?.user2?.userId
+          ? chatRoomData?.user1?.userId
+          : chatRoomData?.user2?.userId;
+
       const messageData = {
         senderId: currentUser.userId,
         receiverId: receiverId,
         chatRoomId: Number(chatRoomId),
         content: messageInput,
+        isRead: false,
+        timestamp: new Date().toISOString(),
       };
 
       socket.send(JSON.stringify(messageData));
 
-      setMessageInput(""); // 입력 필드 초기화
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: { userId: currentUser.userId }, content: messageInput },
+      ]);
+
+      setMessageInput("");
     }
   };
+
+  useEffect(() => {}, [messages]);
 
   //판매
   const handleSellProduct = async () => {
@@ -106,8 +132,6 @@ const Chat = () => {
     }
   };
 
-  console.log(chatRoomData?.product?.status);
-  console.log(chatRoomData);
   return (
     <div className="mt-2 container cattiong-room">
       <div className="chatting-title">
@@ -117,20 +141,33 @@ const Chat = () => {
             className="me-2 rounded-circle"
             style={{ width: "40px", height: "40px" }}
           ></img>
-          {chatRoomData?.user2?.username === currentUser.username
-            ? chatRoomData?.user1?.username
-            : chatRoomData?.user2?.username}
-        </div>
-        {chatRoomData?.user2?.username === currentUser.username ? (
-          chatRoomData?.product.status === "판매완료" ? (
-            <div></div>
+
+          {chatRoomData?.user2 === null ? (
+            "탈퇴한 계정"
           ) : (
-            <button className="btn btn-primary" onClick={handleSellProduct}>
-              판매하기
-            </button>
-          )
-        ) : (
+            <>
+              {chatRoomData?.user2?.username === currentUser.username
+                ? chatRoomData?.user1?.username
+                : chatRoomData?.user2?.username}
+            </>
+          )}
+        </div>
+        {chatRoomData?.product?.status === undefined ? (
           <div></div>
+        ) : (
+          <>
+            {chatRoomData?.user2?.username === currentUser.username ? (
+              chatRoomData?.product?.status === "판매완료" ? (
+                <div></div>
+              ) : (
+                <button className="btn btn-primary" onClick={handleSellProduct}>
+                  판매하기
+                </button>
+              )
+            ) : (
+              <div></div>
+            )}
+          </>
         )}
       </div>
 
@@ -160,29 +197,48 @@ const Chat = () => {
                   ? "text-dark chatting-username"
                   : "bg-light text-dark"
               }`}
-              style={{ maxWidth: "100%" }}
+              style={{ maxWidth: "100%", position: "relative" }}
             >
-              <strong className="d-block small text-muted "></strong>
+              {msg.sender?.userId === currentUser.userId && !msg.isRead && (
+                <span className="unread-count">1</span>
+              )}
               <p className="mb-0">{msg.content}</p>
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className="input-group mt-3 chatting-serch">
-        <input
-          type="text"
-          className="form-control "
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") sendMessage();
-          }}
-          placeholder="메시지를 입력하세요..."
-        />
-        <button className="btn btn-primary" onClick={sendMessage}>
-          전송
-        </button>
+        {chatRoomData?.user2 === null ? (
+          <>
+            <input
+              type="text"
+              className="form-control "
+              disabled
+              placeholder="탈퇴한 계정과 메시지를 입력할수 없습니다."
+            />{" "}
+            <button disabled className="btn btn-primary">
+              전송
+            </button>
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              className="form-control "
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") sendMessage();
+              }}
+              placeholder="메시지를 입력하세요..."
+            />
+            <button className="btn btn-primary" onClick={sendMessage}>
+              전송
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
