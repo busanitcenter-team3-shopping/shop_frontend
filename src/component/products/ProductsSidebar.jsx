@@ -12,7 +12,7 @@ function ProductsSidebar({ selectedCategory, onSelectCategory }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost/enum")
+    fetch("http://localhost:8090/enum")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.log(err));

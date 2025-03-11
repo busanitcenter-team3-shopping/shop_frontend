@@ -24,10 +24,10 @@ const OrderHistory = () => {
   return (
     <div className="container">
       <div className="order-history-container">
-        <h2>최근 주문 내역</h2>
+        <h2>최근 구매 내역</h2>
         <div className="order-list mt-5">
           {orders.length === 0 ? (
-            <p>주문 내역이 없습니다.</p>
+            <p>구매 내역이 없습니다.</p>
           ) : (
             orders.map((order) => {
               // order 객체 내에 product 정보가 포함되어 있다고 가정
