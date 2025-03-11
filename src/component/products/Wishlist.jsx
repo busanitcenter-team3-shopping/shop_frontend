@@ -57,7 +57,7 @@ const Wishlist = ({ user, products }) => {
 
   return (
     <div className="wishlist-container">
-      <h1>찜한 상품 목록</h1>
+      <h2>찜한 상품 목록</h2>
       <div className="wishlist-header">
         <select
           value={itemsPerPage}

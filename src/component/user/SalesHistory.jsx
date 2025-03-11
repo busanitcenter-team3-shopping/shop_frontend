@@ -46,7 +46,7 @@ const SalesHistory = () => {
   return (
     <div className="container">
       <div className="order-history-container">
-        <h2>판매 내역</h2>
+        <h2>최근 판매 내역</h2>
         <div className="order-list mt-5">
           {sales.length === 0 ? (
             <p>판매한 상품이 없습니다.</p>
