@@ -15,7 +15,7 @@ const reverseCategoryMap = {
   악기: "INSTRUMENT",
 };
 
-function Navbar({ user, setUser, unreadCount, setUnreadCount }) {
+function Navbar({ user, setUser, unreadCount }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
@@ -47,24 +47,6 @@ function Navbar({ user, setUser, unreadCount, setUnreadCount }) {
   useEffect(() => {
     setShowCategories(false); // 페이지 변경되면 닫기
   }, [location.pathname]);
-
-  useEffect(() => {
-    const fetchUnreadCount = async () => {
-      if (!currentUser?.userId) {
-        setUnreadCount(0); // userId가 없으면 기본값 0으로 설정
-        return;
-      }
-      try {
-        const response = await api.get(
-          `/chat/rooms/unread?userId=${currentUser.userId}`
-        );
-        setUnreadCount(response.data);
-      } catch (error) {
-        console.error("안 읽은 메시지 수 불러오기 실패:", error);
-      }
-    };
-    fetchUnreadCount();
-  }, [currentUser]);
 
   const handellogout = () => {
     localStorage.removeItem("JWT_TOKEN");

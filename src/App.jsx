@@ -60,6 +60,24 @@ function App({ children }) {
     localStorage.setItem("product", JSON.stringify(updatedProducts));
   };
 
+  // useEffect(() => {
+  //   const fetchUnreadCount = async () => {
+  //     if (!currentUser?.userId) {
+  //       setUnreadCount(0); // userId가 없으면 기본값 0으로 설정
+  //       return;
+  //     }
+  //     try {
+  //       const response = await api.get(
+  //         `/chat/rooms/unread?userId=${currentUser.userId}`
+  //       );
+  //       setUnreadCount(response.data);
+  //     } catch (error) {
+  //       console.error("안 읽은 메시지 수 불러오기 실패:", error);
+  //     }
+  //   };
+  //   fetchUnreadCount();
+  // }, [currentUser]);
+
   const markMessagesAsRead = (chatRoomId) => {
     if (!currentUser?.userId) return;
 
@@ -68,12 +86,7 @@ function App({ children }) {
 
   return (
     <Router>
-      <Navbar
-        user={user}
-        setUser={setUser}
-        unreadCount={unreadCount}
-        setUnreadCount={setUnreadCount}
-      />
+      <Navbar user={user} setUser={setUser} unreadCount={unreadCount} />
 
       <Routes>
         {/* 메인 화면 */}
@@ -126,7 +139,7 @@ function App({ children }) {
           path="/chat"
           element={
             <PrivateRoute>
-              <ChatRoomList />
+              <ChatRoomList setUnreadCounts={setUnreadCount} />
             </PrivateRoute>
           }
         />
