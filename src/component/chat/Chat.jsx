@@ -44,7 +44,19 @@ const Chat = ({ markMessagesAsRead }) => {
           throw new Error("채팅 메시지를 불러오는 데 실패했습니다.");
 
         const fetchedMessages = await response.json();
-        setMessages(fetchedMessages);
+
+        console.log("🔵 API로 받은 메시지:", fetchedMessages);
+
+        setMessages((prevMessages) => {
+          // 기존 메시지와 새로운 메시지를 비교하여 업데이트
+          const newMessages = fetchedMessages.filter(
+            (msg) =>
+              !prevMessages.some(
+                (prevMsg) => prevMsg.messageId === msg.messageId
+              )
+          );
+          return [...prevMessages, ...newMessages];
+        });
       } catch (error) {
         console.error(error);
       }
@@ -61,7 +73,12 @@ const Chat = ({ markMessagesAsRead }) => {
 
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages, receivedMessage];
-        return updatedMessages;
+        return updatedMessages.map((msg) => ({
+          ...msg,
+          senderId: msg.sender?.userId || msg.senderId,
+          receiverId: msg.receiver?.userId || msg.receiverId,
+          isMine: (msg.sender?.userId || msg.senderId) === currentUser?.userId,
+        }));
       });
     };
 
@@ -102,10 +119,7 @@ const Chat = ({ markMessagesAsRead }) => {
 
       socket.send(JSON.stringify(messageData));
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: { userId: currentUser.userId }, content: messageInput },
-      ]);
+      setMessages((prevMessages) => [...prevMessages, messageData]);
 
       setMessageInput("");
     }
@@ -182,15 +196,15 @@ const Chat = ({ markMessagesAsRead }) => {
           <div
             key={index}
             className={`d-flex mb-2 ${
-              msg.sender?.userId === currentUser.userId
+              msg.senderId === currentUser.userId
                 ? "justify-content-end"
                 : "justify-content-start"
             }`}
           >
-            {msg.sender?.userId === currentUser.userId && !msg.isRead && (
+            {msg.senderId === currentUser.userId && !msg.isRead && (
               <div className="unread-count">1</div>
             )}
-            {msg.sender?.userId !== currentUser.userId && (
+            {msg.senderId !== currentUser.userId && (
               <img
                 src="/basicUser.png"
                 className="me-2 rounded-circle"
@@ -199,7 +213,7 @@ const Chat = ({ markMessagesAsRead }) => {
             )}
             <div
               className={`p-2 rounded shadow-sm ${
-                msg.sender?.userId === currentUser.userId
+                msg.senderId === currentUser.userId
                   ? "text-dark chatting-username"
                   : "bg-light text-dark"
               }`}

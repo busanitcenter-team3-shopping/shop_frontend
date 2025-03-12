@@ -4,7 +4,7 @@ import api from "../../api/axiosInstance";
 import "./chatRoomList.css";
 import { useMyContext } from "../../api/ContextApi";
 
-const ChatRoomList = () => {
+const ChatRoomList = ({ setUnreadCounts }) => {
   const [chatRooms, setChatRooms] = useState([]);
   const { currentUser } = useMyContext();
   const navigate = useNavigate();
@@ -31,6 +31,12 @@ const ChatRoomList = () => {
           })
         );
         setChatRooms(updatedRooms);
+
+        const totalUnread = updatedRooms.reduce(
+          (acc, room) => acc + room.unreadCount,
+          0
+        );
+        setUnreadCounts(totalUnread);
       } catch (error) {
         console.error(error);
       }

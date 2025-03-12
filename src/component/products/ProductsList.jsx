@@ -115,55 +115,54 @@ function ProductsList({ selectedCategory, products, user }) {
               <div key={index}>
                 <Link to={`/product/${product.productId}`}>
                   <div className="card">
-                  <div className="position-relative card-img">
-                    {product.status === "판매중" ? (
-                      <>
-                        <img
-                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
-                          className="card-img-top"
-                          alt={product.description}
-                        />
-                        {user && product.user !== null && (
+                    <div className="position-relative card-img">
+                      {product.status === "판매중" ? (
+                        <>
                           <img
-                            src={
-                              likedItems[product.productId]
-                                ? "/colorHeart.png"
-                                : "/heart.png"
-                            }
-                            onClick={(e) => {
-                              e.preventDefault();
-                              toggleLike(product.productId);
-                            }}
-                            alt="찜"
-                            className="heart"
+                            src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                            className="card-img-top"
+                            alt={product.description}
                           />
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <img
-                          src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
-                          className="card-img-top opacity-50"
-                          alt={product.title}
-                        />
-                        <img
-                          className="soldout-list"
-                          src="/soldout1.png"
-                          alt="판매완료"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <div className="card-body">
-                    <p className="card-title">{product.title}</p>
-                    <p className="card-price mb-0">
-                      {product.price.toLocaleString()}원
-                    </p>
-                  </div>
+                          {user && product.user !== null && (
+                            <img
+                              src={
+                                likedItems[product.productId]
+                                  ? "/colorHeart.png"
+                                  : "/heart.png"
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleLike(product.productId);
+                              }}
+                              alt="찜"
+                              className="heart"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            src={`${BASE_URL}/product/images/${product.images?.[0]?.imageName}`}
+                            className="card-img-top opacity-50"
+                            alt={product.title}
+                          />
+                          <img
+                            className="soldout-list"
+                            src="/soldout1.png"
+                            alt="판매완료"
+                          />
+                        </>
+                      )}
+                    </div>
+                    <div className="card-body">
+                      <p className="card-title">{product.title}</p>
+                      <p className="card-price mb-0">
+                        {product.price.toLocaleString()}원
+                      </p>
+                    </div>
                   </div>
                 </Link>
-                </div>
-              
+              </div>
             ))}
           </div>
         )}

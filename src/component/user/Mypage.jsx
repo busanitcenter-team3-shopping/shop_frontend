@@ -73,7 +73,6 @@ const Mypage = ({ user, setUser, products }) => {
     if (user) {
       fetchFavorites();
     } else {
-    
     }
   }, [user]);
 
@@ -139,7 +138,7 @@ const Mypage = ({ user, setUser, products }) => {
             <Link to="/orderhistory">
               <p>구매내역</p>
             </Link>
-           
+
             <Link to="/wishlist">
               <p>찜 리스트</p>
             </Link>
