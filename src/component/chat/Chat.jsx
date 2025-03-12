@@ -53,7 +53,7 @@ const Chat = () => {
     fetchMessages();
 
     const ws = new WebSocket(
-      `ws://localhost:8090/ws/chat?userId=${currentUser.userId}`
+      `ws://localhost:8090/ws/chat?userId=${currentUser.userId}&chatRoomId=${chatRoomId}`
     );
 
     ws.onmessage = (event) => {
