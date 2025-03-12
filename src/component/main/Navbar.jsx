@@ -15,14 +15,13 @@ const reverseCategoryMap = {
   악기: "INSTRUMENT",
 };
 
-function Navbar({ user, setUser }) {
+function Navbar({ user, setUser, unreadCount, setUnreadCount }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { setToken, setCurrentUser, currentUser } = useMyContext();
   const [categories, setCategories] = useState(0);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:8090/enum")
@@ -207,7 +206,7 @@ function Navbar({ user, setUser }) {
               {unreadCount > 0 && (
                 <span
                   className="position-absolute top-0 translate-middle badge rounded-pill bg-warning"
-                  style={{ left: "75%" }}
+                  style={{ left: "75%", width: "20px", height: "20px" }}
                 >
                   {unreadCount}
                   <span className="visually-hidden">unread messages</span>
