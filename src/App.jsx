@@ -28,6 +28,7 @@ import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
 import ChatRoomList from "./component/chat/ChatRoomList";
 import SalesHistory from "./component/user/SalesHistory";
+import { useMyContext } from "./api/ContextApi";
 
 // 해야할 일 :리뷰,카카오로그인, 배포
 // userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
@@ -38,6 +39,8 @@ import SalesHistory from "./component/user/SalesHistory";
 function App({ children }) {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { currentUser } = useMyContext();
 
   const addProduct = (newProduct) => {
     const updatedProducts = [...products, newProduct];
@@ -57,9 +60,20 @@ function App({ children }) {
     localStorage.setItem("product", JSON.stringify(updatedProducts));
   };
 
+  const markMessagesAsRead = (chatRoomId) => {
+    if (!currentUser?.userId) return;
+
+    setUnreadCount(0);
+  };
+
   return (
     <Router>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar
+        user={user}
+        setUser={setUser}
+        unreadCount={unreadCount}
+        setUnreadCount={setUnreadCount}
+      />
 
       <Routes>
         {/* 메인 화면 */}
@@ -122,7 +136,7 @@ function App({ children }) {
           path="/chat/:chatRoomId"
           element={
             <PrivateRoute>
-              <Chat />
+              <Chat markMessagesAsRead={markMessagesAsRead} />
             </PrivateRoute>
           }
         />

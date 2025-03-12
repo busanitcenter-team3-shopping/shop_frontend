@@ -4,7 +4,7 @@ import { useMyContext } from "../../api/ContextApi";
 import "./chat.css";
 import api from "../../api/axiosInstance";
 
-const Chat = () => {
+const Chat = ({ markMessagesAsRead }) => {
   const { chatRoomId } = useParams();
   const [messageInput, setMessageInput] = useState("");
   const [socket, setSocket] = useState(null);
@@ -79,6 +79,10 @@ const Chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    markMessagesAsRead(chatRoomId);
+  }, [chatRoomId, markMessagesAsRead]);
 
   const sendMessage = () => {
     if (socket && messageInput.trim() !== "") {
