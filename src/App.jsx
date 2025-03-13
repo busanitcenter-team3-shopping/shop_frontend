@@ -28,7 +28,11 @@ import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
 import ChatRoomList from "./component/chat/ChatRoomList";
 import SalesHistory from "./component/user/SalesHistory";
+
 import SellerReviewRegister from "./component/user/SellerReviewRegister";
+
+import { useMyContext } from "./api/ContextApi";
+
 
 // 해야할 일 :리뷰,카카오로그인, 배포
 // userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
@@ -39,6 +43,8 @@ import SellerReviewRegister from "./component/user/SellerReviewRegister";
 function App({ children }) {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { currentUser } = useMyContext();
 
   const addProduct = (newProduct) => {
     const updatedProducts = [...products, newProduct];
@@ -58,9 +64,33 @@ function App({ children }) {
     localStorage.setItem("product", JSON.stringify(updatedProducts));
   };
 
+  // useEffect(() => {
+  //   const fetchUnreadCount = async () => {
+  //     if (!currentUser?.userId) {
+  //       setUnreadCount(0); // userId가 없으면 기본값 0으로 설정
+  //       return;
+  //     }
+  //     try {
+  //       const response = await api.get(
+  //         `/chat/rooms/unread?userId=${currentUser.userId}`
+  //       );
+  //       setUnreadCount(response.data);
+  //     } catch (error) {
+  //       console.error("안 읽은 메시지 수 불러오기 실패:", error);
+  //     }
+  //   };
+  //   fetchUnreadCount();
+  // }, [currentUser]);
+
+  const markMessagesAsRead = (chatRoomId) => {
+    if (!currentUser?.userId) return;
+
+    setUnreadCount(0);
+  };
+
   return (
     <Router>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar user={user} setUser={setUser} unreadCount={unreadCount} />
 
       <Routes>
         {/* 메인 화면 */}
@@ -113,7 +143,7 @@ function App({ children }) {
           path="/chat"
           element={
             <PrivateRoute>
-              <ChatRoomList />
+              <ChatRoomList setUnreadCounts={setUnreadCount} />
             </PrivateRoute>
           }
         />
@@ -123,7 +153,7 @@ function App({ children }) {
           path="/chat/:chatRoomId"
           element={
             <PrivateRoute>
-              <Chat />
+              <Chat markMessagesAsRead={markMessagesAsRead} />
             </PrivateRoute>
           }
         />

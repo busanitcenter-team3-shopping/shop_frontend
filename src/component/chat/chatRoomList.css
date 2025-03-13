@@ -50,3 +50,9 @@
 .chat-sta {
   padding-left: 40px !important;
 }
+
+.unread-badge {
+  position: absolute !important;
+  right: 30px;
+  top: 15px;
+}

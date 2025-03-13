@@ -5,6 +5,7 @@ import myuser from "../../assets/icon-user.svg";
 import plus from "../../assets/icon-plus.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
+import api from "../../api/axiosInstance";
 
 const reverseCategoryMap = {
   전체: "ALL",
@@ -14,13 +15,13 @@ const reverseCategoryMap = {
   악기: "INSTRUMENT",
 };
 
-function Navbar({ user, setUser }) {
+function Navbar({ user, setUser, unreadCount }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken, setCurrentUser } = useMyContext();
-  const [categories, setCategories] = useState([]);
+  const { setToken, setCurrentUser, currentUser } = useMyContext();
+  const [categories, setCategories] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:8090/enum")
@@ -176,7 +177,7 @@ function Navbar({ user, setUser }) {
             </Link>
           </li>
           <li>
-            <Link to="/chat" className="text-dark">
+            <Link to="/chat" className="text-dark btn position-relative">
               <img
                 className="mb-2"
                 src={note}
@@ -184,6 +185,16 @@ function Navbar({ user, setUser }) {
                 height="30"
                 width="30"
               />
+              {unreadCount > 0 && (
+                <span
+                  className="position-absolute top-0 translate-middle badge rounded-pill bg-warning"
+                  style={{ left: "75%", width: "20px", height: "20px" }}
+                >
+                  {unreadCount}
+                  <span className="visually-hidden">unread messages</span>
+                </span>
+              )}
+
               <span>메세지</span>
             </Link>
           </li>

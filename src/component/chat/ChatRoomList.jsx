@@ -4,28 +4,56 @@ import api from "../../api/axiosInstance";
 import "./chatRoomList.css";
 import { useMyContext } from "../../api/ContextApi";
 
-const ChatRoomList = () => {
+const ChatRoomList = ({ setUnreadCounts }) => {
   const [chatRooms, setChatRooms] = useState([]);
+  const { currentUser } = useMyContext();
   const navigate = useNavigate();
+
   const { messages, setMessages } = useMyContext();
 
   const BASE_URL = "http://localhost:8090";
 
   useEffect(() => {}, [messages]);
 
+
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
         const response = await api.get("/chat/rooms");
-        setChatRooms(response.data);
+        const rooms = response.data;
+
+        // Promise.all은 모든 api 응답을 처리하는거거
+        const updatedRooms = await Promise.all(
+          rooms.map(async (room) => {
+            try {
+              const unreadResponse = await api.get(
+                `/chat/rooms/${room.chatRoomId}/unread-count?userId=${currentUser.userId}`
+              );
+              return { ...room, unreadCount: unreadResponse.data };
+            } catch (error) {
+              return { ...room, unreadCount: 0 };
+            }
+          })
+        );
+        setChatRooms(updatedRooms);
+
+        const totalUnread = updatedRooms.reduce(
+          (acc, room) => acc + room.unreadCount,
+          0
+        );
+        setUnreadCounts(totalUnread);
       } catch (error) {
-        console.error("채팅방 로드 실패:", error);
+        console.error(error);
       }
     };
-
     fetchChatRooms();
+
   }, []);
   console.log(messages);
+
+  }, [currentUser.userId]);
+
+
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">채팅방 목록</h2>
@@ -63,8 +91,11 @@ const ChatRoomList = () => {
             </div>
 
             <div className="d-flex align-items-center gap-2">
-              {room.unreadCount >= 0 && (
-                <div className="bg-warning rounded-circle text-center unread-badge">
+              {room.unreadCount > 0 && (
+                <div
+                  className="bg-warning rounded-circle text-center unread-badge"
+                  style={{ width: "25px", height: "25px" }}
+                >
                   {room.unreadCount}
                 </div>
               )}
