@@ -14,32 +14,18 @@ const SalesHistory = () => {
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        // 전체 구매 내역 불러오기 (/purchase/all)
-        const response = await api.get("/purchase/all");
-        console.log("전체 구매 내역 응답:", response.data);
-        if (Array.isArray(response.data) && currentUser) {
-          // 현재 판매자(= 현재 로그인한 사용자)가 등록한 상품만 필터링
-          const filteredSales = response.data.filter((order, index) => {
-            console.log(`구매 내역 ${index}:`, order);
-            return (
-              order.product &&
-              order.product.user &&
-              order.product.user.userId === currentUser.userId
-            );
-          });
-          console.log("필터링된 판매 내역:", filteredSales);
-          setSales(filteredSales);
-        }
+        // 판매자 전용 API 엔드포인트 호출 (판매자 기준 판매 내역)
+        const response = await api.get(
+          `/purchase/seller/${currentUser.userId}`
+        );
+        setSales(response.data);
       } catch (error) {
         console.error("판매 내역 불러오기 실패:", error);
       }
     };
 
     if (currentUser) {
-      console.log("현재 판매자 정보:", currentUser);
       fetchSales();
-    } else {
-      console.log("현재 판매자 정보가 없습니다.");
     }
   }, [currentUser]);
 
@@ -70,9 +56,11 @@ const SalesHistory = () => {
                       </p>
                     </div>
                   </div>
-                  <Link to="/add-review">
-                    <button className="review-button">리뷰쓰기</button>
-                  </Link>
+                  {!sale.sellerAlreadyReviewed && (
+                    <Link to={`/add-review/seller/${sale.purchaseId}`}>
+                      <button className="review-button">리뷰쓰기</button>
+                    </Link>
+                  )}
                 </div>
               );
             })

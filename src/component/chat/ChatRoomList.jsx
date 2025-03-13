@@ -9,7 +9,12 @@ const ChatRoomList = ({ setUnreadCounts }) => {
   const { currentUser } = useMyContext();
   const navigate = useNavigate();
 
+  const { messages, setMessages } = useMyContext();
+
   const BASE_URL = "http://localhost:8090";
+
+  useEffect(() => {}, [messages]);
+
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -42,7 +47,12 @@ const ChatRoomList = ({ setUnreadCounts }) => {
       }
     };
     fetchChatRooms();
+
+  }, []);
+  console.log(messages);
+
   }, [currentUser.userId]);
+
 
   return (
     <div className="container mt-4">

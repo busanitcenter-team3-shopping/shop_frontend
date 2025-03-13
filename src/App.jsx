@@ -28,7 +28,11 @@ import NoticeBoard from "./component/main/NoticeBoard";
 import Chat from "./component/chat/Chat";
 import ChatRoomList from "./component/chat/ChatRoomList";
 import SalesHistory from "./component/user/SalesHistory";
+
+import SellerReviewRegister from "./component/user/SellerReviewRegister";
+
 import { useMyContext } from "./api/ContextApi";
+
 
 // 해야할 일 :리뷰,카카오로그인, 배포
 // userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
@@ -200,8 +204,14 @@ function App({ children }) {
         {/* 판매 내역 */}
         <Route path="/saleshistory" element={<SalesHistory />} />
 
-        {/* 리뷰 등록 */}
+        {/* 구매자 리뷰 등록 */}
         <Route path="/add-review/:purchaseId" element={<ReviewRegister />} />
+
+        {/* 판매자 리뷰 등록 */}
+        <Route
+          path="/add-review/seller/:purchaseId"
+          element={<SellerReviewRegister />}
+        />
 
         {/* 전체 리뷰 */}
         <Route path="/review" element={<ReviewPage />} />
