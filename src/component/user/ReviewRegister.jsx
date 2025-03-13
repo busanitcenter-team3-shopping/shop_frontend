@@ -7,9 +7,9 @@ const ReviewRegister = () => {
   const { purchaseId } = useParams();
   console.log("purchaseId from URL:", purchaseId);
 
-  // localStorage에서 "currentUser" 키로 로그인 정보를 가져옵니다.
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
+  // 로그인 정보 확인 후 없으면 로그인 페이지로 이동
   useEffect(() => {
     if (!currentUser) {
       console.error("로그인 정보가 없습니다. 다시 로그인해 주세요.");
@@ -19,7 +19,8 @@ const ReviewRegister = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [images, setImages] = useState([]);
+
+  const [images, setImages] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,15 +28,17 @@ const ReviewRegister = () => {
       console.error("로그인 정보가 없습니다. 다시 로그인해 주세요.");
       return;
     }
+
     try {
       const formData = new FormData();
       const review = {
         title: title,
         content: description,
-        // localStorage에 저장된 currentUser에서 userId 사용
         user: { userId: currentUser.userId },
         purchase: { purchaseId: Number(purchaseId) },
       };
+
+      // Blob을 통해 "review"라는 필드명으로 JSON 데이터 전송
       formData.append(
         "review",
         new Blob([JSON.stringify(review)], { type: "application/json" })
@@ -47,16 +50,23 @@ const ReviewRegister = () => {
 
       const res = await fetch("http://localhost:8090/review/create", {
         method: "POST",
-        body: formData,
+        body: formData, // multipart/form-data
       });
+
       if (!res.ok) {
-        throw new Error(`Server error: ${res.status}`);
+        const errMsg = await res.text();
+        throw new Error(`Server error: ${res.status} - ${errMsg}`);
       }
+
       const result = await res.json();
       console.log("등록 성공:", result);
+
+      // 필요하다면 alert 등을 통해 사용자에게 알림
+      alert("리뷰가 등록되었습니다.");
       navigate("/mypage");
     } catch (err) {
       console.error("등록 중 오류 발생:", err);
+      alert("리뷰 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     }
   };
 
@@ -92,9 +102,8 @@ const ReviewRegister = () => {
               />
             </div>
 
-            {/* 일단 3개라고 표시는 했는데 확인 필요합니다 */}
             <div className="form-group mt-3">
-              <label htmlFor="image">상품 이미지 (최대 3개)</label>
+              <label htmlFor="image">상품 이미지</label>
               <input
                 id="image"
                 type="file"

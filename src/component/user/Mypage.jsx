@@ -73,7 +73,6 @@ const Mypage = ({ user, setUser, products }) => {
     if (user) {
       fetchFavorites();
     } else {
-    
     }
   }, [user]);
 
@@ -92,35 +91,21 @@ const Mypage = ({ user, setUser, products }) => {
     }
   }, [user]);
 
-  const recentOrders = orders.slice(0, 2);
+  const fetchSales = async () => {
+    try {
+      // 판매자 전용 API 엔드포인트 호출 (판매자 기준 판매 내역)
+      const response = await api.get(`/purchase/seller/${currentUser.userId}`);
+      setSales(response.data);
+    } catch (error) {
+      console.error("판매 내역 불러오기 실패:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        const response = await api.get("/purchase/all");
-        if (Array.isArray(response.data)) {
-          // 구매 내역 중, 상품의 판매자가 현재 판매자와 일치하는 항목 필터링
-          const sellerSales = response.data.filter((purchase, index) => {
-            return (
-              purchase.product &&
-              purchase.product.user &&
-              purchase.product.user.userId === currentUser.userId
-            );
-          });
-          setSales(sellerSales);
-        } else {
-        }
-      } catch (error) {
-        console.error("판매 내역 불러오기 실패:", error);
-      }
-    };
-
-    if (currentUser) {
-      fetchSales();
-    } else {
-    }
+    if (currentUser) fetchSales();
   }, [currentUser]);
 
+  const recentOrders = orders.slice(0, 2);
   const recentSales = sales.slice(0, 2);
 
   const BASE_URL = "http://localhost:8090";
@@ -139,7 +124,7 @@ const Mypage = ({ user, setUser, products }) => {
             <Link to="/orderhistory">
               <p>구매내역</p>
             </Link>
-           
+
             <Link to="/wishlist">
               <p>찜 리스트</p>
             </Link>
@@ -211,11 +196,7 @@ const Mypage = ({ user, setUser, products }) => {
                         </p>
                       </div>
                     </div>
-                    {order.alreadyReviewed ? (
-                      <button className="review-button" disabled>
-                        작성 완료
-                      </button>
-                    ) : (
+                    {!order.alreadyReviewed && (
                       <Link to={`/add-review/${order.purchaseId}`}>
                         <button className="review-button">리뷰쓰기</button>
                       </Link>
@@ -253,9 +234,11 @@ const Mypage = ({ user, setUser, products }) => {
                         </p>
                       </div>
                     </div>
-                    <Link to="/add-review">
-                      <button className="review-button">리뷰쓰기</button>
-                    </Link>
+                    {!sale.sellerAlreadyReviewed && (
+                      <Link to={`/add-review/seller/${sale.purchaseId}`}>
+                        <button className="review-button">리뷰쓰기</button>
+                      </Link>
+                    )}
                   </div>
                 );
               })}
