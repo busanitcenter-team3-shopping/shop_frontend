@@ -146,9 +146,18 @@ const Chat = () => {
     }
 
     return () => {
-      setSelectedChatRoomId(null);
+      setSelectedChatRoomId("global"); // null 대신 "global" 설정
     };
   }, [chatRoomId]);
+
+  useEffect(() => {
+    return () => {
+      if (socket) {
+        console.log("🔴 컴포넌트 언마운트 → WebSocket 닫기");
+        socket.close();
+      }
+    };
+  }, []);
 
   return (
     <div className="mt-2 container cattiong-room">

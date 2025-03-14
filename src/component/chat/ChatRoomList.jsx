@@ -9,10 +9,7 @@ const ChatRoomList = () => {
   const { currentUser, setUnreadCount, socket } = useMyContext();
   const navigate = useNavigate();
 
-  const { messages, setMessages } = useMyContext();
-
   const BASE_URL = "http://localhost:8090";
-
 
   // 채팅방 목록 및 unreadCount 가져오기
   useEffect(() => {
@@ -44,6 +41,7 @@ const ChatRoomList = () => {
         );
         setUnreadCount(totalUnread);
 
+        console.log("📢 전체 unreadCount 업데이트 완료:", totalUnread);
         console.log("채팅방 목록 불러오기 성공:", updatedRooms);
       } catch (error) {
         console.error("채팅방 목록 가져오기 실패:", error);
@@ -51,13 +49,19 @@ const ChatRoomList = () => {
     };
 
     fetchChatRooms();
-
   }, [currentUser.userId]);
 
   useEffect(() => {
-    if (!socket) return;
+    console.log("🚀 useEffect 실행됨!");
+    console.log("🔎 현재 socket 값:", socket);
+
+    if (!socket) {
+      console.warn("⚠ socket이 null 또는 undefined입니다. 실행 중단!");
+      return;
+    }
 
     socket.onmessage = (event) => {
+      console.log("📩 WebSocket 메시지 수신 이벤트 발생! 원본 데이터:", event);
       const data = JSON.parse(event.data);
       console.log("📩 실시간 메시지 수신:", data);
 
@@ -68,7 +72,10 @@ const ChatRoomList = () => {
         return prevRooms.map((room) => {
           if (room.chatRoomId == receivedChatRoomId) {
             console.log(`📩 채팅방(${room.chatRoomId}) unreadCount 증가`);
-            return { ...room, unreadCount: (room.unreadCount || 0) + 1 };
+            return {
+              ...room,
+              unreadCount: data.unreadCount ?? (room.unreadCount || 0) + 1,
+            };
           }
           return room;
         });
@@ -97,7 +104,6 @@ const ChatRoomList = () => {
       return prev - (room?.unreadCount || 0);
     });
   };
-
 
   return (
     <div className="container mt-4">
