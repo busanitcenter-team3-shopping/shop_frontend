@@ -4,20 +4,20 @@ import api from "../../api/axiosInstance";
 import "./chatRoomList.css";
 import { useMyContext } from "../../api/ContextApi";
 
-const ChatRoomList = ({ setUnreadCounts }) => {
+const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
-  const { currentUser } = useMyContext();
+  const { currentUser, setUnreadCount, socket } = useMyContext();
   const navigate = useNavigate();
 
   const BASE_URL = "http://localhost:8090";
 
+  // 채팅방 목록 및 unreadCount 가져오기
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
         const response = await api.get("/chat/rooms");
         const rooms = response.data;
 
-        // Promise.all은 모든 api 응답을 처리하는거거
         const updatedRooms = await Promise.all(
           rooms.map(async (room) => {
             try {
@@ -26,23 +26,73 @@ const ChatRoomList = ({ setUnreadCounts }) => {
               );
               return { ...room, unreadCount: unreadResponse.data };
             } catch (error) {
+              console.error("❌ 특정 채팅방 unreadCount 가져오기 실패:", error);
               return { ...room, unreadCount: 0 };
             }
           })
         );
+
         setChatRooms(updatedRooms);
 
+        // 전체 안 읽은 메시지 개수 업데이트
         const totalUnread = updatedRooms.reduce(
           (acc, room) => acc + room.unreadCount,
           0
         );
-        setUnreadCounts(totalUnread);
+        setUnreadCount(totalUnread);
+
+        console.log("채팅방 목록 불러오기 성공:", updatedRooms);
       } catch (error) {
-        console.error(error);
+        console.error("채팅방 목록 가져오기 실패:", error);
       }
     };
+
     fetchChatRooms();
   }, [currentUser.userId]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("📩 실시간 메시지 수신:", data);
+
+      const receivedChatRoomId = data.chatRoomId; // 🔍 chatRoomId 추출
+      console.log(`🔎 받은 chatRoomId: ${receivedChatRoomId}`);
+
+      setChatRooms((prevRooms) => {
+        return prevRooms.map((room) => {
+          if (room.chatRoomId == receivedChatRoomId) {
+            console.log(`📩 채팅방(${room.chatRoomId}) unreadCount 증가`);
+            return { ...room, unreadCount: (room.unreadCount || 0) + 1 };
+          }
+          return room;
+        });
+      });
+
+      if (data.unreadCount !== undefined) {
+        console.log(`📩 전체 안 읽은 메시지 업데이트: ${data.unreadCount}`);
+        setUnreadCount(data.unreadCount);
+      }
+    };
+  }, [socket]);
+
+  // 채팅방 입장 시 unreadCount 초기화
+  const handleEnterChatRoom = (chatRoomId) => {
+    console.log("📩 채팅방 입장:", chatRoomId);
+    navigate(`/chat/${chatRoomId}`);
+
+    setChatRooms((prevRooms) =>
+      prevRooms.map((room) =>
+        room.chatRoomId === chatRoomId ? { ...room, unreadCount: 0 } : room
+      )
+    );
+
+    setUnreadCount((prev) => {
+      const room = chatRooms.find((room) => room.chatRoomId === chatRoomId);
+      return prev - (room?.unreadCount || 0);
+    });
+  };
 
   return (
     <div className="container mt-4">
@@ -91,7 +141,7 @@ const ChatRoomList = ({ setUnreadCounts }) => {
               )}
               <button
                 className="btn btn-primary btn-sm chat-btn"
-                onClick={() => navigate(`/chat/${room.chatRoomId}`)}
+                onClick={() => handleEnterChatRoom(room.chatRoomId)}
               >
                 입장
               </button>
