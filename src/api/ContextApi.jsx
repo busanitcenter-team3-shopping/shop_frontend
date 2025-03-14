@@ -19,8 +19,9 @@ export const ContextProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const socketRef = useRef();
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState(null);
-  const [chatRooms, setChatRooms] = useState([]);
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState(
+    localStorage.getItem("chatRoomId") || null
+  );
 
   // 현재 로그인 유저 관리
   const [currentUser, setCurrentUser] = useState(() => {
@@ -72,6 +73,35 @@ export const ContextProvider = ({ children }) => {
     }
   }, [token]);
 
+  const markAsRead = async (chatRoomId) => {
+    try {
+      console.log("markAsRead :" + chatRoomId);
+      await api.post(
+        `/chat/rooms/${chatRoomId}/mark-as-read?userId=${currentUser.userId}`
+      );
+
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.chatRoomId === chatRoomId && msg.receiverId === currentUser.userId
+            ? { ...msg, isRead: true }
+            : msg
+        )
+      );
+
+      setUnreadCount((prev) => Math.max(prev - 1, 0));
+
+      console.log(`✅ 채팅방(${chatRoomId}) 메시지 읽음 처리 완료`);
+    } catch (error) {
+      console.error("❌ 메시지 읽음 처리 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedChatRoomId) {
+      localStorage.setItem("chatRoomId", selectedChatRoomId);
+    }
+  }, [selectedChatRoomId]);
+
   useEffect(() => {
     if (!currentUser?.userId) return; // 유저가 없으면 실행 X
 
@@ -99,50 +129,41 @@ export const ContextProvider = ({ children }) => {
         console.log("✅ WebSocket 연결 성공");
         socketRef.current = ws;
         sessionStorage.setItem("activeChatRoom", chatRoomId);
-
-        if (selectedChatRoomId) {
-          api.post(
-            `/chat/rooms/${selectedChatRoomId}/mark-as-read?userId=${currentUser.userId}`
-          );
-        }
       };
 
-      const markAsRead = async (chatRoomId) => {
-        try {
-          await api.post(
-            `/chat/rooms/${chatRoomId}/mark-as-read?userId=${currentUser.userId}`
-          );
+      ws.onmessage = async (event) => {
+        const receivedData =
+          typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        const receivedMessage = receivedData.message;
+        const chatRoomId = receivedData.chatRoomId;
 
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              msg.chatRoomId === chatRoomId ? { ...msg, isRead: true } : msg
-            )
-          );
-
-          console.log(`✅ 채팅방(${chatRoomId}) 메시지 읽음 처리 완료`);
-        } catch (error) {
-          console.error("❌ 메시지 읽음 처리 실패:", error);
-        }
-      };
-
-      ws.onmessage = (event) => {
-        const receivedMessage = JSON.parse(event.data);
+        console.log(
+          `📩 실시간 메시지 수신: 채팅방(${chatRoomId}), isRead: ${receivedMessage.isRead}`
+        );
 
         setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages, receivedMessage.message];
+          const updatedMessages = [...prevMessages, receivedMessage];
           return updatedMessages.map((msg) => ({
             ...msg,
             senderId: msg.sender?.userId || msg.senderId,
             receiverId: msg.receiver?.userId || msg.receiverId,
             isMine:
               (msg.sender?.userId || msg.senderId) === currentUser?.userId,
-            isRead: msg.isRead || msg.isMine,
+            isRead: receivedMessage.isRead,
           }));
         });
 
-        if (selectedChatRoomId === receivedMessage.message.chatRoomId) {
-          markAsRead(receivedMessage.message.chatRoomId);
+        const isUserInRoom = await api.get(
+          `/chat/rooms/${receivedData.chatRoomId}/isUserInRoom?userId=${currentUser.userId}`
+        );
+
+        if (isUserInRoom.data) {
+          markAsRead(receivedData.chatRoomId);
         }
+
+        // if (!receivedMessage.isRead) {
+        //   setUnreadCount((prev) => prev + 1);
+        // }
       };
 
       ws.onclose = (event) => {
