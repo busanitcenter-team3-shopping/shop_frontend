@@ -9,7 +9,10 @@ const ChatRoomList = () => {
   const { currentUser, setUnreadCount, socket } = useMyContext();
   const navigate = useNavigate();
 
+  const { messages, setMessages } = useMyContext();
+
   const BASE_URL = "http://localhost:8090";
+
 
   // 채팅방 목록 및 unreadCount 가져오기
   useEffect(() => {
@@ -48,6 +51,7 @@ const ChatRoomList = () => {
     };
 
     fetchChatRooms();
+
   }, [currentUser.userId]);
 
   useEffect(() => {
@@ -93,6 +97,7 @@ const ChatRoomList = () => {
       return prev - (room?.unreadCount || 0);
     });
   };
+
 
   return (
     <div className="container mt-4">

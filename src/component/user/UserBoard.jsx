@@ -3,30 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
 
-const reviews = [
-  {
-    id: 1,
-    image: "/car.jpg",
-    content: "친절해요",
-    user_name: "나희",
-  },
-  {
-    id: 2,
-    image: "/car.jpg",
-    content: "거래시간을 잘지켜요",
-    user_name: "둘리",
-  },
-  {
-    id: 3,
-    image: null,
-    content: "답변이 빨라요",
-    user_name: "둘리",
-  },
-];
 const UserBoard = ({ user }) => {
   const { user_id } = useParams();
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState({});
   const [products, setProducts] = useState([]);
+  // 실제 리뷰 데이터를 저장할 상태 변수
+  const [fetchedReviews, setFetchedReviews] = useState([]);
+
   const latestProducts = [...products].reverse().slice(0, 4);
 
   useEffect(() => {
@@ -34,17 +17,17 @@ const UserBoard = ({ user }) => {
       .get(`/product/user-page/${user_id}`)
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("상품 로드 실패:", error));
-  }, []);
+  }, [user_id]);
 
   useEffect(() => {
     api
       .get(`/user/${user_id}`)
       .then((response) => setUsers(response.data))
       .catch((error) => console.error("유저 로드 실패:", error));
-  }, []);
+  }, [user_id]);
 
-  console.log(products);
-  console.log(users);
+  console.log("products:", products);
+  console.log("users:", users);
 
   const BASE_URL = "http://localhost:8090";
 
@@ -82,7 +65,6 @@ const UserBoard = ({ user }) => {
   const toggleLike = async (id) => {
     try {
       if (likedItems[id]) {
-        // 찜 해제: DELETE /favorite/{productId}
         await api.delete(`/favorite/${id}`);
         setLikedItems((prev) => {
           const newLikes = { ...prev };
@@ -90,7 +72,6 @@ const UserBoard = ({ user }) => {
           return newLikes;
         });
       } else {
-        // 찜 추가: POST /favorite, { productId }
         await api.post("/favorite", { productId: id });
         setLikedItems((prev) => ({ ...prev, [id]: true }));
       }
@@ -99,13 +80,22 @@ const UserBoard = ({ user }) => {
     }
   };
 
-  const recentReviews = reviews.slice(0, 2);
+  // 실제 리뷰 데이터 fetch (받은 리뷰만 조회)
+  useEffect(() => {
+    api
+      .get(`/review/for/${user_id}`)
+      .then((response) => {
+        console.log("서버 응답 리뷰:", response.data);
+        setFetchedReviews(response.data);
+      })
+      .catch((error) => console.error("리뷰 로드 실패:", error));
+  }, [user_id]);
 
   return (
     <div className="container container1">
       <div className="profile-section d-flex flex-column justify-content-center">
         <div>
-          <img src="/basicUser.png" className="profile-img" />
+          <img src="/basicUser.png" className="profile-img" alt="프로필" />
         </div>
         <div className="d-flex flex-column align-items-center">
           <h3 className="profile-name">{users.username}</h3>
@@ -187,27 +177,40 @@ const UserBoard = ({ user }) => {
       </div>
       <div className="review-container">
         <div className="section-header">
-          <h2 className="fw-bold">리 뷰</h2>
+          <h2 className="fw-bold">리뷰</h2>
           <Link to="/review">더보기 &gt;</Link>
         </div>
-
-        <div className="review-list mt-5">
-          {recentReviews.map((review) => (
-            <div key={review.id} className="review-card">
-              <div className="review-info">
-                <div className="review-details">
-                  <div className="status-container">
-                    <p className="review-name mt-3">{review.content}</p>
+        {fetchedReviews.length === 0 ? (
+          <p className="text-center mt-3">리뷰가 없습니다.</p>
+        ) : (
+          <div className="review-list mt-5">
+            {fetchedReviews.slice(0, 2).map((review, idx) => (
+              <div
+                key={`${review.productId}_${review.reviewerId}_${idx}`}
+                className="review-card"
+              >
+                <div className="review-info">
+                  <div className="review-details">
+                    <div className="status-container">
+                      <p className="review-name mt-3">{review.reviewTitle}</p>
+                    </div>
+                    <p className="review-price">
+                      작성자 : {review.reviewerName}
+                    </p>
+                    <p className="review-content">{review.reviewContent}</p>
                   </div>
-                  <p className="review-price">작성자 : {review.user_name}</p>
                 </div>
+                {review.image ? (
+                  <img
+                    src={review.image}
+                    alt="리뷰 이미지"
+                    className="review-image"
+                  />
+                ) : null}
               </div>
-              {review.image && (
-                <img src={review.image} alt="" className="review-image" />
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

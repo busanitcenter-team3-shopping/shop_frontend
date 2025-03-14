@@ -48,11 +48,7 @@ const OrderHistory = () => {
                       </p>
                     </div>
                   </div>
-                  {order.alreadyReviewed ? (
-                    <button className="review-button" disabled>
-                      작성 완료
-                    </button>
-                  ) : (
+                  {!order.alreadyReviewed && (
                     <Link to={`/add-review/${order.purchaseId}`}>
                       <button className="review-button">리뷰쓰기</button>
                     </Link>
