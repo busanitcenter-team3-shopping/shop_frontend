@@ -1,18 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMyContext } from "../../api/ContextApi";
 import "./chat.css";
 import api from "../../api/axiosInstance";
+import { use } from "react";
 
-const Chat = ({ markMessagesAsRead }) => {
+const Chat = () => {
   const { chatRoomId } = useParams();
   const [messageInput, setMessageInput] = useState("");
-  const [socket, setSocket] = useState(null);
   const [chatRoomData, setChatRoomData] = useState(null);
-  const { currentUser, messages, setMessages } = useMyContext();
+  const [currentChatRoomId, setCurrentChatRoomId] = useState(chatRoomId);
+  const {
+    currentUser,
+    messages,
+    setMessages,
+    setUnreadCount,
+    socket,
+    setSelectedChatRoomId,
+  } = useMyContext();
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    if (chatRoomId) {
+      localStorage.setItem("chatRoomId", chatRoomId);
+      setCurrentChatRoomId(chatRoomId);
+    } else {
+      const storedChatRoomId = localStorage.getItem("chatRoomId");
+      if (storedChatRoomId) {
+        setCurrentChatRoomId(storedChatRoomId);
+      }
+    }
+  }, [chatRoomId]);
+
+  useEffect(() => {
+    setMessages([]);
     const fetchChatRoomDetails = async () => {
       if (chatRoomId !== null) {
         try {
@@ -63,31 +84,7 @@ const Chat = ({ markMessagesAsRead }) => {
     };
 
     fetchMessages();
-
-    const ws = new WebSocket(
-      `ws://localhost:8090/ws/chat?userId=${currentUser.userId}&chatRoomId=${chatRoomId}`
-    );
-
-    ws.onmessage = (event) => {
-      const receivedMessage = JSON.parse(event.data);
-
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages, receivedMessage];
-        return updatedMessages.map((msg) => ({
-          ...msg,
-          senderId: msg.sender?.userId || msg.senderId,
-          receiverId: msg.receiver?.userId || msg.receiverId,
-          isMine: (msg.sender?.userId || msg.senderId) === currentUser?.userId,
-        }));
-      });
-    };
-
-    setSocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, [chatRoomId, currentUser.userId]);
+  }, [chatRoomId, currentUser.userId, setMessages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -96,10 +93,6 @@ const Chat = ({ markMessagesAsRead }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    markMessagesAsRead(chatRoomId);
-  }, [chatRoomId, markMessagesAsRead]);
 
   const sendMessage = () => {
     if (socket && messageInput.trim() !== "") {
@@ -125,8 +118,6 @@ const Chat = ({ markMessagesAsRead }) => {
     }
   };
 
-  useEffect(() => {}, [messages]);
-
   //판매
   const handleSellProduct = async () => {
     const buyerId = chatRoomData.user1.userId;
@@ -148,6 +139,16 @@ const Chat = ({ markMessagesAsRead }) => {
       console.error("판매 실패");
     }
   };
+
+  useEffect(() => {
+    if (chatRoomId) {
+      setSelectedChatRoomId(chatRoomId);
+    }
+
+    return () => {
+      setSelectedChatRoomId(null);
+    };
+  }, [chatRoomId]);
 
   return (
     <div className="mt-2 container cattiong-room">

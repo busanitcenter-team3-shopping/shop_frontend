@@ -15,12 +15,19 @@ const reverseCategoryMap = {
   악기: "INSTRUMENT",
 };
 
-function Navbar({ user, setUser, unreadCount }) {
+function Navbar({ user, setUser }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { setToken, setCurrentUser, currentUser } = useMyContext();
+  const {
+    setToken,
+    setCurrentUser,
+    currentUser,
+    unreadCount,
+    setUnreadCount,
+    socket,
+  } = useMyContext();
   const [categories, setCategories] = useState(0);
 
   useEffect(() => {
@@ -52,9 +59,14 @@ function Navbar({ user, setUser, unreadCount }) {
     localStorage.removeItem("JWT_TOKEN");
     localStorage.removeItem("USER");
     localStorage.removeItem("currentUser");
+    if (socket) {
+      console.log("🔴 WebSocket 연결 닫기");
+      socket.close(); // ✅ WebSocket 닫기
+    }
     setUser(null);
     setToken(null);
     setCurrentUser(null);
+    setUnreadCount(0);
     alert("로그아웃 되었습니다.");
     navigate("/");
   };
