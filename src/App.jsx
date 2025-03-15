@@ -34,7 +34,6 @@ import SellerReviewRegister from "./component/user/SellerReviewRegister";
 import { useMyContext } from "./api/ContextApi";
 import api from "./api/axiosInstance";
 
-
 // 해야할 일 :리뷰,카카오로그인, 배포
 // userBoard, ReviewRegister, ReviewPage(임시값), orderHistory(임시값), mypage, NoticeWrite  주석 지우기
 // 관리자가 회원관리 할건지
@@ -187,7 +186,7 @@ function App({ children }) {
         />
 
         {/* 전체 리뷰 */}
-        <Route path="/review" element={<ReviewPage />} />
+        <Route path="/review/:userId" element={<ReviewPage />} />
 
         {/* 찜한 상품 */}
         <Route

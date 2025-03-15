@@ -140,7 +140,7 @@ const Mypage = ({ user, setUser, products }) => {
             <Link to="/saleshistory">
               <p>판매내역</p>
             </Link>
-            <Link to="/review">
+            <Link to={`/review/${currentUser?.userId}`}>
               <p>리뷰</p>
             </Link>
           </div>
