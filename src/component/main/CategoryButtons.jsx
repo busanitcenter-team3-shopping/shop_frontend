@@ -14,7 +14,7 @@ function CategoryButtons() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8090/enum")
+    fetch("http://172.30.1.71:8090/enum")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.log(err));

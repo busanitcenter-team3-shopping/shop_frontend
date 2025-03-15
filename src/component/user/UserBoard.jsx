@@ -26,7 +26,7 @@ const UserBoard = ({ user }) => {
       .catch((error) => console.error("유저 로드 실패:", error));
   }, [user_id]);
 
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
 
   const [likedItems, setLikedItems] = useState({});
 

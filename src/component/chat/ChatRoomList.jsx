@@ -9,7 +9,7 @@ const ChatRoomList = () => {
   const { currentUser, setUnreadCount, socket } = useMyContext();
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
 
   // 채팅방 목록 및 unreadCount 가져오기
   useEffect(() => {

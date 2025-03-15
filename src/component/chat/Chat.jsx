@@ -17,6 +17,7 @@ const Chat = () => {
     setUnreadCount,
     socket,
     setSelectedChatRoomId,
+    selectedChatRoomId,
   } = useMyContext();
   const messagesEndRef = useRef(null);
 
@@ -38,7 +39,7 @@ const Chat = () => {
       if (chatRoomId !== null) {
         try {
           const response = await fetch(
-            `http://localhost:8090/chat/rooms/${chatRoomId}/details`
+            `http://172.30.1.71:8090/chat/rooms/${chatRoomId}/details`
           );
           if (!response.ok) {
             throw new Error("채팅방 정보를 불러오는 데 실패했습니다.");
@@ -54,12 +55,14 @@ const Chat = () => {
       }
     };
 
+    
+
     fetchChatRoomDetails();
 
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8090/chat/rooms/${chatRoomId}/messages`
+          `http://172.30.1.71:8090/chat/rooms/${chatRoomId}/messages`
         );
         if (!response.ok)
           throw new Error("채팅 메시지를 불러오는 데 실패했습니다.");
@@ -77,6 +80,7 @@ const Chat = () => {
               )
           );
           return [...prevMessages, ...newMessages];
+          
         });
       } catch (error) {
         console.error(error);
@@ -102,6 +106,7 @@ const Chat = () => {
           : chatRoomData?.user2?.userId;
 
       const messageData = {
+        event: "sendMessage",
         senderId: currentUser.userId,
         receiverId: receiverId,
         chatRoomId: Number(chatRoomId),
@@ -117,6 +122,7 @@ const Chat = () => {
       setMessageInput("");
     }
   };
+
 
   //판매
   const handleSellProduct = async () => {
@@ -159,6 +165,8 @@ const Chat = () => {
     };
   }, []);
 
+
+  console.log(messages)
   return (
     <div className="mt-2 container cattiong-room">
       <div className="chatting-title">
@@ -211,9 +219,7 @@ const Chat = () => {
                 : "justify-content-start"
             }`}
           >
-            {msg.senderId === currentUser.userId && !msg.isRead && (
-              <div className="unread-count">1</div>
-            )}
+           
             {msg.senderId !== currentUser.userId && (
               <img
                 src="/basicUser.png"

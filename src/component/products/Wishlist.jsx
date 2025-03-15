@@ -8,7 +8,7 @@ const Wishlist = ({ user, products }) => {
   const [likedProducts, setLikedProducts] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
 
   // 백엔드 API로부터 찜 목록을 불러와, product 객체들을 배열로 저장
   const fetchFavorites = async () => {
