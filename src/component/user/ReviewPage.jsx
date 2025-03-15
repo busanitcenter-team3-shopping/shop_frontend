@@ -2,10 +2,22 @@ import React, { useEffect, useState } from "react";
 import "./ReviewPage.css";
 import api from "../../api/axiosInstance";
 import { useMyContext } from "../../api/ContextApi";
+import { useParams } from "react-router-dom";
 
 const ReviewPage = () => {
+  const { userId } = useParams();
   const [reviews, setReviews] = useState([]);
   const { currentUser } = useMyContext();
+  const [users, setUsers] = useState({});
+
+  useEffect(() => {
+    api
+      .get(`/user/${userId}`)
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.error("유저 로드 실패:", error));
+  }, [userId]);
+
+  console.log(userId);
 
   useEffect(() => {
     // currentUser가 있어야만 리뷰를 불러옴
@@ -14,7 +26,7 @@ const ReviewPage = () => {
     const fetchReviews = async () => {
       try {
         // 예: 백엔드에서 userId가 받은 리뷰 조회 엔드포인트
-        const response = await api.get(`/review/for/${currentUser.userId}`);
+        const response = await api.get(`/review/for/${userId}`);
         console.log("서버 응답 리뷰:", response.data);
         setReviews(response.data);
       } catch (error) {

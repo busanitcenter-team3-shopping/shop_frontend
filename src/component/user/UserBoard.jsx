@@ -26,9 +26,6 @@ const UserBoard = ({ user }) => {
       .catch((error) => console.error("유저 로드 실패:", error));
   }, [user_id]);
 
-  console.log("products:", products);
-  console.log("users:", users);
-
   const BASE_URL = "http://172.30.1.71:8090";
 
   const [likedItems, setLikedItems] = useState({});
@@ -178,7 +175,7 @@ const UserBoard = ({ user }) => {
       <div className="review-container">
         <div className="section-header">
           <h2 className="fw-bold">리뷰</h2>
-          <Link to="/review">더보기 &gt;</Link>
+          <Link to={`/review/${user_id}`}>더보기 &gt;</Link>
         </div>
         {fetchedReviews.length === 0 ? (
           <p className="text-center mt-3">리뷰가 없습니다.</p>
