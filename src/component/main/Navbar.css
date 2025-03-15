@@ -107,3 +107,7 @@ a {
 .nav-container {
   margin-bottom: 50px;
 }
+
+.nav-count{
+  padding-left: 3px !important;
+}

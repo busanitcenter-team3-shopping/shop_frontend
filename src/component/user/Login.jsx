@@ -87,7 +87,6 @@ const Login = () => {
 
           <div className="button-group">
             <button className="login-btn">로그인</button>
-            <button className="kakao-login">카카오 로그인</button>
           </div>
         </form>
 

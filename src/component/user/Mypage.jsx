@@ -108,7 +108,7 @@ const Mypage = ({ user, setUser, products }) => {
   const recentOrders = orders.slice(0, 2);
   const recentSales = sales.slice(0, 2);
 
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
 
   return (
     <div className="container container1 mt-5">

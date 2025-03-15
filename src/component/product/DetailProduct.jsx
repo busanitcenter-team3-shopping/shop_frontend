@@ -16,7 +16,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
   const { currentUser, token } = useMyContext();
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const DetailProduct = ({ user, products, setProducts }) => {
   //메시지 보내기 (채팅방 생성)
   const createChatRoom = async () => {
     try {
-      const response = await fetch("http://localhost:8090/chat/rooms", {
+      const response = await fetch("http://172.30.1.71:8090/chat/rooms", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

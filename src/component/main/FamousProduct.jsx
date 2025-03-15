@@ -16,7 +16,7 @@ const FamousProduct = () => {
       .catch((error) => console.error("상품 로드 실패:", error));
   }, []);
 
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
 
   return (
     <div className="container container1">

@@ -31,7 +31,7 @@ function Navbar({ user, setUser }) {
   const [categories, setCategories] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:8090/enum")
+    fetch("http://172.30.1.71:8090/enum")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((err) => console.log(err));
@@ -199,8 +199,8 @@ function Navbar({ user, setUser }) {
               />
               {unreadCount > 0 && (
                 <span
-                  className="position-absolute top-0 translate-middle badge rounded-pill bg-warning"
-                  style={{ left: "75%", width: "20px", height: "20px" }}
+                  className="position-absolute top-0 translate-middle badge rounded-pill bg-warning nav-count"
+                  style={{ left: "75%", width: "25px", height: "25px" }}
                 >
                   {unreadCount}
                   <span className="visually-hidden">unread messages</span>

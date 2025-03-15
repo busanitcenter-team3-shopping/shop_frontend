@@ -27,7 +27,7 @@ const SellerReviewRegister = () => {
         purchase: { purchaseId: Number(purchaseId) },
       };
 
-      const response = await fetch("http://localhost:8090/review/create", {
+      const response = await fetch("http://172.30.1.71:8090/review/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

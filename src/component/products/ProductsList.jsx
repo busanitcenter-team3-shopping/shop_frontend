@@ -85,7 +85,7 @@ function ProductsList({ selectedCategory, products, user }) {
   const endIndex = startIndex + itemsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-  const BASE_URL = "http://localhost:8090";
+  const BASE_URL = "http://172.30.1.71:8090";
   return (
     <div className="container">
       <main className="flex-grow-1 p-4">
